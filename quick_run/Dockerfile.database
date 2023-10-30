@@ -1,0 +1,8 @@
+FROM postgres:alpine3.18
+
+LABEL maintainer="MMQ <mail@mmq.dev>"
+LABEL version="1.0.0"
+LABEL description="This is the database image used by QuickCertS."
+
+# DB init script.
+COPY init.sql /docker-entrypoint-initdb.d/

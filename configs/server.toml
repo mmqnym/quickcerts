@@ -1,0 +1,51 @@
+# !!!!! The values in this configuration file are case-insensitive.
+
+##### Admin settings #####
+ALLOWED_IPs = ["*"]
+
+# This parameter is used to restrict access to the API for clients who have a specified CLIENT_AUTH_TOKEN, 
+# in order to reduce unnecessary server load.
+# Empty value means that all clients are allowed to access the API for client.
+CLIENT_AUTH_TOKEN = ["QcsTestToken********************************"]
+
+##### Basic settings #####
+PORT = ":33333"
+
+# Allowed values: >= 0
+# Time unit allowed values: "hour", "minute", "second", "millisecond"
+KEEP_ALIVE_TIMEOUT = 10
+KEEP_ALIVE_TIMEOUT_UNIT = "second"
+
+# !!!!! It is recommended to use a web server (e.g. Nginx) as a reverse proxy to handle HTTPS requests.
+# You can use OpenSSL and the following command to generate a self-signed certificate for testing.
+# openssl req -newkey rsa:4096 -nodes -keyout server.key -out server.csr
+# openssl x509 -signkey server.key -in server.csr -req -days 365 -out server.crt
+USE_TLS = false
+TLS_CERT_PATH = ""
+TLS_KEY_PATH = ""
+TLS_PORT = ":33334"
+
+# If set to true, it will run both HTTP and HTTPS servers simultaneously.
+# Please note that USE_TLS must be true and the related settings must be valid in order to enable this setting.
+SERVE_BOTH = false
+
+##### Service settings #####
+# Allowed values: "day", "hour", "minute"
+TEMPORARY_PERMIT_TIME = 7
+TEMPORARY_PERMIT_TIME_UNIT = "day"
+
+# The hashing method used for signatures.
+# Allowed values: "sha-256", "sha-384", "sha-512", "sha3-256", "sha3-384", "sha3-512"
+# Invalid values will be set to "sha-256"
+# !!!!! Make sure that '-' is included in the value.
+HASHING_METHOD = "sha3-512"
+
+##### Log settings #####
+# Allowed values: "day", "hour", "minute", "second"
+LOG_MAX_AGE = 240
+LOG_ROTATION_TIME = 12
+LOG_TIME_UNIT = "hour"
+
+# Allowed values: "json", "text"
+# Invalid values will be set to "text"
+LOG_FORMATTER = "text"
