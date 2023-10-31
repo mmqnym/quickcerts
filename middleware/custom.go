@@ -54,8 +54,6 @@ func IPAddressAuth(allowedIPs ...string) gin.HandlerFunc {
 func ClientAccessAuth(clientAuthToken ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		reqToken := ctx.GetHeader("X-Access-Token")
-		// var applyInfo model.ApplyInfo
-		// err := ctx.Bind(&applyInfo)
 
 		if reqToken == "" {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized Request."})

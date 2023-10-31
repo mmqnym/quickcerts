@@ -14,10 +14,10 @@ import (
 // Add serial number to the database, only requests with valid tokens are allowed.
 func UpdateSN(ctx *gin.Context) {
 	updateInfo := model.SNInfo{}
-	err := ctx.Bind(&updateInfo)
+	err := ctx.ShouldBindJSON(&updateInfo)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, "")
+		ctx.JSON(http.StatusBadRequest, "Invalid data format.")
 		utils.Logger.Error(err.Error())
 		return
 	}
@@ -54,10 +54,10 @@ func UpdateSN(ctx *gin.Context) {
 // Generate serial number(s) to the database, only requests with valid tokens are allowed.
 func GenerateSN(ctx *gin.Context) {
 	generateSNInfo := model.SNsInfo{}
-	err := ctx.Bind(&generateSNInfo)
+	err := ctx.ShouldBindJSON(&generateSNInfo)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, "")
+		ctx.JSON(http.StatusBadRequest, "Invalid data format.")
 		utils.Logger.Error(err.Error())
 		return
 	}
@@ -74,6 +74,12 @@ func GenerateSN(ctx *gin.Context) {
 
 	// Generate sn * count.
 	snList := []string{}
+
+	if generateSNInfo.Count <= 0 {
+		ctx.JSON(http.StatusBadRequest, "The count must be greater than 0.")
+		utils.Logger.Warn(fmt.Sprintf("Invalid count(<=0) [%d], From [%s]", generateSNInfo.Count, ctx.RemoteIP()))
+		return
+	}
 
 	for i := 0; i < generateSNInfo.Count; i++ {
 		sn, _ := utils.GenerateSN()

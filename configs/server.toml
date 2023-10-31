@@ -48,4 +48,4 @@ LOG_TIME_UNIT = "hour"
 
 # Allowed values: "json", "text"
 # Invalid values will be set to "text"
-LOG_FORMATTER = "text"
+LOG_FORMATTER = "json"

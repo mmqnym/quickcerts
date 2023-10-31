@@ -10,6 +10,8 @@ import (
 
 // Gracefully shutdown the server.
 func WaitForShutdown(server *http.Server) {
+	Logger.Info("The Server is running. Press Ctrl + C to shutdown.")
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
@@ -22,5 +24,4 @@ func WaitForShutdown(server *http.Server) {
 	}
 
 	Logger.Info("The Server has exited successfully.")
-
 }
