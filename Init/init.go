@@ -6,58 +6,113 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"log"
 	"os"
+	"strings"
+
+	"github.com/fatih/color"
 )
 
-func main() {
-    fmt.Print("Create the logs folder... ")
-    os.Mkdir("logs", os.FileMode(0700))
-    fmt.Println("Done.")
-    fmt.Print("Create the local folder... ")
-    os.Mkdir("local", os.FileMode(0700))
-    fmt.Println("Done.")
+func init() {
+    initMsg := "The initialization process will create the following folders and files:\n"
+    willAddFiles := "    ./logs\n" +
+    "    ./local\n" +
+    "    ./local/private_key.pem\n" +
+    "    ./local/public_key.pem\n"
+    tips := "Press [Y/y] to continue, or [ANY] to cancel: "
+    
+    fmt.Println(decorateColor(initMsg, "cyan"))
+    fmt.Println(decorateColor(willAddFiles, "magenta"))
+    fmt.Print(decorateColor(tips, "cyan"))
 
+    var input string
+    fmt.Scanln(&input)
+
+    if strings.ToUpper(input) != "Y" {
+        fmt.Println(decorateColor("Initialization canceled.", "red"))
+        os.Exit(0)
+    } else {
+        fmt.Println(decorateColor("Initialization started...", "green"))
+    }
+}
+
+func main() {
+    createFolders()
+    createKeyFiles()
+    
+	fmt.Println(decorateColor("\nInitialization completed.", "green"))
+}
+
+func exitWithError(err error) {
+    fmt.Println(decorateColor("Failed", "red"))
+    fmt.Println(decorateColor(err.Error(), "red"))
+    os.Exit(1)
+}
+
+func createFolders() {
+    fmt.Print("Create the logs folder... ")
+    err := os.Mkdir("logs", os.FileMode(0700))
+
+    if err != nil {
+        if !strings.Contains(err.Error(), "exists") {
+            exitWithError(err)
+        }
+    }
+
+    fmt.Println(decorateColor("OK", "green"))
+    fmt.Print("Create the local folder... ")
+
+    err = os.Mkdir("local", os.FileMode(0700))
+
+    if err != nil {
+        if !strings.Contains(err.Error(), "exists") {
+            exitWithError(err)
+        }
+    }
+
+    fmt.Println(decorateColor("OK", "green"))
+}
+
+func createKeyFiles() {
     fmt.Print("Generating key files... ")
 	prvivateKey, publicKey, err := generateKey()
 
     if err != nil {
-        log.Fatal(err)
+        exitWithError(err)
     }
 
-	f_0, err := os.Create("./local/private_key.pem")
+	f0, err := os.Create("./local/private_key.pem")
 	if err != nil {
-        log.Fatal(err)
+        exitWithError(err)
     }
 
-	defer f_0.Close()
+	defer f0.Close()
 
-	_, err = f_0.Write(prvivateKey)
+	_, err = f0.Write(prvivateKey)
 
     if err != nil {
-        log.Fatal(err)
+        exitWithError(err)
     }
 
-	f_1, err := os.Create("./local/public_key.pem")
+	f1, err := os.Create("./local/public_key.pem")
 	if err != nil {
-        log.Fatal(err)
+        exitWithError(err)
     }
 
-	defer f_1.Close()
+	defer f1.Close()
 
-	_, err = f_1.Write(publicKey)
+	_, err = f1.Write(publicKey)
 
     if err != nil {
-        log.Fatal(err)
+        exitWithError(err)
     }
-    fmt.Println("Done.")
-	fmt.Println("Initialization completed.")
+
+    fmt.Println(decorateColor("OK", "green"))
 }
 
 func generateKey() ([]byte, []byte, error) {
     privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
     if err != nil {
-        panic(err)
+        return nil, nil, err
     }
 
     privateKeyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
@@ -85,4 +140,19 @@ func generateKey() ([]byte, []byte, error) {
     publicKeyPEM := pem.EncodeToMemory(publicKeyBlock)
 
     return privateKeyPEM, publicKeyPEM, nil
+}
+
+func decorateColor(msg string, colorName string) string {
+    switch strings.ToLower(colorName) {
+		case "green":
+            return color.HiGreenString(msg)
+        case "red":
+			return color.HiRedString(msg)
+        case "cyan":
+            return color.HiCyanString(msg)
+        case "magenta":
+            return color.HiMagentaString(msg)
+		default:
+			return color.HiWhiteString(msg)
+    }
 }
