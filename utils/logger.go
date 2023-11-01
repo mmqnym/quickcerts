@@ -15,8 +15,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var Logger *logrus.Logger // The logger for the server.
-var fileWriter *rotatelogs.RotateLogs // The file writer for the server logger & access logger.
+var (
+	Logger *logrus.Logger // The logger for the server.
+	fileWriter *rotatelogs.RotateLogs // The file writer for the server logger & access logger.
+)
 
 func init() {
 	path := "./logs/qcs-%Y-%m-%d@%H_%M_%S"
@@ -37,15 +39,16 @@ func init() {
 
 	var formatter logrus.Formatter
 
-	switch strings.ToUpper(cfg.SERVER_CONFIG.LOG_FORMATTER) {
-		case "JSON":
+	switch strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) {
+		case "json":
 			formatter = &QCSJSONFormatter{
 				TextFormatter: &logrus.TextFormatter{
+					DisableColors:   true,
 					TimestampFormat: "2006/01/02 - 15:04:05",
 					FullTimestamp:   true,
 				},
 			}
-		case "TEXT":
+		case "text":
 			fallthrough
 		default:
 			formatter = &QCSTextFormatter{
@@ -58,7 +61,7 @@ func init() {
 	}
 
 	Logger = &logrus.Logger{
-		Out:       io.MultiWriter(fileWriter, os.Stdout),
+		Out:       io.MultiWriter(os.Stderr, fileWriter),
 		Formatter: formatter,
 		Level:     logrus.InfoLevel,
 	}
@@ -119,15 +122,15 @@ func getServerLogConfig(level logrus.Level) string {
 func getServerLogConfigWithColor(level logrus.Level) string {
     switch level {
 		case logrus.InfoLevel:
-			return color.New(color.FgGreen).Sprint("INFO ")
+			return color.New(color.FgGreen).Sprint(" INFO ")
 		case logrus.WarnLevel:
-			return color.New(color.FgYellow).Sprint("WARN ")
+			return color.New(color.FgYellow).Sprint(" WARN ")
 		case logrus.ErrorLevel:
-			return color.New(color.FgRed).Sprint("ERROR")
+			return color.New(color.FgRed).Sprint(" ERROR")
 		case logrus.FatalLevel:
-			return color.New(color.FgMagenta).Sprint("FATAL")
+			return color.New(color.FgMagenta).Sprint(" FATAL")
 		default:
-			return color.New(color.FgWhite).Sprint("NONE ")
+			return color.New(color.FgWhite).Sprint(" NONE ")
     }
 }
 
@@ -151,7 +154,7 @@ type AccessLog struct {
   }
 
 func OverwriteGinLog(ctx *QCSExtractGINCtx) {
-	if strings.ToUpper(cfg.SERVER_CONFIG.LOG_FORMATTER) == "TEXT" {
+	if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" {
 		level, statusCode := getAccessLogConfig(ctx.StatusCode)
 
 		message := fmt.Sprintf("[QCS] %s | %s |\t%s | %12s | %15s | %6s | %s\n",
@@ -180,7 +183,7 @@ func OverwriteGinLog(ctx *QCSExtractGINCtx) {
 
 		jsonBytes, _ := json.Marshal(message)
 
-		logOutput := io.MultiWriter(fileWriter, os.Stdout)
+		logOutput := io.MultiWriter(fileWriter, os.Stderr)
 		logOutput.Write(jsonBytes)
 		logOutput.Write([]byte("\n"))
 	}
@@ -202,12 +205,12 @@ func getAccessLogLevel(statusCode int) string {
 func getAccessLogConfig(statusCode int) (string, string) {
     switch {
 		case statusCode >= 200 && statusCode < 300:
-			return color.New(color.FgGreen).Sprint("INFO "), color.New(color.FgHiGreen).Sprint(statusCode)
+			return color.New(color.FgGreen).Sprint(" INFO "), color.New(color.FgHiGreen).Sprint(statusCode)
 		case statusCode >= 400 && statusCode < 500:
-			return color.New(color.FgYellow).Sprint("WARN "), color.New(color.FgHiYellow).Sprint(statusCode)
+			return color.New(color.FgYellow).Sprint(" WARN "), color.New(color.FgHiYellow).Sprint(statusCode)
 		case statusCode >= 500:
-			return color.New(color.FgRed).Sprint("ERROR"), color.New(color.FgHiRed).Sprint(statusCode)
+			return color.New(color.FgRed).Sprint(" ERROR"), color.New(color.FgHiRed).Sprint(statusCode)
 		default:
-			return color.New(color.FgWhite).Sprint("NONE "), color.New(color.FgHiWhite).Sprint(statusCode)
+			return color.New(color.FgWhite).Sprint(" NONE "), color.New(color.FgHiWhite).Sprint(statusCode)
     }
 }

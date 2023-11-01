@@ -3,10 +3,12 @@
 package middleware
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"time"
 
+	cfg "QuickCertS/configs"
 	"QuickCertS/utils"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +34,7 @@ func AccessLogger() gin.HandlerFunc {
 }
 
 // Middleware for IP authentication.
-func IPAddressAuth(allowedIPs ...string) gin.HandlerFunc {
+func IPAddressAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		clientIP, _, err := net.SplitHostPort(ctx.Request.RemoteAddr)
 
@@ -41,7 +43,7 @@ func IPAddressAuth(allowedIPs ...string) gin.HandlerFunc {
 			return
 		}
 
-		for _, allowedIP := range allowedIPs {
+		for _, allowedIP := range cfg.SERVER_CONFIG.ALLOWED_IPs {
 			if clientIP == allowedIP || allowedIP == "*" {
 				ctx.Next()
 				return
@@ -51,7 +53,8 @@ func IPAddressAuth(allowedIPs ...string) gin.HandlerFunc {
 	}
 }
 
-func ClientAccessAuth(clientAuthToken ...string) gin.HandlerFunc {
+// Middleware for client authentication.
+func ClientAccessAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		reqToken := ctx.GetHeader("X-Access-Token")
 
@@ -60,12 +63,43 @@ func ClientAccessAuth(clientAuthToken ...string) gin.HandlerFunc {
 			return
 		}
 
-		for _, allowedToken := range clientAuthToken {
+		for _, allowedToken := range cfg.SERVER_CONFIG.CLIENT_AUTH_TOKEN {
 			if reqToken == allowedToken || allowedToken == "" {
 				ctx.Next()
 				return
 			}
 		}
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Unauthorized Request."})
+	}
+}
+
+
+func AdminAccessAuth(runTimeCode string) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		reqRunTimeCode := ctx.GetHeader("X-Runtime-Code")
+		reqToken := ctx.GetHeader("X-Access-Token")
+
+		if cfg.SERVER_CONFIG.USE_RUNTIME_CODE {
+			if reqRunTimeCode == "" || reqRunTimeCode != runTimeCode {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized Request."})
+				return
+			}
+		}
+
+		if reqToken == "" {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized Request."})
+			return
+		}
+
+		for _, permission := range cfg.ALLOWEDLIST.PERMISSIONS {
+			if reqToken == permission.TOKEN || permission.TOKEN == "" {
+				utils.Logger.Info(fmt.Sprintf("Admin [%s] login, From [%s]", permission.NAME, ctx.RemoteIP()))
+				ctx.Next()
+				return
+			}
+		}
+
+		utils.Logger.Warn(fmt.Sprintf("Illegal access detected, From [%s]", ctx.RemoteIP()))
 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Unauthorized Request."})
 	}
 }

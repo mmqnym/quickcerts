@@ -1,24 +1,34 @@
 package utils
 
 import (
+	"os"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 func TimeUnitStrToTimeDuration(unit string) time.Duration {
-	unit = strings.ToUpper(unit)
+	defer func() {
+		if err := recover(); err != nil {
+			color.Red(err.(string))
+			os.Exit(1)
+		}
+	}()
+
+	unit = strings.ToLower(unit)
 	var timeUnit time.Duration
 
 	switch unit {
-		case "DAY":
+		case "day":
 			timeUnit = time.Hour * 24
-		case "HOUR":
+		case "hour":
 			timeUnit = time.Hour
-		case "MINUTE":
+		case "minute":
 			timeUnit = time.Minute
-		case "SECOND":
+		case "second":
 			timeUnit = time.Second
-		case "MILLISECOND":
+		case "millisecond":
 			timeUnit = time.Millisecond
 		default:
 			panic("Time unit is not valid (Require: day, hour, minute, second, millisecond).")

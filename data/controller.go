@@ -15,6 +15,11 @@ import (
 
 var db *sql.DB = nil
 
+type Cert struct {
+	SN     string
+	Key    string
+	// Note   string
+}
 
 // Connect to the specified database.
 func ConnectDB() {
@@ -185,9 +190,8 @@ func GetTemporaryPermitExpiredTime(key string) (int64, error) {
 	return durationLeft, nil
 }
 
-/*
-	Providing temporary usage rights to trial clients.
-*/
+
+// Providing temporary usage rights to trial clients.
 func AddTemporaryPermit(key string) (int64, error) {
 	if db == nil {
 		utils.Logger.Warn("Currently not connecting the database.")
@@ -212,4 +216,76 @@ func AddTemporaryPermit(key string) (int64, error) {
 	timeLeft := expiration.Unix() - time.Now().Unix()
 
 	return timeLeft, nil
+}
+
+// Get all certificate records in the database.
+func GetAllCerts() ([]Cert, error) {
+	if db == nil {
+		utils.Logger.Warn("Currently not connecting the database.")
+		return nil, nil
+	}
+
+	query := "SELECT * FROM certs"
+
+	rows, err := db.Query(query)
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		return nil, nil
+	}
+
+	defer rows.Close()
+
+	var certs []Cert
+
+	for rows.Next() {
+        var cert Cert
+		var tmpStr sql.NullString
+        if err := rows.Scan(&cert.SN, &tmpStr); err != nil {
+            return nil, err
+        }
+
+		cert.Key = tmpStr.String
+        certs = append(certs, cert)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return certs, nil
+}
+
+// Get avaliable S/N in the database.
+func GetAvaliableSN() ([]string, error) {
+	if db == nil {
+		utils.Logger.Warn("Currently not connecting the database.")
+		return nil, nil
+	}
+
+	query := "SELECT sn FROM certs where key is NULL"
+
+	rows, err := db.Query(query)
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		return nil, nil
+	}
+
+	defer rows.Close()
+
+	var res []string
+
+	for rows.Next() {
+		var sn string
+        if err := rows.Scan(&sn); err != nil {
+            return nil, err
+        }
+
+        res = append(res, sn)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return res, nil
 }

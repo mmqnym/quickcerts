@@ -1,49 +1,51 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/fatih/color"
 )
 
 type DBConfig struct {
-	HOST    string `toml:"HOST"`
-	PORT    int    `toml:"PORT"`
-	USER    string `toml:"USER"`
-	PWD     string `toml:"PWD"`
-	DB_NAME string `toml:"DB_NAME"`
+	HOST    string   `toml:"HOST"`
+	PORT    int      `toml:"PORT"`
+	USER    string   `toml:"USER"`
+	PWD     string   `toml:"PWD"`
+	DB_NAME string   `toml:"DB_NAME"`
 }
 
-type Token struct {
-	NAME   string `toml:"NAME"`
-	PERMIT string `toml:"PERMIT"`
+type Permission struct {
+	NAME   string   `toml:"NAME"`
+	TOKEN  string   `toml:"TOKEN"`
 }
 
 type Allowedlist struct {
-	TOKENS []Token `toml:"TOKENS"`
+	PERMISSIONS []Permission   `toml:"PERMISSIONS"`
 }
 
 type ServerConfig struct {
-	ALLOWED_IPs                 []string           `toml:"ALLOWED_IPs"`
-	CLIENT_AUTH_TOKEN			[]string           `toml:"CLIENT_AUTH_TOKEN"`
-	PORT                        string   	       `toml:"PORT"`
-	KEEP_ALIVE_TIMEOUT          time.Duration      `toml:"KEEP_ALIVE_TIMEOUT"`
-	KEEP_ALIVE_TIMEOUT_UNIT     string             `toml:"KEEP_ALIVE_TIMEOUT_UNIT"`
-	USE_TLS                     bool               `toml:"USE_TLS"`
-	TLS_CERT_PATH               string             `toml:"TLS_CERT_PATH"`
-	TLS_KEY_PATH                string             `toml:"TLS_KEY_PATH"`
-	TLS_PORT					string             `toml:"TLS_PORT"`
-	SERVE_BOTH                  bool               `toml:"SERVE_BOTH"`
-	TEMPORARY_PERMIT_TIME       int                `toml:"TEMPORARY_PERMIT_TIME"`
-	TEMPORARY_PERMIT_TIME_UNIT  string 	           `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
-	HASHING_METHOD			    string             `toml:"HASHING_METHOD"`
-	LOG_TIME_UNIT               string             `toml:"LOG_TIME_UNIT"`
-	LOG_MAX_AGE                 int                `toml:"LOG_MAX_AGE"`
-	LOG_ROTATION_TIME           int                `toml:"LOG_ROTATION_TIME"`
-	LOG_FORMATTER			    string             `toml:"LOG_FORMATTER"`
+	ALLOWED_IPs                  []string        `toml:"ALLOWED_IPs"`
+	USE_RUNTIME_CODE		     bool            `toml:"USE_RUNTIME_CODE"`
+	RUNTIME_CODE_LENGTH		     int             `toml:"RUNTIME_CODE_LENGTH"`
+	CLIENT_AUTH_TOKEN			 []string        `toml:"CLIENT_AUTH_TOKEN"`
+	PORT                         string   	     `toml:"PORT"`
+	KEEP_ALIVE_TIMEOUT           time.Duration   `toml:"KEEP_ALIVE_TIMEOUT"`
+	KEEP_ALIVE_TIMEOUT_UNIT      string          `toml:"KEEP_ALIVE_TIMEOUT_UNIT"`
+	USE_TLS                      bool            `toml:"USE_TLS"`
+	TLS_CERT_PATH                string          `toml:"TLS_CERT_PATH"`
+	TLS_KEY_PATH                 string          `toml:"TLS_KEY_PATH"`
+	TLS_PORT					 string          `toml:"TLS_PORT"`
+	SERVE_BOTH                   bool            `toml:"SERVE_BOTH"`
+	TEMPORARY_PERMIT_TIME        int             `toml:"TEMPORARY_PERMIT_TIME"`
+	TEMPORARY_PERMIT_TIME_UNIT   string 	     `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
+	HASHING_METHOD			     string          `toml:"HASHING_METHOD"`
+	LOG_TIME_UNIT                string          `toml:"LOG_TIME_UNIT"`
+	LOG_MAX_AGE                  int             `toml:"LOG_MAX_AGE"`
+	LOG_ROTATION_TIME            int             `toml:"LOG_ROTATION_TIME"`
+	LOG_FORMATTER			     string          `toml:"LOG_FORMATTER"`
 }
 
 var SERVER_CONFIG ServerConfig
@@ -53,7 +55,7 @@ var ALLOWEDLIST Allowedlist
 func init() {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println(err)
+			color.Red(err.(string))
 			os.Exit(1)
 		}
 	}()
@@ -74,12 +76,16 @@ func init() {
 }
 
 func checkValid() {
+	if SERVER_CONFIG.USE_RUNTIME_CODE && SERVER_CONFIG.RUNTIME_CODE_LENGTH < 6 {
+		panic("RUNTIME_CODE_LENGTH should be bigger or equal to 6.")
+	}
+
 	if SERVER_CONFIG.KEEP_ALIVE_TIMEOUT < 0 {
 		panic("KEEP_ALIVE_TIMEOUT should be bigger or equal to 0.")
 	}
 
-	switch strings.ToUpper(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT) {
-		case "HOUR", "MINUTE", "SECOND", "MILLISECOND":
+	switch strings.ToLower(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT) {
+		case "hour", "minute", "second", "millisecond":
 		default:
 			panic("KEEP_ALIVE_TIMEOUT_UNIT is not valid (Require: hour, minute, second).")
 	}
@@ -88,8 +94,8 @@ func checkValid() {
 		panic("TEMPORARY_PERMIT_TIME should be bigger than 0.")
 	}
 
-	switch strings.ToUpper(SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT) {
-		case "DAY", "HOUR", "MINUTE":
+	switch strings.ToLower(SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT) {
+		case "day", "hour", "minute":
 		default:
 			panic("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute).")
 	}
@@ -102,8 +108,8 @@ func checkValid() {
 		panic("LOG_ROTATION_TIME should be bigger than 0.")
 	}
 
-	switch strings.ToUpper(SERVER_CONFIG.LOG_TIME_UNIT) {
-		case "DAY", "HOUR", "MINUTE", "SECOND":
+	switch strings.ToLower(SERVER_CONFIG.LOG_TIME_UNIT) {
+		case "day", "hour", "minute", "second":
 		default:
 			panic("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute, second).")
 	}
