@@ -3,6 +3,12 @@
 ##### Admin settings #####
 ALLOWED_IPs = ["*"]
 
+# If set to true, the code will be generated on the console every time the server is started.
+# Admins need to take this code into the header of the request when they want to access the API for admin.
+USE_RUNTIME_CODE = false
+# The length must be greater than 5.
+RUNTIME_CODE_LENGTH = 6
+
 # This parameter is used to restrict access to the API for clients who have a specified CLIENT_AUTH_TOKEN, 
 # in order to reduce unnecessary server load.
 # Empty value means that all clients are allowed to access the API for client.
@@ -48,4 +54,4 @@ LOG_TIME_UNIT = "hour"
 
 # Allowed values: "json", "text"
 # Invalid values will be set to "text"
-LOG_FORMATTER = "json"
+LOG_FORMATTER = "text"

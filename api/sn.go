@@ -21,17 +21,7 @@ func UpdateSN(ctx *gin.Context) {
 		utils.Logger.Error(err.Error())
 		return
 	}
-
-	owner := utils.GetValidTokenOwner(updateInfo.Token)
-
-	if owner == "" {
-		ctx.JSON(http.StatusUnauthorized, "")
-		utils.Logger.Warn(fmt.Sprintf("Illegal access detected, From [%s]", ctx.RemoteIP()))
-		return
-	} else {
-		utils.Logger.Info(fmt.Sprintf("Admin [%s] login, From [%s]", owner, ctx.RemoteIP()))
-	}
-
+	
 	if err := data.AddNewSN(updateInfo.SerialNumber); err != nil {
 		if err.Error() == "the S/N already exists" {
 			ctx.JSON(http.StatusBadRequest, err.Error())
@@ -45,8 +35,7 @@ func UpdateSN(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, "Successfully uploaded a new S/N.")
 		utils.Logger.Info(
-			fmt.Sprintf("Successfully uploaded a new S/N [%s] by [%s], From [%s]", 
-				updateInfo.SerialNumber, owner, ctx.RemoteIP()),
+			fmt.Sprintf("Successfully uploaded a new S/N [%s], From [%s]", updateInfo.SerialNumber, ctx.RemoteIP()),
 		)
 	}
 }
@@ -62,17 +51,6 @@ func GenerateSN(ctx *gin.Context) {
 		return
 	}
 
-	owner := utils.GetValidTokenOwner(generateSNInfo.Token)
-
-	if owner == "" {
-		ctx.JSON(http.StatusUnauthorized, "")
-		utils.Logger.Warn(fmt.Sprintf("Illegal access detected, From [%s]", ctx.RemoteIP()))
-		return
-	} else {
-		utils.Logger.Info(fmt.Sprintf("Admin [%s] login, From [%s]", owner, ctx.RemoteIP()))
-	}
-
-	// Generate sn * count.
 	snList := []string{}
 
 	if generateSNInfo.Count <= 0 {
@@ -93,11 +71,38 @@ func GenerateSN(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		utils.Logger.Error(err.Error())
 	} else {
-		msg := fmt.Sprintf("Successfully uploaded new S/N. (%d).", generateSNInfo.Count)
-		ctx.JSON(http.StatusOK, msg)
-		utils.Logger.Info(fmt.Sprintf("%s by [%s], From [%s]", msg, owner, ctx.RemoteIP()))
+		msg := fmt.Sprintf("Successfully uploaded new S/N (%d), From [%s]", generateSNInfo.Count, ctx.RemoteIP())
+		utils.Logger.Info(msg)
 		for _, sn := range snList {
 			utils.Logger.Info(fmt.Sprintf("[%s]", sn))
 		}
+
+		ctx.JSON(http.StatusOK, msg)
 	}
+}
+
+// Get cert list from the database.
+func GetAllSN(ctx *gin.Context) {
+	snList, err := data.GetAllCerts()
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		utils.Logger.Error(err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, snList)
+}
+
+// Get available S/N from the database.
+func GetAvaliableSN(ctx *gin.Context) {
+	snList, err := data.GetAvaliableSN()
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		utils.Logger.Error(err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, snList)
 }

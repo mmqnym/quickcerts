@@ -8,35 +8,42 @@ import (
 	"QuickCertS/utils"
 	"net/http"
 
+	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	utils.Logger.Info("Starting the server...")
-	utils.Logger.Info("Connecting the database...")
+var (
+	runtimeCode string
+	router *gin.Engine
+)
 
-	data.ConnectDB()
-	defer data.DisconnectDB()
+func init() {
+	utils.Logger.Info("Initializing the server...")
 
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
+	router = gin.New()
 	router.Use(gin.Recovery())
 	router.Use(middleware.AccessLogger())
-	allowedIPs := cfg.SERVER_CONFIG.ALLOWED_IPs
-	clientAuthTokens := cfg.SERVER_CONFIG.CLIENT_AUTH_TOKEN
 
-	// For client.
-	router.POST("/api/apply/cert", middleware.ClientAccessAuth(clientAuthTokens...), api.ApplyCertificate)
-	router.POST("/api/apply/temp-permit", middleware.ClientAccessAuth(clientAuthTokens...), api.ApplyTemporaryPermit)
+	if cfg.SERVER_CONFIG.USE_RUNTIME_CODE {
+		var err error
+		runtimeCode, err = utils.GenerateRunTimeCode()
 
-	// For admin.
-	router.POST("/api/sn/update", middleware.IPAddressAuth(allowedIPs...), api.UpdateSN)
-	router.POST("/api/sn/generate", middleware.IPAddressAuth(allowedIPs...), api.GenerateSN)
-	// router.POST("/api/sn/delete", IPAddressAuth(allowedIPs...), api.DeleteSN)
-	// router.GET("/api/sn/get-available", IPAddressAuth(allowedIPs...), api.GetAvaliableSN)
-	// router.GET("/api/sn/get-all", IPAddressAuth(allowedIPs...), api.GetAllKeyRecords)
+		if err != nil {
+			utils.Logger.Fatal("Failed to generate the run time code. Due to: " + err.Error())
+		}
+
+		runtimeCodeMsg := color.HiCyanString("[USE_RUNTIME_CODE] is enabled, Runtime code: ")
+		runtimeCodeMsg += color.HiMagentaString("%s", runtimeCode)
+		utils.Logger.Info(runtimeCodeMsg)
+	}
+}
+
+func main() {
+	data.ConnectDB()
+	defer data.DisconnectDB()
 	
-	utils.Logger.Info("Server initialization is complete and the service will be starting soon...")
+	registerRoutes()
 
 	if !cfg.SERVER_CONFIG.USE_TLS {
 		run(router)
@@ -50,6 +57,35 @@ func main() {
 	} else {
 		runTLS(router)
 	}
+}
+
+func registerRoutes() {
+	// For client.
+	router.POST("/api/apply/cert", middleware.ClientAccessAuth(), api.ApplyCertificate)
+	router.POST("/api/apply/temp-permit", middleware.ClientAccessAuth(), api.ApplyTemporaryPermit)
+
+	// For admin.
+	router.POST("/api/sn/update", 
+		middleware.IPAddressAuth(), 
+		middleware.AdminAccessAuth(runtimeCode), 
+		api.UpdateSN,
+	)
+	router.POST("/api/sn/generate", 
+		middleware.IPAddressAuth(), 
+		middleware.AdminAccessAuth(runtimeCode), 
+		api.GenerateSN,
+	)
+	// router.POST("/api/sn/delete", IPAddressAuth(), api.DeleteSN)
+	router.GET("/api/sn/get-available", 
+		middleware.IPAddressAuth(), 
+		middleware.AdminAccessAuth(runtimeCode), 
+		api.GetAvaliableSN,
+	)
+	router.GET("/api/sn/get-all", 
+		middleware.IPAddressAuth(), 
+		middleware.AdminAccessAuth(runtimeCode), 
+		api.GetAllSN,
+	)
 }
 
 func run(router *gin.Engine) {
