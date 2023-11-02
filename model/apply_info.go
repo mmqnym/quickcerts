@@ -14,7 +14,6 @@ type ApplyCertInfo struct {
 	BoardProducer      string	`json:"board_producer" binding:"required"`
 	BoardName 		   string	`json:"board_name" binding:"required"`
 	MACAddress 		   string	`json:"mac_address" binding:"required"`
-	Note 			   string	`json:"note"`
 }
 
 // BoardProducer: Motherboard manufacturer
@@ -28,5 +27,4 @@ type ApplyTempPermitInfo struct {
 	BoardProducer      string	`json:"board_producer" binding:"required"`
 	BoardName 		   string	`json:"board_name" binding:"required"`
 	MACAddress 		   string	`json:"mac_address" binding:"required"`
-	Note 			   string	`json:"note"`
 }

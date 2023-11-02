@@ -50,7 +50,7 @@ func ApplyCertificate(ctx *gin.Context) {
 	if !sn_is_exist {
 		ctx.JSON(http.StatusBadRequest, invalidResponse)
 		utils.Logger.Error(
-			fmt.Sprintf("The S/N [%s] does not exist, From [%s]", applyInfo.SerialNumber, ctx.RemoteIP()),
+			fmt.Sprintf("The S/N [%s] does not exist.", applyInfo.SerialNumber),
 		)
 		return
 	}
@@ -81,8 +81,7 @@ func ApplyCertificate(ctx *gin.Context) {
 		if err.Error() == "the s/n does not exist or has already been used" {
 			ctx.JSON(http.StatusBadRequest, err.Error())
 			utils.Logger.Warn(
-				fmt.Sprintf("The S/N [%s] does not exist or has already been used, From [%s]", 
-				applyInfo.SerialNumber, ctx.RemoteIP()),
+				fmt.Sprintf("The S/N [%s] does not exist or has already been used.", applyInfo.SerialNumber),
 			)
 		} else {
 			ctx.JSON(http.StatusInternalServerError, err.Error())
@@ -102,7 +101,7 @@ func ApplyCertificate(ctx *gin.Context) {
 			"signature": signatureBase64,
 		},
 	)
-	utils.Logger.Info(fmt.Sprintf("Successfully updated and sent the key [%s] to [%s]", key, ctx.RemoteIP()))
+	utils.Logger.Info(fmt.Sprintf("Successfully updated and sent the key [%s].", key))
 }
 
 // Allow users to apply for temporary use permits on devices they have not previously use the app.
@@ -160,8 +159,7 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 				})
 
 				utils.Logger.Info(
-					fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s]. to [%s]",
-						key, remainingTime, ctx.RemoteIP()),
+					fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", key, remainingTime),
 				)
 			}
 			
@@ -182,14 +180,12 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 			},
 		)
 		utils.Logger.Info(
-			fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s]. to [%s]",
-			key, remainingTime, ctx.RemoteIP()),
+			fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", key, remainingTime),
 		)
 	} else {
 		ctx.JSON(http.StatusOK, invalidResponse)
 		utils.Logger.Info(
-			fmt.Sprintf("The authorization for [%s] to use the product has expired.. to [%s]",
-			key, ctx.RemoteIP()),
+			fmt.Sprintf("The authorization for [%s] to use the product has expired.", key),
 		)
 	}
 	

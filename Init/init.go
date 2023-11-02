@@ -13,16 +13,18 @@ import (
 )
 
 func init() {
-    initMsg := "The initialization process will create the following folders and files:\n"
-    willAddFiles := "    ./logs\n" +
-    "    ./local\n" +
-    "    ./local/private_key.pem\n" +
-    "    ./local/public_key.pem\n"
-    tips := "Press [Y/y] to continue, or [ANY] to cancel: "
-    
-    fmt.Println(decorateColor(initMsg, "cyan"))
-    fmt.Println(decorateColor(willAddFiles, "magenta"))
-    fmt.Print(decorateColor(tips, "cyan"))
+    initMsg := color.HiCyanString("The initialization process will create the following folders and files:\n")
+    willAddFiles := color.HiMagentaString(
+        "    ./logs\n" +
+        "    ./local\n" +
+        "    ./local/private_key.pem\n" +
+        "    ./local/public_key.pem\n",
+    )
+    tips := color.HiCyanString("Press [Y/y] to continue, or [ANY] to cancel: ")
+
+    fmt.Println(initMsg)
+    fmt.Println(willAddFiles)
+    fmt.Print(tips)
 
     var input string
     fmt.Scanln(&input)

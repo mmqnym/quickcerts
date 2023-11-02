@@ -8,6 +8,5 @@ CREATE TABLE certs (
 
 CREATE TABLE temporary_permits (
     key TEXT PRIMARY KEY NOT NULL,
-    expiration TIMESTAMP WITH TIME ZONE NOT NULL,
-    note TEXT
+    expiration TIMESTAMP WITH TIME ZONE NOT NULL
 );

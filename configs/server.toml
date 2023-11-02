@@ -6,7 +6,7 @@ ALLOWED_IPs = ["*"]
 # If set to true, the code will be generated on the console every time the server is started.
 # Admins need to take this code into the header(X-Runtime-Code) of the request when they want
 # to access the API for admin.
-USE_RUNTIME_CODE = true
+USE_RUNTIME_CODE = false
 # The length must be greater than 5.
 RUNTIME_CODE_LENGTH = 6
 

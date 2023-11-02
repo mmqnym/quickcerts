@@ -18,7 +18,7 @@ var db *sql.DB = nil
 type Cert struct {
 	SN     string
 	Key    string
-	// Note   string
+	Note   string
 }
 
 // Connect to the specified database.
@@ -59,14 +59,14 @@ func AddNewSN(sn string) error {
 		return errors.New("currently not connecting the database")
 	}
 
-	stmt, err := db.Prepare("INSERT INTO certs (sn, key) VALUES ($1, $2)")
+	stmt, err := db.Prepare("INSERT INTO certs (sn, key, note) VALUES ($1, $2, $3)")
 	if err != nil {
 		return err
 	}
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sn, sql.NullString{})
+	_, err = stmt.Exec(sn, sql.NullString{}, sql.NullString{})
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
 			return errors.New("the S/N already exists")
@@ -88,10 +88,10 @@ func AddNewSNs(snList []string) error {
 	var valuesStrings []string
 
 	for _, sn := range snList {
-		valuesStrings = append(valuesStrings, fmt.Sprintf("('%s', NULL)", sn))
+		valuesStrings = append(valuesStrings, fmt.Sprintf("('%s', NULL, NULL)", sn))
 	}
 
-	query := fmt.Sprintf("INSERT INTO certs (sn, key) VALUES %s;", strings.Join(valuesStrings, ", "))
+	query := fmt.Sprintf("INSERT INTO certs (sn, key, note) VALUES %s;", strings.Join(valuesStrings, ", "))
 
 	_, err := db.Exec(query)
 	if err != nil {
@@ -239,12 +239,14 @@ func GetAllCerts() ([]Cert, error) {
 
 	for rows.Next() {
         var cert Cert
-		var tmpStr sql.NullString
-        if err := rows.Scan(&cert.SN, &tmpStr); err != nil {
+		var tmpKey sql.NullString
+		var tmpNote sql.NullString
+        if err := rows.Scan(&cert.SN, &tmpKey, &tmpNote); err != nil {
             return nil, err
         }
 
-		cert.Key = tmpStr.String
+		cert.Key = tmpKey.String
+		cert.Note = tmpNote.String
         certs = append(certs, cert)
     }
 
