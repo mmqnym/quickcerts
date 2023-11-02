@@ -23,16 +23,6 @@ func IsValidData(iData interface{}, exclude []string) bool {
 	return true
 }
 
-func GetValidTokenOwner(permit string) string {
-	for _, permission := range cfg.ALLOWEDLIST.PERMISSIONS {
-		if permission.TOKEN == permit {
-			return permission.NAME
-		}
-	}
-
-	return ""
-}
-
 // Generate a random run time code.
 func GenerateRunTimeCode() (string, error) {
 	length := cfg.SERVER_CONFIG.RUNTIME_CODE_LENGTH
@@ -45,6 +35,7 @@ func GenerateRunTimeCode() (string, error) {
 	return code, nil
 }
 
+// Generate a random string with the given length.
 func generateRandomString(length int) (string, error) {
 	const charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	b := make([]byte, length)

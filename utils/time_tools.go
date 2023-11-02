@@ -8,6 +8,7 @@ import (
 	"github.com/fatih/color"
 )
 
+// Convert the time unit string to time.Duration.
 func TimeUnitStrToTimeDuration(unit string) time.Duration {
 	defer func() {
 		if err := recover(); err != nil {
