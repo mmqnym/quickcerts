@@ -17,6 +17,13 @@ type ApplyCertInfo struct {
 	Note 			   string	`json:"note"`
 }
 
+// BoardProducer: Motherboard manufacturer
+//
+// BoardName: Motherboard model
+//
+// MACAddress: Ethernet MAC address of the motherboard
+//
+// Note: Additional information
 type ApplyTempPermitInfo struct {
 	BoardProducer      string	`json:"board_producer" binding:"required"`
 	BoardName 		   string	`json:"board_name" binding:"required"`

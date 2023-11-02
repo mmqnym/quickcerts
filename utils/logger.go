@@ -104,6 +104,7 @@ func (f *QCSTextFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	)), nil
 }
 
+// Get the corresponding log level string from the given log level.
 func getServerLogConfig(level logrus.Level) string {
     switch level {
 		case logrus.InfoLevel:
@@ -119,6 +120,7 @@ func getServerLogConfig(level logrus.Level) string {
     }
 }
 
+// Get the corresponding log level string with color from the given log level.
 func getServerLogConfigWithColor(level logrus.Level) string {
     switch level {
 		case logrus.InfoLevel:
@@ -151,8 +153,9 @@ type AccessLog struct {
 	ClientIP string        `json:"client_ip"`
 	Method   string        `json:"method"`
 	Path     string        `json:"path"`
-  }
+}
 
+// Overwrite the default logger of Gin Framework.
 func OverwriteGinLog(ctx *QCSExtractGINCtx) {
 	if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" {
 		level, statusCode := getAccessLogConfig(ctx.StatusCode)
@@ -189,6 +192,7 @@ func OverwriteGinLog(ctx *QCSExtractGINCtx) {
 	}
 }
 
+// Get the corresponding log level string from the given status code.
 func getAccessLogLevel(statusCode int) string {
 	switch {
 	case statusCode >= 200 && statusCode < 300:

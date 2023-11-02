@@ -73,6 +73,7 @@ func SignMessage(message []byte) ([]byte, error) {
 	return sinature, err
 }
 
+// Convert the private key bytes to a *rsa.PrivateKey.
 func keyBytesToPrivateKey(keyBytes []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(keyBytes)
 	if block == nil {
@@ -92,26 +93,27 @@ func keyBytesToPrivateKey(keyBytes []byte) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
+// Get the hash type and hash value by the given method name.
 func getHash(methodName string, message []byte) (cryptoType crypto.Hash, hash []byte) {
-	switch strings.ToUpper(methodName) {
-		case "SHA-256":
+	switch strings.ToLower(methodName) {
+		case "sha-256":
 			hash := sha256.Sum256(message)
 			return crypto.SHA256, hash[:]
-		case "SHA-384":
+		case "sha-384":
 			hash := sha512.Sum384(message)
 			return crypto.SHA384, hash[:]
-		case "SHA-512":
+		case "sha-512":
 			hash := sha512.Sum512(message)
 			return crypto.SHA512, hash[:]
-		case "SHA3-256":
+		case "sha3-256":
 			hasher := sha3.New256()
 			hasher.Write(message)
 			return crypto.SHA3_256, hasher.Sum(nil)
-		case "SHA3-384":
+		case "sha3-384":
 			hasher := sha3.New384()
 			hasher.Write(message)
 			return crypto.SHA3_384, hasher.Sum(nil)
-		case "SHA3-512":
+		case "sha3-512":
 			hasher := sha3.New512()
 			hasher.Write(message)
 			return crypto.SHA3_512, hasher.Sum(nil)
@@ -122,7 +124,7 @@ func getHash(methodName string, message []byte) (cryptoType crypto.Hash, hash []
 	}
 }
 
-// Sign the given message with PSS & the manager specified hashing method.
+// Sign the given message with PSS & the admin specified hashing method.
 func signMessage(methodName string, data []byte, privateKey *rsa.PrivateKey) ([]byte, error) {
 	cryptoType, hash := getHash(methodName, data)
 	
@@ -139,34 +141,3 @@ func signMessage(methodName string, data []byte, privateKey *rsa.PrivateKey) ([]
 
 	return signature, err
 }
-
-// func VerifySignature(data, signature, publicKeyBytes []byte) error {
-  
-// 	block, _ := pem.Decode(publicKeyBytes)
-// 	if block == nil {
-// 	  return errors.New("failed to decode public key")
-// 	}
-	
-// 	pubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
-// 	if err != nil {
-// 	  return err
-// 	}
-	
-// 	hasher := sha3.New512()
-//     hasher.Write(data)
-// 	hashed := hasher.Sum(nil)
-
-// 	//hashed := sha512.Sum384(data)
-	
-// 	opts := &rsa.PSSOptions{
-// 	  SaltLength: rsa.PSSSaltLengthAuto,
-// 	  Hash:       crypto.SHA3_512,
-// 	}
-	
-// 	err = rsa.VerifyPSS(pubKey.(*rsa.PublicKey), crypto.SHA3_512, hashed[:], signature, opts)
-// 	if err != nil {
-// 	  return err
-// 	}
-	
-// 	return nil
-//   }
