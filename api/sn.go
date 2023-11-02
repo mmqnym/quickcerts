@@ -26,7 +26,7 @@ func UpdateSN(ctx *gin.Context) {
 		if err.Error() == "the S/N already exists" {
 			ctx.JSON(http.StatusBadRequest, err.Error())
 			utils.Logger.Warn(
-				fmt.Sprintf("The S/N [%s] already exists, From [%s]", updateInfo.SerialNumber, ctx.RemoteIP()),
+				fmt.Sprintf("The S/N [%s] already exists.", updateInfo.SerialNumber),
 			)
 		} else {
 			ctx.JSON(http.StatusInternalServerError, err.Error())
@@ -35,7 +35,8 @@ func UpdateSN(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, "Successfully uploaded a new S/N.")
 		utils.Logger.Info(
-			fmt.Sprintf("Successfully uploaded a new S/N [%s], From [%s]", updateInfo.SerialNumber, ctx.RemoteIP()),
+			fmt.Sprintf("Successfully uploaded a new S/N [%s] with reason (%s).",
+				updateInfo.SerialNumber, updateInfo.Reason),
 		)
 	}
 }
@@ -55,7 +56,7 @@ func GenerateSN(ctx *gin.Context) {
 
 	if generateSNInfo.Count <= 0 {
 		ctx.JSON(http.StatusBadRequest, "The count must be greater than 0.")
-		utils.Logger.Warn(fmt.Sprintf("Invalid count(<=0) [%d], From [%s]", generateSNInfo.Count, ctx.RemoteIP()))
+		utils.Logger.Warn(fmt.Sprintf("Invalid count(<=0) [%d].", generateSNInfo.Count))
 		return
 	}
 
@@ -71,7 +72,8 @@ func GenerateSN(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		utils.Logger.Error(err.Error())
 	} else {
-		msg := fmt.Sprintf("Successfully uploaded new S/N (%d), From [%s]", generateSNInfo.Count, ctx.RemoteIP())
+		msg := fmt.Sprintf("Successfully uploaded new S/N (%d) with reason (%s).",
+			generateSNInfo.Count, generateSNInfo.Reason)
 		utils.Logger.Info(msg)
 		for _, sn := range snList {
 			utils.Logger.Info(fmt.Sprintf("[%s]", sn))
