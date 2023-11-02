@@ -38,7 +38,6 @@ type ServerConfig struct {
 	TLS_CERT_PATH                string          `toml:"TLS_CERT_PATH"`
 	TLS_KEY_PATH                 string          `toml:"TLS_KEY_PATH"`
 	TLS_PORT					 string          `toml:"TLS_PORT"`
-	SERVE_BOTH                   bool            `toml:"SERVE_BOTH"`
 	TEMPORARY_PERMIT_TIME        int             `toml:"TEMPORARY_PERMIT_TIME"`
 	TEMPORARY_PERMIT_TIME_UNIT   string 	     `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
 	HASHING_METHOD			     string          `toml:"HASHING_METHOD"`

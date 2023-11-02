@@ -4,8 +4,9 @@
 ALLOWED_IPs = ["*"]
 
 # If set to true, the code will be generated on the console every time the server is started.
-# Admins need to take this code into the header of the request when they want to access the API for admin.
-USE_RUNTIME_CODE = false
+# Admins need to take this code into the header(X-Runtime-Code) of the request when they want
+# to access the API for admin.
+USE_RUNTIME_CODE = true
 # The length must be greater than 5.
 RUNTIME_CODE_LENGTH = 6
 
@@ -27,13 +28,9 @@ KEEP_ALIVE_TIMEOUT_UNIT = "second"
 # openssl req -newkey rsa:4096 -nodes -keyout server.key -out server.csr
 # openssl x509 -signkey server.key -in server.csr -req -days 365 -out server.crt
 USE_TLS = false
-TLS_CERT_PATH = ""
-TLS_KEY_PATH = ""
+TLS_CERT_PATH = "./self_cert/server.crt"
+TLS_KEY_PATH = "./self_cert/server.key"
 TLS_PORT = ":33334"
-
-# If set to true, it will run both HTTP and HTTPS servers simultaneously.
-# Please note that USE_TLS must be true and the related settings must be valid in order to enable this setting.
-SERVE_BOTH = false
 
 ##### Service settings #####
 # Allowed values: "day", "hour", "minute"

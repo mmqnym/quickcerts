@@ -145,14 +145,14 @@ type QCSExtractGINCtx struct {
 }
 
 type AccessLog struct {
-	Type	 string        `json:"type"`
-	Time     string        `json:"time"`
-	Level    string        `json:"level"`  
-	Status   int           `json:"status"`
-	Latency  string        `json:"latency"`
-	ClientIP string        `json:"client_ip"`
-	Method   string        `json:"method"`
-	Path     string        `json:"path"`
+	Type	 string   `json:"type"`
+	Time     string   `json:"time"`
+	Level    string   `json:"level"`  
+	Status   int      `json:"status"`
+	Latency  string   `json:"latency"`
+	ClientIP string   `json:"client_ip"`
+	Method   string   `json:"method"`
+	Path     string   `json:"path"`
 }
 
 // Overwrite the default logger of Gin Framework.
@@ -166,7 +166,7 @@ func OverwriteGinLog(ctx *QCSExtractGINCtx) {
 			statusCode,
 			ctx.Latency,
 			ctx.ClientIP,
-			color.New(color.FgHiCyan).Sprint(ctx.Method),
+			color.New(color.FgHiCyan).Sprintf(" %-4s", ctx.Method),
 			ctx.FullPath,
 		)
 
@@ -195,17 +195,18 @@ func OverwriteGinLog(ctx *QCSExtractGINCtx) {
 // Get the corresponding log level string from the given status code.
 func getAccessLogLevel(statusCode int) string {
 	switch {
-	case statusCode >= 200 && statusCode < 300:
-		return "INFO"
-	case statusCode >= 400 && statusCode < 500:
-		return "WARN"
-	case statusCode >= 500:
-		return"ERROR"
-	default:
-		return "NONE"
-}
+		case statusCode >= 200 && statusCode < 300:
+			return "INFO"
+		case statusCode >= 400 && statusCode < 500:
+			return "WARN"
+		case statusCode >= 500:
+			return"ERROR"
+		default:
+			return "NONE"
+	}
 }
 
+// Get the corresponding log level string with color and status code with color from the given status code.
 func getAccessLogConfig(statusCode int) (string, string) {
     switch {
 		case statusCode >= 200 && statusCode < 300:
