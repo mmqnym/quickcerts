@@ -6,6 +6,7 @@ import (
 	"QuickCertS/data"
 	"QuickCertS/middleware"
 	"QuickCertS/utils"
+	"fmt"
 	"net/http"
 
 	"github.com/fatih/color"
@@ -43,23 +44,20 @@ func main() {
 	data.ConnectDB()
 	defer data.DisconnectDB()
 	
-	registerRoutes()
+	registRoutes()
 
 	if !cfg.SERVER_CONFIG.USE_TLS {
 		run(router)
 
 	} else if cfg.SERVER_CONFIG.TLS_CERT_PATH == "" || cfg.SERVER_CONFIG.TLS_KEY_PATH == "" {
 		utils.Logger.Fatal("TLS_CERT_PATH or TLS_KEY_PATH is empty. Please fill in the configs file.")
-
-	} else if cfg.SERVER_CONFIG.SERVE_BOTH {
-		runBoth(router)
 		
 	} else {
 		runTLS(router)
 	}
 }
 
-func registerRoutes() {
+func registRoutes() {
 	// For client.
 	router.POST("/api/apply/cert", middleware.ClientAccessAuth(), api.ApplyCertificate)
 	router.POST("/api/apply/temp-permit", middleware.ClientAccessAuth(), api.ApplyTemporaryPermit)
@@ -101,6 +99,10 @@ func run(router *gin.Engine) {
 		}
 	}()
 
+	runningMsg := fmt.Sprintf("Server is running in %s mode. listening on port: %s", 
+		color.HiCyanString("http"), color.HiCyanString("%s", cfg.SERVER_CONFIG.PORT[1:]))
+	utils.Logger.Info(runningMsg)
+
 	utils.WaitForShutdown(httpServer)
 }
 
@@ -123,41 +125,9 @@ func runTLS(router *gin.Engine) {
 		}
 	}()
 
-	utils.WaitForShutdown(httpsServer)
-}
+	runningMsg := fmt.Sprintf("Server is running in %s mode. listening on port: %s", 
+		color.HiMagentaString("https"), color.HiMagentaString("%s", cfg.SERVER_CONFIG.TLS_PORT[1:]))
+	utils.Logger.Info(runningMsg)
 
-func runBoth(router *gin.Engine) {
-	httpServer := &http.Server{
-		Addr:    cfg.SERVER_CONFIG.PORT,
-		Handler: router,
-		IdleTimeout: cfg.SERVER_CONFIG.KEEP_ALIVE_TIMEOUT,
-	}
-
-	httpsServer := &http.Server{
-		Addr:    cfg.SERVER_CONFIG.TLS_PORT,
-		Handler: router,
-		IdleTimeout: cfg.SERVER_CONFIG.KEEP_ALIVE_TIMEOUT,
-	}
-	
-	httpServer.SetKeepAlivesEnabled(false)
-	httpsServer.SetKeepAlivesEnabled(false)
-
-	go func() {
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			utils.Logger.Fatal("Failed to start the server. Due to: " + err.Error())
-		}
-	}()
-
-	go func() {
-		if err := httpsServer.ListenAndServeTLS(
-			cfg.SERVER_CONFIG.TLS_CERT_PATH, 
-			cfg.SERVER_CONFIG.TLS_KEY_PATH,
-			);
-			err != nil && err != http.ErrServerClosed {
-			utils.Logger.Fatal("Failed to start the server. Due to: " + err.Error())
-		}
-	}()
-
-	utils.WaitForShutdown(httpServer)
 	utils.WaitForShutdown(httpsServer)
 }

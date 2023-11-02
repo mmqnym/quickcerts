@@ -73,7 +73,7 @@ func ClientAccessAuth() gin.HandlerFunc {
 	}
 }
 
-
+// Middleware for admin authentication.
 func AdminAccessAuth(runTimeCode string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		reqRunTimeCode := ctx.GetHeader("X-Runtime-Code")
@@ -81,12 +81,14 @@ func AdminAccessAuth(runTimeCode string) gin.HandlerFunc {
 
 		if cfg.SERVER_CONFIG.USE_RUNTIME_CODE {
 			if reqRunTimeCode == "" || reqRunTimeCode != runTimeCode {
+				utils.Logger.Info(fmt.Sprintf("Runtime Code error(%s), From [%s]", reqRunTimeCode, ctx.RemoteIP()))
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized Request."})
 				return
 			}
 		}
 
 		if reqToken == "" {
+			utils.Logger.Info(fmt.Sprintf("Token error, From [%s]", ctx.RemoteIP()))
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized Request."})
 			return
 		}
