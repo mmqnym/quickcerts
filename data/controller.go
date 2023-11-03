@@ -291,3 +291,25 @@ func GetAvaliableSN() ([]string, error) {
 
     return res, nil
 }
+
+// Update the note field corresponding to the given S/N.
+func UpdateCertNote(sn string, note string) error {
+	if db == nil {
+		utils.Logger.Warn("Currently not connecting the database.")
+		return errors.New("currently not connecting the database")
+	}
+
+	stmt, err := db.Prepare("UPDATE certs SET note = $1 WHERE sn = $2")
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(note, sn)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
