@@ -1,0 +1,29 @@
+FROM golang:1.21.1-alpine3.18 AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN go run /app/Init/init.go y
+RUN go build -o server
+
+FROM alpine:3.18
+
+LABEL maintainer="MMQ <mail@mmq.dev>"
+LABEL version="1.0.0"
+LABEL description="This is the server image used by QuickCertS."
+
+COPY --from=builder /app/server /app/server
+
+COPY ./configs/allowlist.toml /app/configs/allowlist.toml
+COPY ./configs/database.toml /app/configs/database.toml
+COPY ./configs/server.toml /app/configs/server.toml
+COPY ./local /app/local
+COPY ./logs /app/logs
+
+RUN chmod +x /app/server
+
+EXPOSE 33333
+
+WORKDIR /app
+CMD ["./server"]

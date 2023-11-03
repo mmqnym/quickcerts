@@ -1,7 +1,5 @@
-# HOST = "qcs-db"
-# PORT = 5432
-HOST = "0.0.0.0"
-PORT = 33332
+HOST = "qcs-db"
+PORT = 5432
 USER = "quickcerts"
 PWD = "password"
 DB_NAME = "quickcerts"
