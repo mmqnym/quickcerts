@@ -12,9 +12,9 @@ import (
 )
 
 // Add serial number to the database, only requests with valid tokens are allowed.
-func UpdateSN(ctx *gin.Context) {
-	updateInfo := model.SNInfo{}
-	err := ctx.ShouldBindJSON(&updateInfo)
+func CreateSN(ctx *gin.Context) {
+	creationInfo := model.SNInfo{}
+	err := ctx.ShouldBindJSON(&creationInfo)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, "Invalid data format.")
@@ -22,11 +22,11 @@ func UpdateSN(ctx *gin.Context) {
 		return
 	}
 	
-	if err := data.AddNewSN(updateInfo.SerialNumber); err != nil {
+	if err := data.AddNewSN(creationInfo.SerialNumber); err != nil {
 		if err.Error() == "the S/N already exists" {
 			ctx.JSON(http.StatusBadRequest, err.Error())
 			utils.Logger.Warn(
-				fmt.Sprintf("The S/N [%s] already exists.", updateInfo.SerialNumber),
+				fmt.Sprintf("The S/N [%s] already exists.", creationInfo.SerialNumber),
 			)
 		} else {
 			ctx.JSON(http.StatusInternalServerError, err.Error())
@@ -36,7 +36,7 @@ func UpdateSN(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "Successfully uploaded a new S/N.")
 		utils.Logger.Info(
 			fmt.Sprintf("Successfully uploaded a new S/N [%s] with reason (%s).",
-				updateInfo.SerialNumber, updateInfo.Reason),
+				creationInfo.SerialNumber, creationInfo.Reason),
 		)
 	}
 }
@@ -80,6 +80,27 @@ func GenerateSN(ctx *gin.Context) {
 		}
 
 		ctx.JSON(http.StatusOK, msg)
+	}
+}
+
+// Add a note for a serial number, only requests with valid tokens are allowed.
+func UpdateCertNote(ctx *gin.Context) {
+	updateInfo := model.CertNote{}
+	err := ctx.ShouldBindJSON(&updateInfo)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "Invalid data format.")
+		utils.Logger.Error(err.Error())
+		return
+	}
+	
+	if err := data.UpdateCertNote(updateInfo.SerialNumber, updateInfo.Note); err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		utils.Logger.Error(err.Error())
+		
+	} else {
+		ctx.JSON(http.StatusOK, "Successfully updated the note of specified S/N.")
+		utils.Logger.Info("Successfully updated the note of specified S/N.")
 	}
 }
 

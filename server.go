@@ -49,31 +49,40 @@ func main() {
 	if !cfg.SERVER_CONFIG.USE_TLS {
 		run(router)
 
-	} else if cfg.SERVER_CONFIG.TLS_CERT_PATH == "" || cfg.SERVER_CONFIG.TLS_KEY_PATH == "" {
-		utils.Logger.Fatal("TLS_CERT_PATH or TLS_KEY_PATH is empty. Please fill in the configs file.")
-		
 	} else {
+		if cfg.SERVER_CONFIG.TLS_CERT_PATH == "" || cfg.SERVER_CONFIG.TLS_KEY_PATH == "" {
+			utils.Logger.Fatal("TLS_CERT_PATH or TLS_KEY_PATH is empty. Please fill in the configs file.")
+		}
 		runTLS(router)
 	}
 }
 
 func registRoutes() {
-	// For client.
+	registRoutesForClient()
+	registRoutesForAdmin()
+}
+
+func registRoutesForClient() {
 	router.POST("/api/apply/cert", middleware.ClientAccessAuth(), api.ApplyCertificate)
 	router.POST("/api/apply/temp-permit", middleware.ClientAccessAuth(), api.ApplyTemporaryPermit)
+}
 
-	// For admin.
-	router.POST("/api/sn/update", 
+func registRoutesForAdmin() {
+	router.POST("/api/sn/create", 
 		middleware.IPAddressAuth(), 
 		middleware.AdminAccessAuth(runtimeCode), 
-		api.UpdateSN,
+		api.CreateSN,
 	)
 	router.POST("/api/sn/generate", 
 		middleware.IPAddressAuth(), 
 		middleware.AdminAccessAuth(runtimeCode), 
 		api.GenerateSN,
 	)
-	// router.POST("/api/sn/delete", IPAddressAuth(), api.DeleteSN)
+	router.POST("/api/sn/update", 
+		middleware.IPAddressAuth(), 
+		middleware.AdminAccessAuth(runtimeCode), 
+		api.UpdateCertNote,
+	)
 	router.GET("/api/sn/get-available", 
 		middleware.IPAddressAuth(), 
 		middleware.AdminAccessAuth(runtimeCode), 

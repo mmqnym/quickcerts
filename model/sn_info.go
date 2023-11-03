@@ -15,3 +15,11 @@ type SNsInfo struct {
 	Count  int      `json:"count" binding:"required"`
 	Reason string   `json:"reason" binding:"required"`
 }
+
+// SerialNumber: Serial number obtained from purchasing software
+//
+// Note: Additional information
+type CertNote struct {
+	SerialNumber string   `json:"serial_number" binding:"required"`
+	Note         string   `json:"note" binding:"required"`
+}
