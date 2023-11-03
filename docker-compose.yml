@@ -1,0 +1,40 @@
+version: "3.7"
+
+networks:
+  qcs_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "172.20.50.0/24"
+          gateway: "172.20.50.1"
+
+services:
+  qcs-db:
+    build:
+      context: .
+      dockerfile: Dockerfile.database
+    networks:
+      - qcs_subnet
+    ports:
+      - "33332:5432"
+    environment:
+      POSTGRES_USER: quickcerts
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: quickcerts
+    restart: unless-stopped
+
+  qcs-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    image: quickcerts:v1.0.0
+    networks:
+      - qcs_subnet
+    ports:
+      - "33333:33333"
+    depends_on:
+      - qcs-db
+    environment:
+      DB_HOST: qcs-db
+      DB_PORT: 5432
+    restart: unless-stopped

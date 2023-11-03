@@ -12,19 +12,31 @@ import (
 	"github.com/fatih/color"
 )
 
-func init() {
-    initMsg := color.HiCyanString("The initialization process will create the following folders and files:\n")
+func main() {
+    waitUserConfirm()
+    createFolders()
+    createKeyFiles()
+    
+	fmt.Println(decorateColor("\nInitialization completed.", "green"))
+}
+
+func waitUserConfirm() {
+    if len(os.Args) > 1 && os.Args[1] == "y" {
+        return // Skip the confirmation.
+    }
+
+    confirmMsg := color.HiCyanString("The initialization process will create the following folders and files:\n")
     willAddFiles := color.HiMagentaString(
         "    ./logs\n" +
         "    ./local\n" +
         "    ./local/private_key.pem\n" +
         "    ./local/public_key.pem\n",
     )
-    tips := color.HiCyanString("Press [Y/y] to continue, or [ANY] to cancel: ")
+    confirmAns := color.HiCyanString("Press [Y/y] to continue, or [ANY] to cancel: ")
 
-    fmt.Println(initMsg)
+    fmt.Println(confirmMsg)
     fmt.Println(willAddFiles)
-    fmt.Print(tips)
+    fmt.Print(confirmAns)
 
     var input string
     fmt.Scanln(&input)
@@ -35,13 +47,6 @@ func init() {
     } else {
         fmt.Println(decorateColor("Initialization started...", "green"))
     }
-}
-
-func main() {
-    createFolders()
-    createKeyFiles()
-    
-	fmt.Println(decorateColor("\nInitialization completed.", "green"))
 }
 
 func exitWithError(err error) {

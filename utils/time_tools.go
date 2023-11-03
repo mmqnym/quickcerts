@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"os"
 	"strings"
 	"time"
@@ -12,7 +13,7 @@ import (
 func TimeUnitStrToTimeDuration(unit string) time.Duration {
 	defer func() {
 		if err := recover(); err != nil {
-			color.Red(err.(string))
+			color.Red(err.(error).Error())
 			os.Exit(1)
 		}
 	}()
@@ -32,7 +33,7 @@ func TimeUnitStrToTimeDuration(unit string) time.Duration {
 		case "millisecond":
 			timeUnit = time.Millisecond
 		default:
-			panic("Time unit is not valid (Require: day, hour, minute, second, millisecond).")
+			panic(errors.New("time unit is not valid (Require: day, hour, minute, second, millisecond)"))
 	}
 
 	return timeUnit
