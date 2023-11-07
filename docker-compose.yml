@@ -27,7 +27,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.server
-    image: quickcerts:v1.0.0
+    image: quickcerts:1.0.0
     networks:
       - qcs_subnet
     ports:

@@ -17,7 +17,7 @@ func main() {
     createFolders()
     createKeyFiles()
     
-	fmt.Println(decorateColor("\nInitialization completed.", "green"))
+    fmt.Println(decorateColor("\nInitialization completed.", "green"))
 }
 
 func waitUserConfirm() {
@@ -81,33 +81,33 @@ func createFolders() {
 
 func createKeyFiles() {
     fmt.Print("Generating key files... ")
-	prvivateKey, publicKey, err := generateKey()
+    prvivateKey, publicKey, err := generateKey()
 
     if err != nil {
         exitWithError(err)
     }
 
-	f0, err := os.Create("./local/private_key.pem")
-	if err != nil {
+    f0, err := os.Create("./local/private_key.pem")
+    if err != nil {
         exitWithError(err)
     }
 
-	defer f0.Close()
+    defer f0.Close()
 
-	_, err = f0.Write(prvivateKey)
+    _, err = f0.Write(prvivateKey)
 
     if err != nil {
         exitWithError(err)
     }
 
-	f1, err := os.Create("./local/public_key.pem")
-	if err != nil {
+    f1, err := os.Create("./local/public_key.pem")
+    if err != nil {
         exitWithError(err)
     }
 
-	defer f1.Close()
+    defer f1.Close()
 
-	_, err = f1.Write(publicKey)
+    _, err = f1.Write(publicKey)
 
     if err != nil {
         exitWithError(err)
@@ -151,15 +151,15 @@ func generateKey() ([]byte, []byte, error) {
 
 func decorateColor(msg string, colorName string) string {
     switch strings.ToLower(colorName) {
-		case "green":
+        case "green":
             return color.HiGreenString(msg)
         case "red":
-			return color.HiRedString(msg)
+            return color.HiRedString(msg)
         case "cyan":
             return color.HiCyanString(msg)
         case "magenta":
             return color.HiMagentaString(msg)
-		default:
-			return color.HiWhiteString(msg)
+        default:
+            return color.HiWhiteString(msg)
     }
 }
