@@ -23,7 +23,7 @@ PORT = ":33333"
 KEEP_ALIVE_TIMEOUT = 10
 KEEP_ALIVE_TIMEOUT_UNIT = "second"
 
-# !!!!! It is recommended to use a web server (e.g. Nginx) as a reverse proxy to handle HTTPS requests.
+# !!!!! It is recommended to use a web server (e.g. Apache, Caddy, Nginx) as a reverse proxy to handle HTTPS requests.
 # You can use OpenSSL and the following command to generate a self-signed certificate for testing.
 # openssl req -newkey rsa:4096 -nodes -keyout server.key -out server.csr
 # openssl x509 -signkey server.key -in server.csr -req -days 365 -out server.crt

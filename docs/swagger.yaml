@@ -1,0 +1,448 @@
+basePath: /api/v1
+consumes:
+- application/json
+definitions:
+  model.ApplyCertInfo:
+    properties:
+      board_name:
+        example: ROG CROSSHAIR X670E HERO
+        type: string
+      board_producer:
+        example: ASUSTEK COMPUTER INCORPORATION
+        type: string
+      mac_address:
+        example: B42499FE0000
+        type: string
+      serial_number:
+        example: 779f-4e90-aebd-4295-881a-f8d7
+        type: string
+    required:
+    - board_name
+    - board_producer
+    - mac_address
+    - serial_number
+    type: object
+  model.ApplyCertResponse:
+    properties:
+      key:
+        example: 3266cd6a16ca77f9c0f0ff9934eb0e29c4b6bb0729cde98811f9f0caf76d603c
+        type: string
+      signature:
+        example: MNj/g7W+X5PmirfgWl5jveV54t50+LZAPmByh5Py880pB2z67Ser0YvZ2G/mTNV4XcIrKmLy1ICFmQ1esjydhvBj1FOuTm3eTIixUIsFLxwlW2co/R6kCIjNRydB3N7L/kWv+ZwSjsSsdHqmMUleXV3OJruxeoXV8TLRCSGE4tHGEwhPULuBLn2aldIehDTgteJx1O1YNJGIcDM3NWVDjJnUA0Bjhq3oRvXWN4M23SnZZG2vT94wJIK0X5q6oNqFTupFjDVBCFcHeWoxQ5xZdPhfXF8rC/VTb4vkZZm5RIiIK1UC9XVaAsXVPEzlxVfYJ0gh+wULx8syE2QyB5GfyQ==
+        type: string
+    type: object
+  model.ApplyTempPermitInfo:
+    properties:
+      board_name:
+        example: ROG CROSSHAIR X670E HERO
+        type: string
+      board_producer:
+        example: ASUSTEK COMPUTER INCORPORATION
+        type: string
+      mac_address:
+        example: B42499FE0000
+        type: string
+    required:
+    - board_name
+    - board_producer
+    - mac_address
+    type: object
+  model.ApplyTempPermitResponse:
+    properties:
+      remainingTime:
+        example: 604800
+        type: integer
+      status:
+        example: activated
+        type: string
+    type: object
+  model.Cert:
+    properties:
+      key:
+        example: 3266cd6a16ca77f9c0f0ff9934eb0e29c4b6bb0729cde98811f9f0caf76d603c
+        type: string
+      note:
+        example: Updated note.
+        type: string
+      sn:
+        example: 779f-4e90-aebd-4295-881a-f8d7
+        type: string
+    type: object
+  model.CertNote:
+    properties:
+      note:
+        example: Additional information
+        type: string
+      serial_number:
+        example: 779f-4e90-aebd-4295-881a-f8d7
+        type: string
+    required:
+    - note
+    - serial_number
+    type: object
+  model.CreateSNResponse:
+    properties:
+      msg:
+        example: Successfully uploaded a new S/N.
+        type: string
+      serial_number:
+        example: 779f-4e90-aebd-4295-881a-f8d7
+        type: string
+    type: object
+  model.ErrorResponse:
+    properties:
+      error:
+        example: Error message.
+        type: string
+    type: object
+  model.GetAllSNResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Cert'
+        type: array
+    type: object
+  model.GetAvaliableSNResponse:
+    properties:
+      data:
+        example:
+        - 779f-4e90-aebd-4295-881a-f8d7
+        items:
+          type: string
+        type: array
+    type: object
+  model.SNInfo:
+    properties:
+      reason:
+        example: For testing.
+        type: string
+      serial_number:
+        example: 779f-4e90-aebd-4295-881a-f8d7
+        type: string
+    required:
+    - reason
+    - serial_number
+    type: object
+  model.SNsInfo:
+    properties:
+      count:
+        example: 1
+        type: integer
+      reason:
+        example: For testing.
+        type: string
+    required:
+    - count
+    - reason
+    type: object
+  model.UpdateCertNoteResponse:
+    properties:
+      msg:
+        example: Successfully updated the note of specified S/N.
+        type: string
+      note:
+        example: Updated note.
+        type: string
+    type: object
+host: localhost:33333
+info:
+  contact:
+    email: mail@mmq.dev
+    name: MMQ
+  description: This is the API for QuickCertS.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: QuickCertS API
+  version: "1.0"
+paths:
+  /apply/cert:
+    post:
+      consumes:
+      - application/json
+      description: Provide the client with a certificate(unique key and signature)
+        for app.
+      parameters:
+      - description: Authorized token for client access. This value is set in path_to_qcs/configs/server.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      - description: Apply certificate information
+        in: body
+        name: applyInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.ApplyCertInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ApplyCertResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Provide the client with a certificate(unique key and signature) for
+        app.
+      tags:
+      - Apply
+  /apply/temp-permit:
+    post:
+      consumes:
+      - application/json
+      description: Allow users to apply for temporary use permits on devices.
+      parameters:
+      - description: Authorized token for client access. This value is set in path_to_qcs/configs/server.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      - description: Apply temporary permit information
+        in: body
+        name: applyInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.ApplyTempPermitInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ApplyTempPermitResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Allow users to apply for temporary use permits on devices
+      tags:
+      - Apply
+  /sn/create:
+    post:
+      consumes:
+      - application/json
+      description: Create serial number by providing the serial number and the reason.
+        only requests with valid tokens are allowed.
+      parameters:
+      - description: Security code for admin access. Check path_to_qcs/configs/server.toml
+          for more information.
+        in: header
+        name: X-RunTime-Code
+        type: string
+      - description: Security token for admin access. This value is set in path_to_qcs/configs/allowlist.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      - description: Serial number information
+        in: body
+        name: snInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.SNInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CreateSNResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create serial number to the database
+      tags:
+      - SN
+  /sn/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generate serial number(s) by providing the count and the reason.
+        only requests with valid tokens are allowed.
+      parameters:
+      - description: Security code for admin access. Check path_to_qcs/configs/server.toml
+          for more information.
+        in: header
+        name: X-RunTime-Code
+        type: string
+      - description: Security token for admin access. This value is set in path_to_qcs/configs/allowlist.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      - description: Serial number(s) information
+        in: body
+        name: snInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.SNsInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CreateSNResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Generate serial number(s) to the database
+      tags:
+      - SN
+  /sn/get-all:
+    get:
+      consumes:
+      - application/json
+      description: Get cert list from the database.
+      parameters:
+      - description: Security code for admin access. Check path_to_qcs/configs/server.toml
+          for more information.
+        in: header
+        name: X-RunTime-Code
+        type: string
+      - description: Security token for admin access. This value is set in path_to_qcs/configs/allowlist.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetAllSNResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get cert list from the database
+      tags:
+      - SN
+  /sn/get-available:
+    get:
+      consumes:
+      - application/json
+      description: Get available S/N from the database.
+      parameters:
+      - description: Security code for admin access. Check path_to_qcs/configs/server.toml
+          for more information.
+        in: header
+        name: X-RunTime-Code
+        type: string
+      - description: Security token for admin access. This value is set in path_to_qcs/configs/allowlist.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetAvaliableSNResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get available S/N from the database
+      tags:
+      - SN
+  /sn/update:
+    post:
+      consumes:
+      - application/json
+      description: Update a note for a serial number by providing the serial number
+        and the note.
+      parameters:
+      - description: Security code for admin access. Check path_to_qcs/configs/server.toml
+          for more information.
+        in: header
+        name: X-RunTime-Code
+        type: string
+      - description: Security token for admin access. This value is set in path_to_qcs/configs/allowlist.toml.
+        in: header
+        name: X-Access-Token
+        type: string
+      - description: Serial number and note
+        in: body
+        name: certNote
+        required: true
+        schema:
+          $ref: '#/definitions/model.CertNote'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UpdateCertNoteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update a note for a serial number
+      tags:
+      - SN
+produces:
+- application/json
+schemes:
+- http
+- https
+swagger: "2.0"

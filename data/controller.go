@@ -10,16 +10,11 @@ import (
 	_ "github.com/lib/pq"
 
 	cfg "QuickCertS/configs"
+	"QuickCertS/model"
 	"QuickCertS/utils"
 )
 
 var db *sql.DB = nil
-
-type Cert struct {
-	SN     string
-	Key    string
-	Note   string
-}
 
 // Connect to the specified database.
 func ConnectDB() {
@@ -219,7 +214,7 @@ func AddTemporaryPermit(key string) (int64, error) {
 }
 
 // Get all certificate records in the database.
-func GetAllCerts() ([]Cert, error) {
+func GetAllCerts() ([]model.Cert, error) {
 	if db == nil {
 		utils.Logger.Warn("Currently not connecting the database.")
 		return nil, nil
@@ -235,10 +230,10 @@ func GetAllCerts() ([]Cert, error) {
 
 	defer rows.Close()
 
-	var certs []Cert
+	var certs []model.Cert
 
 	for rows.Next() {
-        var cert Cert
+        var cert model.Cert
 		var tmpKey sql.NullString
 		var tmpNote sql.NullString
         if err := rows.Scan(&cert.SN, &tmpKey, &tmpNote); err != nil {
