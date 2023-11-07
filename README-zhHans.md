@@ -3,15 +3,9 @@
 ## 语言
 
 <p>
-    <a href="./README.md">
-        <img alt="English" src="https://img.shields.io/badge/English-000000?style=for-the-badge"></img>
-    </a>
-    <a href="./README-zhHant.md">
-        <img alt="繁體中文" src="https://img.shields.io/badge/繁體中文-000000?style=for-the-badge"></img>
-    </a>
-    <a href="./README-zhHans.md">
-        <img alt="简体中文" src="https://img.shields.io/badge/简体中文-000000?style=for-the-badge"></img>
-    </a>
+    <a href="./README.md"><img alt="English" src="https://img.shields.io/badge/English-000000?style=for-the-badge"></img></a>
+    <a href="./README-zhHant.md"><img alt="繁體中文" src="https://img.shields.io/badge/繁體中文-000000?style=for-the-badge"></img></a>
+    <a href="./README-zhHans.md"><img alt="简体中文" src="https://img.shields.io/badge/简体中文-000000?style=for-the-badge"></img></a>
 </p>
 
 ## 介绍
