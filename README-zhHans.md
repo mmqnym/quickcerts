@@ -1,5 +1,7 @@
 # QuickCerts
 
+## 语言
+
 <p>
     <a href="./README.md">
         <img alt="English" src="https://img.shields.io/badge/English-000000?style=for-the-badge"></img>
@@ -44,63 +46,63 @@
 
 - `path_to_qcs/init.sql` 中可以设置数据库的时区，建议使用与本地或云端相同的时区，以避免混淆。
 
-## 建置
+## 构建
 
 #### Docker
 
-> 使用 docker 以及 docker compose 快速啟動伺服器
+> 使用 docker 和 docker compose 快速启动服务器
 
-確保您已在您的作業系統上安裝 `docker` 以及 `docker compose` 於專案根目錄下輸入：
+确保您已经在您的操作系统上安装了 `docker` 和 `docker compose`。在项目根目录中运行以下命令：
 
 ```sh
 docker compose up --build -d
 ```
 
-即可完成架設，若未更改配置設定，預設啟動埠號 `:33333`
+即可完成构建，若未更改配置设置，默认运行端口 `:33333`
 
-#### 執行檔
+#### 可执行文件
 
-> 使用 Release 中提供的執行檔
+> 使用 Release 提供的可执行文件
 
-- 建立一個 PostgreSQL 的資料庫，並將相關配置設置到 `path_to_qcs/configs/database.toml`。
+- 创建一个 PostgreSQL 数据库，并将相关配置设置到 `path_to_qcs/configs/database.toml`。
 
-- 至 Release 根據您的作業系統選擇要下載的壓縮檔，於專案根目錄執行 `./init/Init(.exe)`。
+- 至 Release 根据您的操作系统选择要下载的压缩文件，然后在项目根目录中运行 `./init/Init(.exe)`。
 
-- 於專案根目錄執行 `server(.exe)`。
+- 在项目根目录中运行 `server(.exe)`。
 
-即可完成架設，若未更改配置設定，預設啟動埠號 `:33333`
+即可完成构建，若未更改配置设置，默认运行端口 `:33333`
 
-#### 原始碼
+#### 源代码
 
-> 由原始碼編譯後執行或直接執行
+> 从源代码编译并运行，或直接运行
 
-請使用 Golang `>= 1.21.1` 編譯後執行或直接執行：
+请使用 Golang 版本 `>= 1.21.1` 进行编译和运行，或者直接运行：
 
 ```sh
 go run ./init/Init.go
 go run ./server.go
 ```
 
-即可完成架設，若未更改配置設定，預設啟動埠號 `:33333`
+即可完成构建，若未更改配置设置，默认运行端口 `:33333`
 
 ## API
 
-> 啟用伺服器後可至以下網址查閱：
+> 启动服务器后访问以下网址以查看：
 
-預設：http://localhost:33333/swagger/index.html
+默认：http://localhost:33333/swagger/index.html
 
-若有使用 TLS 或不同的埠號請自行切換網址。
+如果使用 TLS 或不同端口，请相应调整网址。
 
-## 技術
+## 技术
 
-架構：
+架构：
 
-- 伺服器框架：Gin Web Framework
-- 資料庫：PostgreSQL
+- 服务器框架：Gin Web Framework
+- 数据库：PostgreSQL
 
-公私鑰儲存規範：PKCS8
+公私钥存储规范：PKCS8
 
-簽名：
+签名：
 
 | SHA2    | SHA3     |
 | ------- | -------- |
@@ -108,4 +110,4 @@ go run ./server.go
 | SHA-384 | SHA3-384 |
 | SHA-512 | SHA3-512 |
 
-使用 RSA-PSS 填充自動計算的長度
+使用 RSA-PSS 填充自动计算的长度

@@ -1,5 +1,7 @@
 # QuickCerts
 
+## Language
+
 <p>
     <a href="./README.md">
         <img alt="English" src="https://img.shields.io/badge/English-000000?style=for-the-badge"></img>
@@ -46,7 +48,7 @@ Additionally, QCS provides support for temporary permission. If your application
 - In the `path_to_qcs/init.sql` file, you can set the time zone for the database.
   It is recommended to use the same time zone as your local or cloud environment to avoid confusion.
 
-## Runing
+## Running
 
 #### Docker
 
