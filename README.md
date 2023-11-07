@@ -44,7 +44,7 @@ Additionally, QCS provides support for temporary permission. If your application
 
 ## Running
 
-#### Docker
+- ### Docker
 
 > Quickly start the server using docker and docker compose
 
@@ -56,7 +56,7 @@ docker compose up --build -d
 
 The server will be built and started. If you have not changed the configuration settings, the server will run on the default port `:33333`.
 
-#### Executables
+- ### Executables
 
 > Use the executable files provided in the Release
 
@@ -68,7 +68,7 @@ The server will be built and started. If you have not changed the configuration 
 
 The server will be built and started. If you have not changed the configuration settings, the server will run on the default port `:33333`.
 
-#### Source code
+- ### Source code
 
 > Build and run from source code, or run directly
 
