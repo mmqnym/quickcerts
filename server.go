@@ -60,7 +60,7 @@ func main() {
     data.ConnectDB()
     defer data.DisconnectDB()
     
-    registRoutes()
+    registerRoutes()
 
     if !cfg.SERVER_CONFIG.USE_TLS {
         run(router)
@@ -73,19 +73,19 @@ func main() {
     }
 }
 
-func registRoutes() {
-    registRoutesForDocs()
+func registerRoutes() {
+    registerRoutesForDocs()
 
     rootGroup := router.Group("/api/v1")
-    registRoutesForAdmin(rootGroup)
-	registRoutesForClient(rootGroup)
+    registerRoutesForAdmin(rootGroup)
+	registerRoutesForClient(rootGroup)
 }
 
-func registRoutesForDocs() {
+func registerRoutesForDocs() {
     router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
-func registRoutesForAdmin(rootGroup *gin.RouterGroup) {
+func registerRoutesForAdmin(rootGroup *gin.RouterGroup) {
     snGroup := rootGroup.Group("/sn")
 
     snGroup.POST("/create", 
@@ -115,7 +115,7 @@ func registRoutesForAdmin(rootGroup *gin.RouterGroup) {
     )
 }
 
-func registRoutesForClient(rootGroup *gin.RouterGroup) {
+func registerRoutesForClient(rootGroup *gin.RouterGroup) {
     applyGroup := rootGroup.Group("/apply")
 
     applyGroup.POST("/cert", middleware.ClientAccessAuth(), api.ApplyCertificate)

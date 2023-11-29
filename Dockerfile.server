@@ -15,11 +15,11 @@ LABEL description="This is the server image used by QuickCertS."
 
 COPY --from=builder /app/server /app/server
 
-COPY ./configs/allowlist.toml /app/configs/allowlist.toml
-COPY ./configs/database.toml /app/configs/database.toml
-COPY ./configs/server.toml /app/configs/server.toml
-COPY ./local /app/local
-COPY ./logs /app/logs
+COPY --from=builder /app/configs/allowlist.toml /app/configs/allowlist.toml
+COPY --from=builder /app/configs/database.toml /app/configs/database.toml
+COPY --from=builder /app/configs/server.toml /app/configs/server.toml
+COPY --from=builder /app/local /app/local
+COPY --from=builder /app/logs /app/logs
 
 RUN chmod +x /app/server
 
