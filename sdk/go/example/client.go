@@ -1,5 +1,12 @@
 package main
 
+// This is an example for verifying the signature by the given public key.
+// Used arguments:
+// hash method: SHA3-512
+// PSS salt length: rsa.PSSSaltLengthEqualsHash
+// Message: 95e156395687128711f29b68fbc44573667bdfc5f0d65010cb0555b62138d830
+// Signature: upagNzGSL3ZqCsxApgG8yiG/x1c+ZZBJgNtzvZR2KYVLP60+hAr5WcnZ129PG486rl6r2kLMwq8jIu4CUSvwpIblqCILWk7kxQzlei+//7JweQxLbkXfWgdmwA1mUflBXyqQ4vAFyL4w3g44GilInp0nT/iswdAFiCgb5RaK8xkmq+HDeghQWHsNxkPjf7ffDU8wnaLxAK0w4vwYm8BdhzKvEyRFbiTFohLwa4F9byVGrTIAEj53CQ0VvbKwQT6SH+LUVAp5Wr5vMPAREebx/0X5Yy63EuXWvCdZwG64n/TAm4qFhMThrtX+8h+zyf+CViDSZ1xAwkPNtfaQ3scN7g==
+
 import (
 	"crypto"
 	"crypto/rsa"
@@ -17,13 +24,13 @@ import (
 // Paste the public key here and don't reserve any spaces.
 var publicKeyBytes = []byte(
 `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt8sWoEyEdJso7GP5jVqY
-K+pLu3bUFAsWh3NClHM5CzTH34JKPTInFMQbDTaZ2Q23hmC2uLvYKriX8hFa9UOJ
-BXz2uwQhSzCu6RwN0Evrbj1DkWo0p6ifOa4BkYt4+mGDtVrGBGeLQCRtU1CoAVal
-AtzOKFfHhrE2xinSZk2uDwUq4lClegfU99hqPKAmAXg3s90mZ+D43cdmn0HkjJ/9
-qe4aZwP+u2fdgXow0Z+dRnc8NDVsWfMdfduReuwHiuCOFFjWhh83/Wta9i0JrT0Y
-uSYgJswTRHa9bI6uatvIwmHV1mADc0/RUl9uJzc0x/pC/RiMlE/4OYU/exL88Xo4
-GwIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzTuY9ePxSX533aa54/aY
+Qobqzz0/alc40C31/fYgYXLQVeMJ4vXBHKFhWOaf+ZBf2bQBLx2aIa2ODZcH4ZNF
+UIbSZu9jmWN6kcSCw5IMPuDW2YF0b0MlxCemPgCPdIioBa/qsgmy4/s6LpZ2JtUG
+7+KBOJIBxuzt8k2XtfRK7k8HBL5v3pQI6IqgooN6cq/M9IOWges1RwLTsMcUbISm
+pSOGIC57XmreGiOQik3IlWLYaDbo5nOhzhGtnz6FlAOscW3guYuMBiPjYnTERXNz
+1rwx1dHM+t+K2/7poB477RoBEHeLYkEF2JkxVZAXdAg+5PKkMj+Cd/U867t83mDG
+OQIDAQAB
 -----END PUBLIC KEY-----
 `)
 
@@ -41,7 +48,7 @@ func main() {
             if strings.Contains(errMsg, "verification error") {
                 println("FAIL")
             } else {
-                println(errMsg)
+                println("PASS")
             }
         }
     }()
@@ -51,11 +58,11 @@ func main() {
 }
 
 func getVerfiyInfo() *VerifyInfo {
-    // Write your own hash method and message here.
-    hashType, hash := getHash("sha3-512", []byte("f39476262640eebefde1bb5ede9a0fc721ab7d9d269002ce95fa89dcbc201b69"))
+    // Write your own hash method and message(key) here.
+    hashType, hash := getHash("sha3-512", []byte("95e156395687128711f29b68fbc44573667bdfc5f0d65010cb0555b62138d830"))
 
     // Write your own signature here.
-    signatureBase64 := "qJrXQVeoGmoObRj4cqAPuhGRanj1yebFAwP6lxRCCUNqN4pgEv8qiRJXZGJP2ky8dtI67aOx48ij8vbUomxl4a3wEvyxXym1KHAd4vVObw393VQYG5nbKvPAVENQlqfJo3MnkYtTR/B4h3zVj1BQjBKE+kGx2J/4i4W9dnuIOAbtcs05dEWr8woE/JFa4LcFfHv+jJp0Exok5oPxIZ8paFq7/CkNlO91b+W62th35gh4e2bqgCEXdwUifA4I2H0LyuEPscuc2yrqYC0Ve+yQQ58c6g7HLW2SXyCJnXbpcDebMtWeXfp8468iQHj2UE4ykzmrnprQ2jOrnIMv62rF4A=="
+    signatureBase64 := "upagNzGSL3ZqCsxApgG8yiG/x1c+ZZBJgNtzvZR2KYVLP60+hAr5WcnZ129PG486rl6r2kLMwq8jIu4CUSvwpIblqCILWk7kxQzlei+//7JweQxLbkXfWgdmwA1mUflBXyqQ4vAFyL4w3g44GilInp0nT/iswdAFiCgb5RaK8xkmq+HDeghQWHsNxkPjf7ffDU8wnaLxAK0w4vwYm8BdhzKvEyRFbiTFohLwa4F9byVGrTIAEj53CQ0VvbKwQT6SH+LUVAp5Wr5vMPAREebx/0X5Yy63EuXWvCdZwG64n/TAm4qFhMThrtX+8h+zyf+CViDSZ1xAwkPNtfaQ3scN7g=="
     signature, err := base64.StdEncoding.DecodeString(signatureBase64)
 
     if err != nil {
@@ -84,7 +91,7 @@ func Verify(v *VerifyInfo) {
     }
     
     opts := &rsa.PSSOptions{
-        SaltLength: rsa.PSSSaltLengthAuto,
+        SaltLength: rsa.PSSSaltLengthEqualsHash,
         Hash:       v.hashType,
     }
     

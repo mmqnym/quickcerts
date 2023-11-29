@@ -129,7 +129,7 @@ func signMessage(methodName string, data []byte, privateKey *rsa.PrivateKey) ([]
     cryptoType, hash := getHash(methodName, data)
     
     opts := &rsa.PSSOptions{
-        SaltLength: rsa.PSSSaltLengthAuto,
+        SaltLength: rsa.PSSSaltLengthEqualsHash,
         Hash:       cryptoType,
     }
 
