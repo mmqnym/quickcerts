@@ -13,6 +13,7 @@ type QCSAdmin struct {
 	runtimeCode string
 }
 
+// Create a QCSAdmin instance.
 func NewQCSAdmin(host string, port int, apiPath string, tls bool, accessToken string, runtimeCode string) *QCSAdmin {
 	accessPrefix := fmt.Sprintf("%s:%d%s", host, port, apiPath)
 
@@ -29,6 +30,11 @@ func NewQCSAdmin(host string, port int, apiPath string, tls bool, accessToken st
 	}
 }
 
+// Add a serial number created by admin to QCS.
+//
+// sn: serial number.
+//
+// reason: reason for creating this serial number.
 func (qcsA *QCSAdmin) CreateSN(sn string, reason string) (*QCSCreateSNResponse, error) {
 	url := qcsA.accessPrefix + "/sn/create"
 
@@ -75,6 +81,11 @@ func (qcsA *QCSAdmin) CreateSN(sn string, reason string) (*QCSCreateSNResponse, 
 	return &response, nil
 }
 
+// Generate serial number(s) randomly.
+//
+// count: number of serial numbers to generate.
+//
+// reason: reason for generating these serial numbers.
 func (qcsA *QCSAdmin) GenerateSN(count uint, reason string) (*QCSGnerateSNResponse, error) {
 	url := qcsA.accessPrefix + "/sn/generate"
 
@@ -124,6 +135,7 @@ func (qcsA *QCSAdmin) GenerateSN(count uint, reason string) (*QCSGnerateSNRespon
 	return &response, nil
 }
 
+// Get all available serial numbers in QCS.
 func (qcsA *QCSAdmin) GetAllRecord() (*QCSAllRecordResponse, error) {
 	url := qcsA.accessPrefix + "/sn/get-all"
 
@@ -172,6 +184,7 @@ func (qcsA *QCSAdmin) GetAllRecord() (*QCSAllRecordResponse, error) {
 	return &response, nil
 }
 
+// Get all available serial numbers in QCS.
 func (qcsA *QCSAdmin) GetAvaliableSN() (*QCSAvaliableSNResponse, error) {
 	url := qcsA.accessPrefix + "/sn/get-available"
 
@@ -213,6 +226,11 @@ func (qcsA *QCSAdmin) GetAvaliableSN() (*QCSAvaliableSNResponse, error) {
 	return &response, nil
 }
 
+// Update note of a serial number.
+//
+// target_sn: serial number to update.
+//
+// note: new note.
 func (qcsA *QCSAdmin) UpdateSNNote(sn string, note string) (*QCSUpdateSNNoteResponse, error) {
 	url := qcsA.accessPrefix + "/sn/update"
 
@@ -264,6 +282,7 @@ type QCSClient struct {
 	accessToken string
 }
 
+// Create a QCSClient instance.
 func NewQCSClient(host string, port int, apiPath string, tls bool, accessToken string) *QCSClient {
 	accessPrefix := fmt.Sprintf("%s:%d%s", host, port, apiPath)
 
@@ -279,6 +298,15 @@ func NewQCSClient(host string, port int, apiPath string, tls bool, accessToken s
 	}
 }
 
+// Use a serial number and device information to apply for a certificate.
+//
+// sn: serial number.
+//
+// board_producer: board producer.
+//
+// board_name: board name.
+//
+// mac_address: physical ethernet mac address.
 func (qcsC *QCSClient) ApplyCert(
 	sn string, 
 	board_producer string, 
@@ -334,6 +362,13 @@ func (qcsC *QCSClient) ApplyCert(
 	return &response, nil
 }
 
+// Use device information to apply for a temporary permit(with time limit certificate).
+//
+// board_producer: board producer.
+//
+// board_name: board name.
+//
+// mac_address: physical ethernet mac address.
 func (qcsC *QCSClient) ApplyTempPermit(
 	board_producer string, 
 	board_name string, 
