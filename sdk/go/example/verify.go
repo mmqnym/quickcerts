@@ -34,13 +34,13 @@ OQIDAQAB
 -----END PUBLIC KEY-----
 `)
 
-type VerifyInfo struct {
+type verifyInfo struct {
     hashType         crypto.Hash
     hashMessage      []byte
     signature        []byte
 }
 
-func main() {
+func VerifyExample() {
     defer func() {
         if err := recover(); err != nil {
             errMsg := err.(error).Error()
@@ -54,10 +54,10 @@ func main() {
     }()
 
     v := getVerfiyInfo()
-    Verify(v)
+    verify(v)
 }
 
-func getVerfiyInfo() *VerifyInfo {
+func getVerfiyInfo() *verifyInfo {
     // Write your own hash method and message(key) here.
     hashType, hash := getHash("sha3-512", []byte("95e156395687128711f29b68fbc44573667bdfc5f0d65010cb0555b62138d830"))
 
@@ -69,7 +69,7 @@ func getVerfiyInfo() *VerifyInfo {
         panic(err)
     }
 
-    return &VerifyInfo{
+    return &verifyInfo{
         hashType:         hashType,
         hashMessage:      hash,
         signature:        signature,
@@ -77,7 +77,7 @@ func getVerfiyInfo() *VerifyInfo {
 }
 
 // Verify the given signature with PSS & the admin specified hashing method.
-func Verify(v *VerifyInfo) {
+func verify(v *verifyInfo) {
     println("Verifing...")
 
     block, _ := pem.Decode(publicKeyBytes)
