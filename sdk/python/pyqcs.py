@@ -153,7 +153,8 @@ class QCSClient:
             data = res.json()   
             return pyqcs_type.QCSApplyCertResponse(data["key"], data["signature"])
         
-    def apply_temp_permit(self, board_producer: str, board_name: str, mac_address: str):
+    def apply_temp_permit(self, board_producer: str, board_name: str, mac_address: str) \
+        -> pyqcs_type.QCSApplyTempPermitResponse:
         '''
         Use device information to apply for a temporary permit(with time limit certificate).
         board_producer: board producer.
