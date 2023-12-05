@@ -19,7 +19,7 @@ class QCSRecord:
         self.key = key
         self.note = note
 
-class QCSAllRecordResponse:
+class QCSAllRecordsResponse:
     def __init__(self, data: List[QCSRecord]) -> None:
         self.data = data
 

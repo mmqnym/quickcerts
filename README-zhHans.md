@@ -14,6 +14,25 @@
 
 此外，还提供了临时许可证的支持，如果您的应用需要试用期或者产品需要基于许可周期而不是永久授权，您可以使用相关 API 来实现这一功能。
 
+## 技术
+
+架构：
+
+- 服务器框架：Gin Web Framework
+- 数据库：PostgreSQL
+
+公私钥存储规范：PKCS8
+
+签名：
+
+| SHA2    | SHA3     |
+| ------- | -------- |
+| SHA-256 | SHA3-256 |
+| SHA-384 | SHA3-384 |
+| SHA-512 | SHA3-512 |
+
+使用 RSA-PSS 填充自动计算的长度
+
 ## 配置
 
 - 您可以在 `path_to_qcs/configs/allowlist.toml` 文件中配置管理员的用户名和令牌，用于管理员 API 的身份验证。
@@ -87,21 +106,46 @@ go run ./server.go
 
 如果使用 TLS 或不同端口，请相应调整网址。
 
-## 技术
+## SDK
 
-架构：
+> SDK & 示例
 
-- 服务器框架：Gin Web Framework
-- 数据库：PostgreSQL
+您可以在 `path_to_qcs/sdk` 查看 SDK 以及使用示例，目前支持 Python、TypeScript、Golang。
 
-公私钥存储规范：PKCS8
+- #### Python
 
-签名：
+於 `path_to_qcs/sdk/python` 打开终端，输入：
 
-| SHA2    | SHA3     |
-| ------- | -------- |
-| SHA-256 | SHA3-256 |
-| SHA-384 | SHA3-384 |
-| SHA-512 | SHA3-512 |
+```sh
+# Here uses pyenv + virtualenv + pip,
+# you can also use your preferred environment/package management tool.
+virtualenv -p "path_to_python" venv
+./venv/Script/activate
+pip install -r "./requirements.txt"
+cd ./example
 
-使用 RSA-PSS 填充自动计算的长度
+python ./usage.py # SDK Usage
+python ./verify.py # Verify RSA signature.
+```
+
+- #### TypeScript
+
+於 `path_to_qcs/sdk/typescript` 打开终端，输入：
+
+```sh
+npm i
+
+npm run start # SDK Usage
+npm run verify # Verify RSA signature.
+```
+
+- #### Golang
+
+於 `path_to_qcs/sdk/go` 打开终端，输入：
+
+```sh
+cd ./example
+
+go run usage.go # SDK Usage.
+# If you want to run the verification test case, you can call VerifyExample().
+```

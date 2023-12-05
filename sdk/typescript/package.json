@@ -2,9 +2,9 @@
   "name": "qcs-example",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
   "scripts": {
-    "start": "nodemon --exec ts-node index.ts",
+    "verify": "nodemon --exec ts-node ./example/verify.ts",
+    "start": "nodemon --exec ts-node ./example/usage.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
