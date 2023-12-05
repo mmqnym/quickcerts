@@ -14,6 +14,25 @@ This project (QuickCertS, QCS) aims to help developers quickly establish a certi
 
 Additionally, QCS provides support for temporary permission. If your application requires a "trial period" or periodic authorization rather than permanent authorization, you can use the relevant API to achieve this.
 
+## Technology
+
+Architecture:
+
+- Server Framework: Gin Web Framework
+- Database: PostgreSQL
+
+Public and private key storage standard: PKCS8
+
+Signature:
+
+| SHA2    | SHA3     |
+| ------- | -------- |
+| SHA-256 | SHA3-256 |
+| SHA-384 | SHA3-384 |
+| SHA-512 | SHA3-512 |
+
+Automatic length calculation with RSA-PSS padding
+
 ## Configuration
 
 - You can configure the names and tokens for administrators in the `path_to_qcs/configs/allowlist.toml` file, which is used for administrator authentication in the admin API.
@@ -89,21 +108,46 @@ Default：http://localhost:33333/swagger/index.html
 
 If you are using TLS or a different port, please adjust the URL accordingly.
 
-## Technology
+## SDK
 
-Architecture:
+> SDK & 範例
 
-- Server Framework: Gin Web Framework
-- Database: PostgreSQL
+您可於 `path_to_qcs/sdk` 查看 SDK 以及使用範例，目前支援 Python, TypeScript, Golang。
 
-Public and private key storage standard: PKCS8
+- #### Python
 
-Signature:
+Open a terminal at `path_to_qcs/sdk/python` and enter:
 
-| SHA2    | SHA3     |
-| ------- | -------- |
-| SHA-256 | SHA3-256 |
-| SHA-384 | SHA3-384 |
-| SHA-512 | SHA3-512 |
+```sh
+# Here uses pyenv + virtualenv + pip,
+# you can also use your preferred environment/package management tool.
+virtualenv -p "path_to_python" venv
+./venv/Script/activate
+pip install -r "./requirements.txt"
+cd ./example
 
-Automatic length calculation with RSA-PSS padding
+python ./usage.py # SDK Usage
+python ./verify.py # Verify RSA signature.
+```
+
+- #### TypeScript
+
+Open a terminal at `path_to_qcs/sdk/typescript` and enter:
+
+```sh
+npm i
+
+npm run start # SDK Usage
+npm run verify # Verify RSA signature.
+```
+
+- #### Golang
+
+Open a terminal at `path_to_qcs/sdk/go` and enter:
+
+```sh
+cd ./example
+
+go run usage.go # SDK Usage.
+# If you want to run the verification test case, you can call VerifyExample().
+```
