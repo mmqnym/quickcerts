@@ -112,7 +112,7 @@ go run ./server.go
 
 您可以在 `path_to_qcs/sdk` 查看 SDK 以及使用示例，目前支持 Python、TypeScript、Golang。
 
-- #### Python
+- ### Python
 
 於 `path_to_qcs/sdk/python` 打开终端，输入：
 
@@ -128,7 +128,7 @@ python ./usage.py # SDK Usage
 python ./verify.py # Verify RSA signature.
 ```
 
-- #### TypeScript
+- ### TypeScript
 
 於 `path_to_qcs/sdk/typescript` 打开终端，输入：
 
@@ -139,7 +139,7 @@ npm run start # SDK Usage
 npm run verify # Verify RSA signature.
 ```
 
-- #### Golang
+- ### Golang
 
 於 `path_to_qcs/sdk/go` 打开终端，输入：
 

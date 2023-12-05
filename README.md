@@ -110,11 +110,11 @@ If you are using TLS or a different port, please adjust the URL accordingly.
 
 ## SDK
 
-> SDK & 範例
+> SDK & Example
 
 您可於 `path_to_qcs/sdk` 查看 SDK 以及使用範例，目前支援 Python, TypeScript, Golang。
 
-- #### Python
+- ### Python
 
 Open a terminal at `path_to_qcs/sdk/python` and enter:
 
@@ -130,7 +130,7 @@ python ./usage.py # SDK Usage
 python ./verify.py # Verify RSA signature.
 ```
 
-- #### TypeScript
+- ### TypeScript
 
 Open a terminal at `path_to_qcs/sdk/typescript` and enter:
 
@@ -141,7 +141,7 @@ npm run start # SDK Usage
 npm run verify # Verify RSA signature.
 ```
 
-- #### Golang
+- ### Golang
 
 Open a terminal at `path_to_qcs/sdk/go` and enter:
 
