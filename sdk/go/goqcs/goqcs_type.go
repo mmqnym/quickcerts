@@ -16,7 +16,7 @@ type QCSRecord struct {
 	Note         string `json:"note"`
 }
 
-type QCSAllRecordResponse struct {
+type QCSAllRecordsResponse struct {
 	Data []QCSRecord `json:"data"`
 }
 

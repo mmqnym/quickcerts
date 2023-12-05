@@ -16,7 +16,7 @@ func main() {
 	)
 
 	// Create a serial number.
-	csRes, err := qcsA.CreateSN("f58e-a591-txxx-4944-a1fd-aee7", "none")
+	csRes, err := qcsA.CreateSN("XXXX-XXXX-XXXX-XXXX-XXXX-XXXX", "none")
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// Get all records.
-	garRes, err := qcsA.GetAllRecord()
+	garRes, err := qcsA.GetAllRecords()
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
@@ -50,7 +50,7 @@ func main() {
 
 	// Update note of a serial number.
 	usnRes, err := qcsA.UpdateSNNote(
-		"93bc-f7a5-b5d2-488c-9c02-bd9d",
+		"XXXX-XXXX-XXXX-XXXX-XXXX-XXXX",
 		"Additional information",
 	)
 	if err != nil {
@@ -68,7 +68,7 @@ func main() {
 	)
 
 	// Apply certificate.
-	acRes, err := qcsClinet.ApplyCert("93bc-f7a5-b5d2-488c-9c02-bd9d", "ASUSTeK Computer Inc.", "ROG STRIX Z790-A GAMING WIFI", "XXXXXXXXXXXX")
+	acRes, err := qcsClinet.ApplyCert("XXXX-XXXX-XXXX-XXXX-XXXX-XXXX", "ASUSTeK Computer Inc.", "ROG STRIX Z790-A GAMING WIFI", "XXXXXXXXXXXX")
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {

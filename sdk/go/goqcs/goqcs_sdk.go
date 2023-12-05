@@ -136,7 +136,7 @@ func (qcsA *QCSAdmin) GenerateSN(count uint, reason string) (*QCSGnerateSNRespon
 }
 
 // Get all available serial numbers in QCS.
-func (qcsA *QCSAdmin) GetAllRecord() (*QCSAllRecordResponse, error) {
+func (qcsA *QCSAdmin) GetAllRecords() (*QCSAllRecordsResponse, error) {
 	url := qcsA.accessPrefix + "/sn/get-all"
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -168,7 +168,7 @@ func (qcsA *QCSAdmin) GetAllRecord() (*QCSAllRecordResponse, error) {
 		return nil, fmt.Errorf("QCS::Error:%s", errorMsg)
 	}
 
-	var response QCSAllRecordResponse
+	var response QCSAllRecordsResponse
 	var records []QCSRecord
 	
 	for _, irecord := range data["data"].([]interface{}) {
