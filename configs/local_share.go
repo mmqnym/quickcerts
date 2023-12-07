@@ -48,9 +48,18 @@ type ServerConfig struct {
     LOG_FORMATTER              string           `toml:"LOG_FORMATTER"`
 }
 
+type CacheConfig struct {
+    HOST            string    `toml:"HOST"`
+    PORT            int       `toml:"PORT"`
+    PASSWORD        string    `toml:"PASSWORD"`
+    EXPIRATION      int       `toml:"EXPIRATION"`
+    EXPIRATION_UNIT string    `toml:"EXPIRATION_UNIT"`
+}
+
 var SERVER_CONFIG ServerConfig
 var DB_CONFIG DBConfig
 var ALLOWEDLIST Allowedlist
+var CACHE_CONFIG CacheConfig
 
 func init() {
     defer func() {
@@ -69,6 +78,10 @@ func init() {
     }
 
     if _, err := toml.DecodeFile("./configs/allowlist.toml", &ALLOWEDLIST); err != nil {
+        panic(err)
+    }
+
+    if _, err := toml.DecodeFile("./configs/cache.toml", &CACHE_CONFIG); err != nil {
         panic(err)
     }
 

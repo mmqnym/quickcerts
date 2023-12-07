@@ -1,3 +1,4 @@
+# qcs v1.0.3
 version: "3.7"
 
 networks:
@@ -7,6 +8,10 @@ networks:
       config:
         - subnet: "172.20.50.0/24"
           gateway: "172.20.50.1"
+
+volumes:
+  qcs-db-data:
+  qcs-rdb-data:
 
 services:
   qcs-db:
@@ -21,13 +26,24 @@ services:
       POSTGRES_USER: quickcerts
       POSTGRES_PASSWORD: password
       POSTGRES_DB: quickcerts
+    volumes:
+      - qcs-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  qcs-cache:
+    build:
+      context: .
+      dockerfile: Dockerfile.redis
+    networks:
+      - qcs_subnet
+    volumes:
+      - qcs-rdb-data:/data
     restart: unless-stopped
 
   qcs-server:
     build:
       context: .
       dockerfile: Dockerfile.server
-    image: quickcerts:1.0.0
     networks:
       - qcs_subnet
     ports:

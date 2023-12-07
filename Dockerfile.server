@@ -10,13 +10,14 @@ RUN go build -o server
 FROM alpine:3.18
 
 LABEL maintainer="MMQ <mail@mmq.dev>"
-LABEL version="1.0.0"
+LABEL version="1.0.3"
 LABEL description="This is the server image used by QuickCertS."
 
 COPY --from=builder /app/server /app/server
 
 COPY --from=builder /app/configs/allowlist.toml /app/configs/allowlist.toml
 COPY --from=builder /app/configs/database.toml /app/configs/database.toml
+COPY --from=builder /app/configs/cache.toml /app/configs/cache.toml
 COPY --from=builder /app/configs/server.toml /app/configs/server.toml
 COPY --from=builder /app/local /app/local
 COPY --from=builder /app/logs /app/logs

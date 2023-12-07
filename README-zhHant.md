@@ -37,6 +37,8 @@
 
 - 您可於 `path_to_qcs/configs/allowlist.toml` 中設置您要配置給管理員的名稱以及通行令牌，用於管理員用 API。
 
+- 您可於 `path_to_qcs/configs/cache.toml` 中將預設的配置更改為您期望的配置。
+
 - 您可於 `path_to_qcs/configs/database.toml` 中將預設的配置更改為您期望的配置，但若於之後使用 `docker compose` 啟動伺服器，須要同樣更改以下 `docker compose` 的相關配置。
 
   ```yml
@@ -59,6 +61,8 @@
 
 - `path_to_qcs/init.sql` 中可以替資料庫設定時區，建議使用與本地或雲端相同的時區，避免混亂。
 
+- 如果您了解如何使用 Redis，可於 `path_to_qcs/redis.conf` 更動 Redis 的額外設定。
+
 ## 建置
 
 - ### Docker
@@ -77,7 +81,9 @@ docker compose up --build -d
 
 > 使用 Release 中提供的執行檔
 
-- 建立一個 PostgreSQL 的資料庫，並將相關配置設置到 `path_to_qcs/configs/database.toml`。
+- 建立一個 PostgreSQL 資料庫，並將相關配置設置到 `path_to_qcs/configs/database.toml`。
+
+- 建立一个 Redis 数据库，并将相关配置设置到 `path_to_qcs/configs/cache.toml`，额外设定可于 `path_to_qcs/redis.conf` 进行配置。
 
 - 至 Release 根據您的作業系統選擇要下載的壓縮檔，於專案根目錄執行 `./init/Init(.exe)`。
 
@@ -112,7 +118,7 @@ go run ./server.go
 
 您可於 `path_to_qcs/sdk` 查看 SDK 以及使用範例，目前支援 Python, TypeScript, Golang。
 
-- #### Python
+- #### Pyton
 
 於 `path_to_qcs/sdk/python` 開啟終端，輸入：
 
@@ -128,7 +134,7 @@ python ./usage.py # SDK Usage
 python ./verify.py # Verify RSA signature.
 ```
 
-- #### TypeScript
+- ### TypeScript
 
 於 `path_to_qcs/sdk/typescript` 開啟終端，輸入：
 
@@ -139,7 +145,7 @@ npm run start # SDK Usage
 npm run verify # Verify RSA signature.
 ```
 
-- #### Golang
+- ### Golang
 
 於 `path_to_qcs/sdk/go` 開啟終端，輸入：
 

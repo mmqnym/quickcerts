@@ -69,7 +69,26 @@ func ApplyCertificate(ctx *gin.Context) {
     // S/N exists, generate a key and a sinature for the device and update it in the database.
     base := fmt.Sprintf("%s&%s&%s&%s&", 
         applyInfo.SerialNumber, applyInfo.BoardProducer, applyInfo.BoardName, applyInfo.MACAddress)
-    key, err := utils.GenerateKey(base)
+    key, err := data.GetDeviceKeyCache(base)
+
+    // The key not exist in the cache.
+    if err != nil {
+        if err.Error() == "currently not connecting the redis database" {
+            ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+            utils.Logger.Error(err.Error())
+            return
+        } else {
+            // The key not exist in the cache, generate a new key.
+            key, err = utils.GenerateKey(base)
+
+            if err != nil {
+                ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
+                utils.Logger.Error(err.Error())
+                return
+            }
+            data.SetDeviceKeyCache(base, key)
+        }
+    }
 
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
@@ -151,12 +170,26 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
     // Generate a key for the device and update it in the database.
     base := fmt.Sprintf("%s&%s&%s&%s&", 
         "_", applyInfo.BoardProducer, applyInfo.BoardName, applyInfo.MACAddress)
-    key, err := utils.GenerateKey(base)
 
+    key, err := data.GetDeviceKeyCache(base)
+
+    // The key not exist in the cache.
     if err != nil {
-        ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
-        utils.Logger.Error(err.Error())
-        return
+        if err.Error() == "currently not connecting the redis database" {
+            ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+            utils.Logger.Error(err.Error())
+            return
+        } else {
+            // The key not exist in the cache, generate a new key.
+            key, err = utils.GenerateKey(base)
+
+            if err != nil {
+                ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
+                utils.Logger.Error(err.Error())
+                return
+            }
+            data.SetDeviceKeyCache(base, key)
+        }
     }
 
     remainingTime, err := data.GetTemporaryPermitExpiredTime(key)

@@ -37,6 +37,8 @@ Automatic length calculation with RSA-PSS padding
 
 - You can configure the names and tokens for administrators in the `path_to_qcs/configs/allowlist.toml` file, which is used for administrator authentication in the admin API.
 
+- You can change the default configuration to your desired configuration in `path_to_qcs/configs/cache.toml`.
+
 - You can change the default configuration to your desired settings in the `path_to_qcs/configs/database.toml` file. However, if you later start the server using `docker compose`, you will need to change the `docker compose` file accordingly.
 
   ```yml
@@ -61,6 +63,8 @@ Automatic length calculation with RSA-PSS padding
 - In the `path_to_qcs/init.sql` file, you can set the time zone for the database.
   It is recommended to use the same time zone as your local or cloud environment to avoid confusion.
 
+- If you know how to use Redis, you can modify the default config of Redis in `path_to_qcs/redis.conf`.
+
 ## Running
 
 - ### Docker
@@ -80,6 +84,8 @@ The server will be built and started. If you have not changed the configuration 
 > Use the executable files provided in the Release
 
 - Create a PostgreSQL database and set the relevant configuration in the `path_to_qcs/configs/database.toml` file.
+
+- Create a Redis database and set the relevant configuration to `path_to_qcs/configs/cache.toml`. Additional settings can be configured in `path_to_qcs/redis.conf`.
 
 - In the Release, choose the compressed file to download based on your OS, and run `./init/Init(.exe)` in the project's root directory.
 
@@ -110,11 +116,11 @@ If you are using TLS or a different port, please adjust the URL accordingly.
 
 ## SDK
 
-> SDK & 範例
+> SDK & Example
 
-您可於 `path_to_qcs/sdk` 查看 SDK 以及使用範例，目前支援 Python, TypeScript, Golang。
+You can check the SDK and usage examples at `path_to_qcs/sdk`. Currently supports Python, TypeScript, Golang.
 
-- #### Python
+- ### Python
 
 Open a terminal at `path_to_qcs/sdk/python` and enter:
 
@@ -130,7 +136,7 @@ python ./usage.py # SDK Usage
 python ./verify.py # Verify RSA signature.
 ```
 
-- #### TypeScript
+- ### TypeScript
 
 Open a terminal at `path_to_qcs/sdk/typescript` and enter:
 
@@ -141,7 +147,7 @@ npm run start # SDK Usage
 npm run verify # Verify RSA signature.
 ```
 
-- #### Golang
+- ### Golang
 
 Open a terminal at `path_to_qcs/sdk/go` and enter:
 
