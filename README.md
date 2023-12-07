@@ -19,6 +19,7 @@ Additionally, QCS provides support for temporary permission. If your application
 Architecture:
 
 - Server Framework: Gin Web Framework
+- Cache: Redis
 - Database: PostgreSQL
 
 Public and private key storage standard: PKCS8

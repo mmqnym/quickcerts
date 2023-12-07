@@ -19,6 +19,7 @@
 架构：
 
 - 服务器框架：Gin Web Framework
+- 緩存：Redis
 - 数据库：PostgreSQL
 
 公私钥存储规范：PKCS8

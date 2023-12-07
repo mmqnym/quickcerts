@@ -19,6 +19,7 @@
 架構：
 
 - 伺服器框架：Gin Web Framework
+- 快取：Redis
 - 資料庫：PostgreSQL
 
 公私鑰儲存規範：PKCS8
