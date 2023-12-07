@@ -37,6 +37,8 @@
 
 - 您可以在 `path_to_qcs/configs/allowlist.toml` 文件中配置管理员的用户名和令牌，用于管理员 API 的身份验证。
 
+- 您可以在 `path_to_qcs/configs/cache.toml` 中将默认的配置更改为您期望的配置。
+
 - 您可以在 `path_to_qcs/configs/database.toml` 文件中更改默认配置为您所期望的配置。但如果您之后使用 Docker Compose 启动服务器，则需要相应更改 Docker Compose 的配置。
 
   ```yml
@@ -58,6 +60,8 @@
 - `path_to_qcs/configs/server.toml` 包含了服务器的所有相关设置，建议在正式运行之前完成配置。
 
 - `path_to_qcs/init.sql` 中可以设置数据库的时区，建议使用与本地或云端相同的时区，以避免混淆。
+
+- 如果您了解如何使用 Redis，可于 `path_to_qcs/redis.conf` 更动 Redis 的默认值。
 
 ## 构建
 
