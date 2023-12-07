@@ -1,0 +1,5 @@
+HOST = "qcs-cache"
+PORT = 6379
+PASSWORD = ""
+EXPIRATION = 7
+EXPIRATION_UNIT = 'day'

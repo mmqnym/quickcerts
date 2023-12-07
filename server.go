@@ -59,6 +59,9 @@ func init() {
 func main() {
     data.ConnectDB()
     defer data.DisconnectDB()
+
+    data.ConnectRDB()
+    defer data.DisconnectRDB()
     
     registerRoutes()
 

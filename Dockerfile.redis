@@ -1,0 +1,8 @@
+FROM redis:alpine3.18
+
+LABEL maintainer="MMQ <mail@mmq.dev>"
+LABEL version="1.0.3"
+LABEL description="This is the redis database image used by QuickCertS."
+
+COPY redis.conf /usr/local/etc/redis/redis.conf
+CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]
