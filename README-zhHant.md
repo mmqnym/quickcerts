@@ -118,7 +118,7 @@ go run ./server.go
 
 您可於 `path_to_qcs/sdk` 查看 SDK 以及使用範例，目前支援 Python, TypeScript, Golang。
 
-- #### Pyton
+- ### Python
 
 於 `path_to_qcs/sdk/python` 開啟終端，輸入：
 
