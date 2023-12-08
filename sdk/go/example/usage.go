@@ -40,8 +40,8 @@ func main() {
 		fmt.Printf("%+v", garRes.Data)
 	}
 
-	// Get avaliable serial numbers.
-	gasRes, err := qcsA.GetAvaliableSN()
+	// Get available serial numbers.
+	gasRes, err := qcsA.GetAvailableSN()
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {

@@ -20,7 +20,7 @@ type QCSAllRecordsResponse struct {
 	Data []QCSRecord `json:"data"`
 }
 
-type QCSAvaliableSNResponse struct {
+type QCSAvailableSNResponse struct {
 	Data []string `json:"data"`
 }
 
