@@ -126,4 +126,15 @@ func checkValid() {
         default:
             panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute, second)"))
     }
+
+    // Redis config
+    if CACHE_CONFIG.EXPIRATION <= 0 {
+        panic(errors.New("EXPIRATION should be bigger than 0"))
+    }
+
+    switch strings.ToLower(CACHE_CONFIG.EXPIRATION_UNIT) {
+        case "day", "hour", "minute", "second":
+        default:
+            panic(errors.New("EXPIRATION_UNIT is not valid (Require: day, hour, minute, second)"))
+    }
 }
