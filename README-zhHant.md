@@ -1,5 +1,13 @@
 # QuickCertS
 
+<p align="center">
+    <img alt="app version" src="https://img.shields.io/github/v/release/mmq88/QuickCertS"></img>
+    <img alt="go version" src="https://img.shields.io/github/go-mod/go-version/mmq88/QuickCertS"></img>
+    <img alt="python version" src="https://img.shields.io/badge/Python-v3.9.13-blue"></img>
+    <img alt="node version" src="https://img.shields.io/badge/Node-v18.16.0-blue"></img>
+    <img alt="license" src="https://img.shields.io/github/license/mmq88/QuickCertS"></img>
+</p>
+
 ## 語言
 
 <p>

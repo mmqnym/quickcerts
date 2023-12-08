@@ -23,7 +23,7 @@ func IsValidData(iData interface{}, exclude []string) bool {
     return true
 }
 
-// Generate a random run time code.
+// Generate a random runtime code.
 func GenerateRunTimeCode() (string, error) {
     length := cfg.SERVER_CONFIG.RUNTIME_CODE_LENGTH
     code, err := generateRandomString(length)

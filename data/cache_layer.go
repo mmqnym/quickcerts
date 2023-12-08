@@ -1,6 +1,7 @@
 package data
 
 import (
+	"QuickCertS/utils"
 	"context"
 	"errors"
 	"time"
@@ -18,15 +19,25 @@ func ConnectRDB() {
 		Password: "",
 		DB:       0,
 	})
+
+	_, err := rdb.Ping(ctx).Result()
+
+	if err != nil {
+		utils.Logger.Fatal("Failed to access the redis database.")
+	}
+
+	utils.Logger.Info("Successfully connected the redis database.")
 }
 
 // Disconnect from the redis database.
 func DisconnectRDB() {
 	if rdb == nil {
+		utils.Logger.Warn("Currently not connecting the redis database.")
 		return
 	}
 
 	rdb.Close()
+	utils.Logger.Info("Successfully disconnected the redis database.")
 }
 
 // Set the key cache corresponding to the device.

@@ -140,8 +140,14 @@ func UpdateCertNote(ctx *gin.Context) {
     }
     
     if err := data.UpdateCertNote(updateInfo.SerialNumber, updateInfo.Note); err != nil {
-        ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-        utils.Logger.Error(err.Error())
+        if err.Error() == "the s/n does not exist" {
+            errMsg := fmt.Sprintf("The S/N [%s] does not exist.", updateInfo.SerialNumber)
+            ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: errMsg})
+            utils.Logger.Warn(errMsg)
+        } else {
+            ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+            utils.Logger.Error(err.Error())
+        }
         
     } else {
         ctx.JSON(
@@ -164,12 +170,12 @@ func UpdateCertNote(ctx *gin.Context) {
 // @Produce json
 // @Param X-RunTime-Code header string false "Security code for admin access. Check path_to_qcs/configs/server.toml for more information."
 // @Param X-Access-Token header string false "Security token for admin access. This value is set in path_to_qcs/configs/allowlist.toml."
-// @Success 200 {object} model.GetAllSNResponse
+// @Success 200 {object} model.GetAllRecordsResponse
 // @Failure 400 {object} model.ErrorResponse
 // @Failure 401 {object} model.ErrorResponse
 // @Failure 500 {object} model.ErrorResponse
 // @Router /sn/get-all [get]
-func GetAllSN(ctx *gin.Context) {
+func GetAllRecords(ctx *gin.Context) {
     certList, err := data.GetAllCerts()
 
     if err != nil {
@@ -178,7 +184,7 @@ func GetAllSN(ctx *gin.Context) {
         return
     }
 
-    ctx.JSON(http.StatusOK, model.GetAllSNResponse{Data: certList})
+    ctx.JSON(http.StatusOK, model.GetAllRecordsResponse{Data: certList})
 }
 
 // Get available S/N from the database.

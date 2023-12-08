@@ -30,7 +30,7 @@ type UpdateCertNoteResponse struct {
 	Note string    `json:"note" example:"Updated note."`
 }
 
-type GetAllSNResponse struct {
+type GetAllRecordsResponse struct {
 	Data []Cert    `json:"data"`
 }
 

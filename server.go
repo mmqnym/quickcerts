@@ -114,7 +114,7 @@ func registerRoutesForAdmin(rootGroup *gin.RouterGroup) {
     snGroup.GET("/get-all", 
         middleware.IPAddressAuth(), 
         middleware.AdminAccessAuth(runtimeCode), 
-        api.GetAllSN,
+        api.GetAllRecords,
     )
 }
 

@@ -236,7 +236,7 @@ func GetAllCerts() ([]model.Cert, error) {
         var cert model.Cert
 		var tmpKey sql.NullString
 		var tmpNote sql.NullString
-        if err := rows.Scan(&cert.SN, &tmpKey, &tmpNote); err != nil {
+        if err := rows.Scan(&cert.SerialNumber, &tmpKey, &tmpNote); err != nil {
             return nil, err
         }
 
@@ -301,10 +301,19 @@ func UpdateCertNote(sn string, note string) error {
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(note, sn)
+	res, err := stmt.Exec(note, sn)
 	if err != nil {
 		return err
 	}
+
+	rowsAffected, err := res.RowsAffected()
+    if err != nil {
+        return err
+    }
+
+    if rowsAffected == 0 {
+        return errors.New("the s/n does not exist")
+    }
 
 	return nil
 }
