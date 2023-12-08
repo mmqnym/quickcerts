@@ -98,7 +98,7 @@ class QCSAdmin:
         note: new note.
         '''
 
-        url = self.access_prefix + "/sn/update-note"
+        url = self.access_prefix + "/sn/update"
         headers = {"X-Access-Token": self.access_token, "X-Runtime-Code": self.runtime_code}
         body = {"serial_number": target_sn, "note": note}
         res = requests.post(url, headers=headers, json=body)
