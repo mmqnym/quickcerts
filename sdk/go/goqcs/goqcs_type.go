@@ -11,7 +11,7 @@ type QCSGnerateSNResponse struct {
 }
 
 type QCSRecord struct {
-	SerialNumber string `json:"sn"`
+	SerialNumber string `json:"serial_number"`
 	Key          string `json:"key"`
 	Note         string `json:"note"`
 }

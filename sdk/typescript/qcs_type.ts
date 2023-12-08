@@ -19,7 +19,7 @@ export namespace QCSType {
   };
 
   export type QCSRecord = {
-    sn: string;
+    serial_number: string;
     key: string;
     note: string;
   };
@@ -51,7 +51,7 @@ export namespace QCSType {
   };
 
   export type QCSApplyTempPermitResponse = {
-    remainingTime: number;
+    remaining_time: number;
     status: string;
   };
 }

@@ -73,7 +73,7 @@ class QCSAdmin:
             data = res.json()
             records = []
             for record in data["data"]:
-                records.append(pyqcs_type.QCSRecord(record["sn"], record["key"], record["note"]))
+                records.append(pyqcs_type.QCSRecord(record["serial_number"], record["key"], record["note"]))
             return pyqcs_type.QCSAllRecordsResponse(records)
         
     def get_available_sn(self) -> pyqcs_type.QCSAvailableSNResponse:

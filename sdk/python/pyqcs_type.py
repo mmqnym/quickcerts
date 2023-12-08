@@ -14,8 +14,8 @@ class QCSGenerateSNResponse:
         self.serial_numbers = serial_numbers
 
 class QCSRecord:
-    def __init__(self, sn: str, key: str, note: str) -> None:
-        self.sn = sn
+    def __init__(self, serial_number: str, key: str, note: str) -> None:
+        self.serial_number = serial_number
         self.key = key
         self.note = note
 

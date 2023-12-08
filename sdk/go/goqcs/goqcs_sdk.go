@@ -173,7 +173,7 @@ func (qcsA *QCSAdmin) GetAllRecords() (*QCSAllRecordsResponse, error) {
 	
 	for _, irecord := range data["data"].([]interface{}) {
 		var record QCSRecord
-		record.SerialNumber = irecord.(map[string]interface{})["sn"].(string)
+		record.SerialNumber = irecord.(map[string]interface{})["serial_number"].(string)
 		record.Key = irecord.(map[string]interface{})["key"].(string)
 		record.Note = irecord.(map[string]interface{})["note"].(string)
 		records = append(records, record)
