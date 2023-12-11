@@ -69,6 +69,10 @@ func init() {
         }
     }()
 
+    // For testing, need to change directory to root directory of the project or 
+    // golang test module will auto change working directory to the test file directory
+    changed := change2RootDir()
+
     if _, err := toml.DecodeFile("./configs/server.toml", &SERVER_CONFIG); err != nil {
         panic(err)
     }
@@ -85,56 +89,119 @@ func init() {
         panic(err)
     }
 
+    if changed {
+        os.Chdir("configs")
+    }
     checkValid()
 }
 
-func checkValid() {
+func checkRunTimeCodeLength() {
     if SERVER_CONFIG.USE_RUNTIME_CODE && SERVER_CONFIG.RUNTIME_CODE_LENGTH < 6 {
         panic(errors.New("RUNTIME_CODE_LENGTH should be bigger or equal to 6"))
     }
+}
 
+func checkKeepAliveTimeout() {
     if SERVER_CONFIG.KEEP_ALIVE_TIMEOUT < 0 {
         panic(errors.New("KEEP_ALIVE_TIMEOUT should be bigger or equal to 0"))
     }
+}
 
+func checkKeepAliveTimeoutUnit() {
     switch strings.ToLower(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT) {
         case "hour", "minute", "second", "millisecond":
         default:
             panic(errors.New("KEEP_ALIVE_TIMEOUT_UNIT is not valid (Require: hour, minute, second)"))
     }
+}
 
+func checkTemporaryPermitTime() {
     if SERVER_CONFIG.TEMPORARY_PERMIT_TIME <= 0 {
         panic(errors.New("TEMPORARY_PERMIT_TIME should be bigger than 0"))
     }
+}
 
+func checkTemporaryPermitTimeUnit() {
     switch strings.ToLower(SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT) {
         case "day", "hour", "minute":
         default:
             panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute)"))
     }
+}
 
+func checkLogMaxAge() {
     if SERVER_CONFIG.LOG_MAX_AGE <= 0 {
         panic(errors.New("LOG_MAX_AGE should be bigger than 0"))
     }
+}
 
+func checkLogRotationTime() {
     if SERVER_CONFIG.LOG_ROTATION_TIME <= 0 {
         panic(errors.New("LOG_ROTATION_TIME should be bigger than 0"))
     }
+}
 
+func checkLogTimeUnit() {
     switch strings.ToLower(SERVER_CONFIG.LOG_TIME_UNIT) {
         case "day", "hour", "minute", "second":
         default:
             panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute, second)"))
     }
+}
 
-    // Redis config
+func checkCacheExpiration() {
     if CACHE_CONFIG.EXPIRATION <= 0 {
         panic(errors.New("EXPIRATION should be bigger than 0"))
     }
+}
 
+func checkCacheExpirationUnit() {
     switch strings.ToLower(CACHE_CONFIG.EXPIRATION_UNIT) {
         case "day", "hour", "minute", "second":
         default:
             panic(errors.New("EXPIRATION_UNIT is not valid (Require: day, hour, minute, second)"))
     }
+}
+
+func checkValid() {
+    checkRunTimeCodeLength()
+    checkKeepAliveTimeout()
+    checkKeepAliveTimeoutUnit()
+    checkTemporaryPermitTime()
+    checkTemporaryPermitTimeUnit()
+    checkLogMaxAge()
+    checkLogRotationTime()
+    checkLogTimeUnit()
+    checkCacheExpiration()
+    checkCacheExpirationUnit()
+}
+
+// Ensure that the current working directory is the root directory of the project.
+func change2RootDir() bool {
+    if _, err := os.Stat("go.mod"); !os.IsNotExist(err) {
+        return false
+    }
+
+    for {
+        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) {
+            break
+        }
+
+        if err := os.Chdir(".."); err != nil {
+            panic("can not find root directory of the project")
+        }
+
+        curr, err := os.Getwd()
+        if err != nil {
+            panic("can not find root directory of the project")
+        }
+
+        if curr == "/" {
+            panic("can not find go.mod file")
+        }
+    }
+
+    root, _ := os.Getwd()
+    os.Chdir(root)
+    return true
 }
