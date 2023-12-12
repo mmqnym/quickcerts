@@ -20,11 +20,13 @@ var (
     fileWriter *rotatelogs.RotateLogs // The file writer for the server logger & access logger.
 )
 
-func init() {
+func InitLogger() {
     path := "./logs/qcs-%Y-%m-%d@%H_%M_%S"
 
-    timeUnit := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
-    var err error
+    timeUnit, err := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
+    if err != nil {
+        logrus.Fatalf("Invalid time unit: %v", err)
+    }
 
     fileWriter, err = rotatelogs.New(
         path,

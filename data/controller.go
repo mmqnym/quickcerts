@@ -200,7 +200,11 @@ func AddTemporaryPermit(key string) (int64, error) {
 
 	defer stmt.Close()
 
-	timeUnit := utils.TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT)
+	timeUnit, err := utils.TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT)
+	if err != nil {
+		return 0, err
+	}
+	
 	expiration := time.Now().Add(time.Duration(cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME) * timeUnit)
 	_, err = stmt.Exec(key, expiration)
 

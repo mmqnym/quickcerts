@@ -23,6 +23,8 @@ var (
 )
 
 func init() {
+    utils.InitLogger()
+    print(utils.Logger)
     utils.Logger.Info("Initializing the server...")
 
     gin.SetMode(gin.ReleaseMode)

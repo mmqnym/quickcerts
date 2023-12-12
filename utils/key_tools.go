@@ -23,11 +23,11 @@ func init() {
     var err error
     privateKeyBytes, err = GetPrivateKeyBytes()
     if err != nil {
-        Logger.Fatal("Failed to load the private key.")
+        panic(errors.New("failed to load the private key"))
     }
 }
 
-// Generate a serial number by uuid v4 and custom rule(24 bits).
+// Generate a serial number by uuid v4 and custom rule(24 bits + 5 bits(-)).
 func GenerateSN() (string, error) {
     uuid := make([]byte, 16)
     _, err := rand.Read(uuid)
@@ -53,7 +53,7 @@ func GenerateKey(base string) (string, error) {
 
     sum := hash.Sum(nil)
     key := fmt.Sprintf("%x", sum)
-    return key, err
+    return key, nil
 }
 
 // Sign the given message with specified hashing method.

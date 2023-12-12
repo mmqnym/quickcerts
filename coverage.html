@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>configs: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">QuickCertS/configs/local_share.go (83.6%)</option>
+				
+				<option value="file1">QuickCertS/utils/control.go (75.0%)</option>
+				
+				<option value="file2">QuickCertS/utils/key_tools.go (85.0%)</option>
+				
+				<option value="file3">QuickCertS/utils/logger.go (0.0%)</option>
+				
+				<option value="file4">QuickCertS/utils/reader.go (87.5%)</option>
+				
+				<option value="file5">QuickCertS/utils/time_tools.go (100.0%)</option>
+				
+				<option value="file6">QuickCertS/utils/validator.go (91.7%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package configs
+
+import (
+        "errors"
+        "os"
+        "strings"
+        "time"
+
+        "github.com/BurntSushi/toml"
+        "github.com/fatih/color"
+)
+
+type DBConfig struct {
+    HOST    string    `toml:"HOST"`
+    PORT    int       `toml:"PORT"`
+    USER    string    `toml:"USER"`
+    PWD     string    `toml:"PWD"`
+    DB_NAME string    `toml:"DB_NAME"`
+}
+
+type Permission struct {
+    NAME  string    `toml:"NAME"`
+    TOKEN string    `toml:"TOKEN"`
+}
+
+type Allowedlist struct {
+    PERMISSIONS []Permission    `toml:"PERMISSIONS"`
+}
+
+type ServerConfig struct {
+    ALLOWED_IPs                []string         `toml:"ALLOWED_IPs"`
+    USE_RUNTIME_CODE           bool             `toml:"USE_RUNTIME_CODE"`
+    RUNTIME_CODE_LENGTH        int              `toml:"RUNTIME_CODE_LENGTH"`
+    CLIENT_AUTH_TOKEN          []string         `toml:"CLIENT_AUTH_TOKEN"`
+    PORT                       string           `toml:"PORT"`
+    KEEP_ALIVE_TIMEOUT         time.Duration    `toml:"KEEP_ALIVE_TIMEOUT"`
+    KEEP_ALIVE_TIMEOUT_UNIT    string           `toml:"KEEP_ALIVE_TIMEOUT_UNIT"`
+    USE_TLS                    bool             `toml:"USE_TLS"`
+    TLS_CERT_PATH              string           `toml:"TLS_CERT_PATH"`
+    TLS_KEY_PATH               string           `toml:"TLS_KEY_PATH"`
+    TLS_PORT                   string           `toml:"TLS_PORT"`
+    TEMPORARY_PERMIT_TIME      int              `toml:"TEMPORARY_PERMIT_TIME"`
+    TEMPORARY_PERMIT_TIME_UNIT string           `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
+    HASHING_METHOD             string           `toml:"HASHING_METHOD"`
+    LOG_TIME_UNIT              string           `toml:"LOG_TIME_UNIT"`
+    LOG_MAX_AGE                int              `toml:"LOG_MAX_AGE"`
+    LOG_ROTATION_TIME          int              `toml:"LOG_ROTATION_TIME"`
+    LOG_FORMATTER              string           `toml:"LOG_FORMATTER"`
+}
+
+type CacheConfig struct {
+    HOST            string    `toml:"HOST"`
+    PORT            int       `toml:"PORT"`
+    PASSWORD        string    `toml:"PASSWORD"`
+    EXPIRATION      int       `toml:"EXPIRATION"`
+    EXPIRATION_UNIT string    `toml:"EXPIRATION_UNIT"`
+}
+
+var SERVER_CONFIG ServerConfig
+var DB_CONFIG DBConfig
+var ALLOWEDLIST Allowedlist
+var CACHE_CONFIG CacheConfig
+
+func init() <span class="cov8" title="1">{
+    defer func() </span><span class="cov8" title="1">{
+        if err := recover(); err != nil </span><span class="cov0" title="0">{
+            color.Red(err.(error).Error())
+            os.Exit(1)
+        }</span>
+    }()
+
+    // For testing, need to change directory to root directory of the project or 
+    // golang test module will auto change working directory to the test file directory
+    <span class="cov8" title="1">changed := change2RootDir()
+
+    if _, err := toml.DecodeFile("./configs/server.toml", &amp;SERVER_CONFIG); err != nil </span><span class="cov0" title="0">{
+        panic(err)</span>
+    }
+
+    <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/database.toml", &amp;DB_CONFIG); err != nil </span><span class="cov0" title="0">{
+        panic(err)</span>
+    }
+
+    <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/allowlist.toml", &amp;ALLOWEDLIST); err != nil </span><span class="cov0" title="0">{
+        panic(err)</span>
+    }
+
+    <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/cache.toml", &amp;CACHE_CONFIG); err != nil </span><span class="cov0" title="0">{
+        panic(err)</span>
+    }
+
+    <span class="cov8" title="1">if changed </span><span class="cov8" title="1">{
+        os.Chdir("configs")
+    }</span>
+    <span class="cov8" title="1">checkValid()</span>
+}
+
+func checkRunTimeCodeLength() <span class="cov8" title="1">{
+    if SERVER_CONFIG.USE_RUNTIME_CODE &amp;&amp; SERVER_CONFIG.RUNTIME_CODE_LENGTH &lt; 6 </span><span class="cov8" title="1">{
+        panic(errors.New("RUNTIME_CODE_LENGTH should be bigger or equal to 6"))</span>
+    }
+}
+
+func checkKeepAliveTimeout() <span class="cov8" title="1">{
+    if SERVER_CONFIG.KEEP_ALIVE_TIMEOUT &lt; 0 </span><span class="cov8" title="1">{
+        panic(errors.New("KEEP_ALIVE_TIMEOUT should be bigger or equal to 0"))</span>
+    }
+}
+
+func checkKeepAliveTimeoutUnit() <span class="cov8" title="1">{
+    switch strings.ToLower(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT) </span>{
+        case "hour", "minute", "second", "millisecond":<span class="cov8" title="1"></span>
+        default:<span class="cov8" title="1">
+            panic(errors.New("KEEP_ALIVE_TIMEOUT_UNIT is not valid (Require: hour, minute, second)"))</span>
+    }
+}
+
+func checkTemporaryPermitTime() <span class="cov8" title="1">{
+    if SERVER_CONFIG.TEMPORARY_PERMIT_TIME &lt;= 0 </span><span class="cov8" title="1">{
+        panic(errors.New("TEMPORARY_PERMIT_TIME should be bigger than 0"))</span>
+    }
+}
+
+func checkTemporaryPermitTimeUnit() <span class="cov8" title="1">{
+    switch strings.ToLower(SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT) </span>{
+        case "day", "hour", "minute":<span class="cov8" title="1"></span>
+        default:<span class="cov8" title="1">
+            panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute)"))</span>
+    }
+}
+
+func checkLogMaxAge() <span class="cov8" title="1">{
+    if SERVER_CONFIG.LOG_MAX_AGE &lt;= 0 </span><span class="cov8" title="1">{
+        panic(errors.New("LOG_MAX_AGE should be bigger than 0"))</span>
+    }
+}
+
+func checkLogRotationTime() <span class="cov8" title="1">{
+    if SERVER_CONFIG.LOG_ROTATION_TIME &lt;= 0 </span><span class="cov8" title="1">{
+        panic(errors.New("LOG_ROTATION_TIME should be bigger than 0"))</span>
+    }
+}
+
+func checkLogTimeUnit() <span class="cov8" title="1">{
+    switch strings.ToLower(SERVER_CONFIG.LOG_TIME_UNIT) </span>{
+        case "day", "hour", "minute", "second":<span class="cov8" title="1"></span>
+        default:<span class="cov8" title="1">
+            panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute, second)"))</span>
+    }
+}
+
+func checkCacheExpiration() <span class="cov8" title="1">{
+    if CACHE_CONFIG.EXPIRATION &lt;= 0 </span><span class="cov8" title="1">{
+        panic(errors.New("EXPIRATION should be bigger than 0"))</span>
+    }
+}
+
+func checkCacheExpirationUnit() <span class="cov8" title="1">{
+    switch strings.ToLower(CACHE_CONFIG.EXPIRATION_UNIT) </span>{
+        case "day", "hour", "minute", "second":<span class="cov8" title="1"></span>
+        default:<span class="cov8" title="1">
+            panic(errors.New("EXPIRATION_UNIT is not valid (Require: day, hour, minute, second)"))</span>
+    }
+}
+
+func checkValid() <span class="cov8" title="1">{
+    checkRunTimeCodeLength()
+    checkKeepAliveTimeout()
+    checkKeepAliveTimeoutUnit()
+    checkTemporaryPermitTime()
+    checkTemporaryPermitTimeUnit()
+    checkLogMaxAge()
+    checkLogRotationTime()
+    checkLogTimeUnit()
+    checkCacheExpiration()
+    checkCacheExpirationUnit()
+}</span>
+
+// Ensure that the current working directory is the root directory of the project.
+func change2RootDir() bool <span class="cov8" title="1">{
+    if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+        return false
+    }</span>
+
+    <span class="cov8" title="1">for </span><span class="cov8" title="1">{
+        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov8" title="1">{
+            break</span>
+        }
+
+        <span class="cov8" title="1">if err := os.Chdir(".."); err != nil </span><span class="cov0" title="0">{
+            panic("can not find root directory of the project")</span>
+        }
+
+        <span class="cov8" title="1">curr, err := os.Getwd()
+        if err != nil </span><span class="cov0" title="0">{
+            panic("can not find root directory of the project")</span>
+        }
+
+        <span class="cov8" title="1">if curr == "/" </span><span class="cov0" title="0">{
+            panic("can not find go.mod file")</span>
+        }
+    }
+
+    <span class="cov8" title="1">root, _ := os.Getwd()
+    os.Chdir(root)
+    return true</span>
+}</pre>
+		
+		<pre class="file" id="file1" style="display: none">package utils
+
+import (
+        "context"
+        "net/http"
+        "os"
+        "os/signal"
+        "time"
+)
+
+// Gracefully shutdown the server.
+func WaitForShutdown(server *http.Server) <span class="cov8" title="1">{
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, os.Interrupt)
+    &lt;-quit
+    Logger.Info("The Server is shutting down ...")
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+    defer cancel()
+    if err := server.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
+        Logger.Fatal("Something wrong happened when shutting down the server: " + err.Error())
+    }</span>
+
+    <span class="cov0" title="0">Logger.Info("The Server has exited successfully.")</span>
+}
+
+// Ensure that the current working directory is the root directory of the project.
+func Change2RootDir() bool <span class="cov8" title="1">{
+    if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+        return false
+    }</span>
+
+    <span class="cov8" title="1">for </span><span class="cov8" title="1">{
+        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov8" title="1">{
+            break</span>
+        }
+
+        <span class="cov8" title="1">if err := os.Chdir(".."); err != nil </span><span class="cov0" title="0">{
+            panic("can not find root directory of the project")</span>
+        }
+
+        <span class="cov8" title="1">curr, err := os.Getwd()
+        if err != nil </span><span class="cov0" title="0">{
+            panic("can not find root directory of the project")</span>
+        }
+
+        <span class="cov8" title="1">if curr == "/" </span><span class="cov0" title="0">{
+            panic("can not find go.mod file")</span>
+        }
+    }
+
+    <span class="cov8" title="1">root, _ := os.Getwd()
+    os.Chdir(root)
+    return true</span>
+}</pre>
+		
+		<pre class="file" id="file2" style="display: none">package utils
+
+import (
+        "crypto"
+        "crypto/rand"
+        "crypto/rsa"
+        "crypto/sha256"
+        "crypto/sha512"
+        "crypto/x509"
+        "encoding/pem"
+        "errors"
+        "fmt"
+        "strings"
+
+        "golang.org/x/crypto/sha3"
+
+        cfg "QuickCertS/configs"
+)
+
+var privateKeyBytes []byte
+
+func init() <span class="cov8" title="1">{
+    var err error
+    privateKeyBytes, err = GetPrivateKeyBytes()
+    if err != nil </span><span class="cov0" title="0">{
+        panic(errors.New("failed to load the private key"))</span>
+    }
+}
+
+// Generate a serial number by uuid v4 and custom rule(24 bits + 5 bits(-)).
+func GenerateSN() (string, error) <span class="cov8" title="1">{
+    uuid := make([]byte, 16)
+    _, err := rand.Read(uuid)
+    if err != nil </span><span class="cov0" title="0">{
+        return "", err
+    }</span>
+    <span class="cov8" title="1">uuid[6] = (uuid[6] &amp; 0x0f) | 0x40
+    uuid[8] = (uuid[8] &amp; 0x3f) | 0x80
+    plainUUID := fmt.Sprintf("%x", uuid)[:24]
+    return fmt.Sprintf("%s-%s-%s-%s-%s-%s",
+        plainUUID[0:4], plainUUID[4:8], plainUUID[8:12], plainUUID[12:16], plainUUID[16:20], plainUUID[20:24]), nil</span>
+}
+
+
+// Generate an APP key by SHA3-256 for the device.
+func GenerateKey(base string) (string, error) <span class="cov8" title="1">{
+    hash := sha3.New256()
+    _, err := hash.Write([]byte(base + "SALT"))
+
+    if err != nil </span><span class="cov0" title="0">{
+        return "", err
+    }</span>
+
+    <span class="cov8" title="1">sum := hash.Sum(nil)
+    key := fmt.Sprintf("%x", sum)
+    return key, nil</span>
+}
+
+// Sign the given message with specified hashing method.
+func SignMessage(message []byte) ([]byte, error) <span class="cov8" title="1">{
+    privateKey, err := keyBytesToPrivateKey(privateKeyBytes)
+
+    if err != nil </span><span class="cov0" title="0">{
+        return []byte{}, err
+    }</span>
+
+    <span class="cov8" title="1">sinature, err := signMessage(cfg.SERVER_CONFIG.HASHING_METHOD, message, privateKey)
+
+    if err != nil </span><span class="cov0" title="0">{
+        return []byte{}, err
+    }</span>
+
+    <span class="cov8" title="1">return sinature, err</span>
+}
+
+// Convert the private key bytes to a *rsa.PrivateKey.
+func keyBytesToPrivateKey(keyBytes []byte) (*rsa.PrivateKey, error) <span class="cov8" title="1">{
+    block, _ := pem.Decode(keyBytes)
+    if block == nil </span><span class="cov0" title="0">{
+        return nil, errors.New("private key error: unable to decode PEM block")
+    }</span>
+
+    <span class="cov8" title="1">key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+    if err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+
+    <span class="cov8" title="1">privateKey, ok := key.(*rsa.PrivateKey)
+    if !ok </span><span class="cov0" title="0">{
+        return nil, errors.New("private key error: not an RSA private key")
+    }</span>
+
+    <span class="cov8" title="1">return privateKey, nil</span>
+}
+
+// Get the hash type and hash value by the given method name.
+func getHash(methodName string, message []byte) (cryptoType crypto.Hash, hash []byte) <span class="cov8" title="1">{
+    switch strings.ToLower(methodName) </span>{
+        case "sha-256":<span class="cov8" title="1">
+            hash := sha256.Sum256(message)
+            return crypto.SHA256, hash[:]</span>
+        case "sha-384":<span class="cov8" title="1">
+            hash := sha512.Sum384(message)
+            return crypto.SHA384, hash[:]</span>
+        case "sha-512":<span class="cov8" title="1">
+            hash := sha512.Sum512(message)
+            return crypto.SHA512, hash[:]</span>
+        case "sha3-256":<span class="cov8" title="1">
+            hasher := sha3.New256()
+            hasher.Write(message)
+            return crypto.SHA3_256, hasher.Sum(nil)</span>
+        case "sha3-384":<span class="cov8" title="1">
+            hasher := sha3.New384()
+            hasher.Write(message)
+            return crypto.SHA3_384, hasher.Sum(nil)</span>
+        case "sha3-512":<span class="cov8" title="1">
+            hasher := sha3.New512()
+            hasher.Write(message)
+            return crypto.SHA3_512, hasher.Sum(nil)</span>
+        default:<span class="cov8" title="1">
+            // Default to SHA-256
+            hash := sha256.Sum256(message)
+            return crypto.SHA256, hash[:]</span>
+    }
+}
+
+// Sign the given message with PSS &amp; the admin specified hashing method.
+func signMessage(methodName string, data []byte, privateKey *rsa.PrivateKey) ([]byte, error) <span class="cov8" title="1">{
+    cryptoType, hash := getHash(methodName, data)
+    
+    opts := &amp;rsa.PSSOptions{
+        SaltLength: rsa.PSSSaltLengthEqualsHash,
+        Hash:       cryptoType,
+    }
+
+    signature, err := rsa.SignPSS(rand.Reader, privateKey, cryptoType, hash[:], opts)
+
+    if err != nil </span><span class="cov0" title="0">{
+        return []byte{}, err
+    }</span>
+
+    <span class="cov8" title="1">return signature, err</span>
+}</pre>
+		
+		<pre class="file" id="file3" style="display: none">package utils
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "io"
+        "os"
+        "strings"
+        "time"
+
+        cfg "QuickCertS/configs"
+
+        "github.com/fatih/color"
+        rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+        "github.com/sirupsen/logrus"
+)
+
+var (
+    Logger *logrus.Logger // The logger for the server.
+    releaseLogger *logrus.Logger // The logger for release.
+    testLogger *logrus.Logger // The logger for testing.
+    fileWriter *ro<span class="cov0" title="0">tatelogs.RotateLogs // The file writer for the server logger &amp; access logger.
+)
+
+func InitLogger() {
+    path := "./log</span><span class="cov0" title="0">s/qcs-%Y-%m-%d@%H_%M_%S"
+
+    t</span>imeUnit, err := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
+    if err != nil {
+    <span class="cov0" title="0">    logrus.Fatalf("Invalid time unit: %v", err)
+    }
+
+    fileWriter, err = rotatelogs.New(
+        path,
+        rotatelogs.WithLinkName("./logs/qcs-latest"),
+        rotatelogs.WithMaxAge(time.Duration(cfg.SERVER_CONFIG.LOG_MAX_AGE) * timeUnit),
+        rotatelogs</span><span class="cov0" title="0">.WithRotationTime(time.Duration(cfg.SERVER_CONFIG.LOG_ROTATION_TIME) * timeUnit),
+    )
+
+</span>    if err != nil {
+    <span class="cov0" title="0">    logrus.Fatalf("Failed to open log file: %v", err)
+    }
+
+</span>    var formatter lo<span class="cov0" title="0">grus.Formatter
+
+    switch strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) {
+        case "json":
+            formatter = &amp;QCSJSONFormatter{
+                TextFormatter: &amp;logrus.TextFormatter{
+                    DisableColors:   true,
+             </span>       TimestampFormat: "2006/01/02 - 15:04:05",
+                    <span class="cov0" title="0">FullTimestamp:   true,
+                },
+</span>            }
+        case "text":
+            fallthrough
+        default:
+            formatter = &amp;QCSTextFormatter{
+                TextFormatter: &amp;logrus.TextFormatter{
+                    DisableColors:   false,
+             </span>       TimestampFormat: "2006/01/02 - 15:04:05",
+                    FullTimestamp:   true,
+                },
+    <span class="cov0" title="0">        }
+    }
+
+    releaseLogger = &amp;logrus.Logger{
+     </span>   Out:       io.MultiWriter(os.Stderr, fileWriter),
+        Formatter: formatter,
+        Level:     logrus.InfoLevel,
+    }
+
+    testLogger = logrus.New()
+    bufferWriter := &amp;BufferWriter{}
+    testLogger.Out = bufferWriter
+    testLogger.Formatter = &amp;logrus.TextFormatter{DisableColors: true}
+
+    Logger = releaseLogger
+}
+
+// Allow developers to change the logger of the server for testing.
+func SwitchLogger(mode string) {
+    switch strings.ToLower(mode) {
+        case "test":
+            Logger = testLogger
+        case "release":
+            fallthrough
+ </span>       default:
+            Logger = releaseLogger
+    }
+}
+
+type BufferWriter struct {
+    Buf bytes.Buffer
+}
+
+func (w *BufferWriter) Write(p []byte) (n int, err error) {
+    return w.Buf.Write(p)
+}
+
+type QCSJSONFormatter struct {
+    *logrus.TextFormatter
+}
+
+func (f *QCSJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+ </span>   logType := "SERVER"
+    time := entry.Time.Format(f.TimestampFormat)
+    level := getServerLogConfig(entry.Level)
+    message := entry.Message
+
+</span>    return []byte(
+        fmt.Sprintf("{\"t</span>ype\":\"%s\",\"time\":\"%s\",\"level\":\"%s\",\"message\":\"%s\"}\n",
+            logType,
+            time, 
+</span>            level, 
+            message,
+</span>    )), nil
+}
+</span>
+type QCSTextFormatter str</span>uct {
+    *logrus.TextFormatter
+}
+
+func (f *QCSTextFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+    level := getServerLogConfigWithColor(entry.Level)
+
+</span>    time := entry.Time.Format(<span class="cov0" title="0">f.TimestampFormat)
+    message := entry.Message
+</span>
+    return []byte(
+</span>        fmt.Sprintf("[QCS] %s |<span class="cov0" title="0"> %s |\t%s\n", 
+            time, 
+</span>            level, 
+            message,
+</span>    )), nil
+}
+</span>
+// Get the corresponding log level string from the given log level.
+func getServerLogConfig(level logrus.Level) string {
+    switch level {
+        case logrus.InfoLevel:
+            return "INFO"
+        case logrus.WarnLevel:
+            return "WARN"
+        case logrus.ErrorLevel:
+            return "ERROR"
+        case logrus.FatalLevel:
+            return "FATAL"
+        default:
+            return "NONE"
+    }
+}
+
+// Get the corresponding log level string with color from the given log level.
+func getServerLogConfigWithColor(level logrus.Level) string {
+    switch level {
+        case logrus.InfoLevel:
+            return color.New(color.FgGreen).Sprint(" INFO ")
+        case logrus.WarnLevel:
+            return color.New(color.FgYellow)<span class="cov0" title="0">.Sprint(" WARN ")
+        case logrus.ErrorLevel:
+</span>            return color.New(color.FgRed).Sprint(" ERROR")
+        case logrus.FatalLevel:
+            return color.New(color.FgMagenta).Sprint(" FATAL")
+        default:
+            return color.New(color.FgWhite).Sprint(" NONE ")
+    }
+}
+
+type QCSExtractGINCtx struct {
+    StatusCode int
+    Latency    time.Duration
+    ClientIP   string
+    Method     string
+    FullPath   string
+}
+</span>
+type AccessLog struct {
+    Type     string    `json:"type"`
+    Time     string    `json:"time"`
+    Level    string    `json:"level"`  
+    Status   int       `json:"status"`
+    Latency  string    `json:"latency"`
+    ClientIP string    `json:"client_ip"`
+    Method   string    `json:"method"`
+    Path     string    `json:"path"`
+}
+
+// Overwrite the default logger of Gin Framework.
+func OverwriteGinLog(ctx *QCSExtractGINCtx) {
+    if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" {
+        level, statusCode := getAccessLogConfig(ctx.StatusCode)
+
+</span>        message := fmt.Sprintf("[QCS] %s | %s |\t%s | %12s | %15s | %6s | %s\n",
+            time.Now().Format("2006/01/02 - 15:04:05"),
+            level,
+            statusCode,
+           </span> ctx.Latency,
+            ctx.ClientIP,
+            color.New(col</span>or.FgHiCyan).Sprintf(" %-4s", ctx.Method),
+            ctx.FullPath,
+        )
+</span>
+        logOutput := io.M</span>ultiWriter(fileWriter, os.Stdout)
+        logOutpu<span class="cov0" title="0">t.Write([]byte(message))
+    } else {
+</span>        message := AccessLog{
+            Type: "ACCESS",
+            Time: time.Now().Format("2006/01/02 - 15:04:05"),
+            Level: getAccessLogLevel(ctx.StatusCode),
+            Status: ctx.StatusCode,
+           </span> Latency: fmt.Sprint(ctx.Latency),
+            ClientIP: ctx.ClientIP,
+            Method: ctx.Method,
+</span>            Path: ctx.FullPath,
+        }
+</span>
+        jsonBytes, _ := json.Marshal(message)
+</span>
+        logOutput := io.MultiWriter(fileWriter, os.Stderr)
+</span>        logOutput.Write(jsonBytes)
+        logOutput.Write([]byte("\n"))
+    }
+}
+
+// Get the corresponding log level string from the given status code.
+func getAccessLogLevel(statusCode int) string {
+    switch {
+        case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:
+            return "INFO"
+        case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:
+            return "WARN"
+        case statusCode &gt;= 500:
+            return"ERROR"
+        default:
+            return "NONE"
+    }
+}
+
+// Get the corresponding log level string with color and status code with color from the given status code.
+func getAccessLogConfig(statusCode int) (string, string) {
+    switch {
+        case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:
+            return color.New(color.FgGreen).Sprint(" INFO "), color.New(color.FgHiGreen).Sprint(statusCode)
+        case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:
+            return color.New(color.FgYellow).Sprint(" WARN "), color.New(color.FgHiYellow).Sprint(statusCode)
+        case statusCode &gt;= 500:
+            return color.New(color.FgRed).Sprint(" ERROR"), color.New(color.FgHiRed).Sprint(statusCode)
+        default:
+            return color.New(color.FgWhite).Sprint(" NONE "), color.New(color.FgHiWhite).Sprint(statusCode)
+    }
+}</pre>
+		
+		<pre class="file" id="file4" style="display: none">package utils
+
+import (
+        "os"
+)
+
+// Get the private key bytes from the local file.
+func GetPrivateKeyBytes() ([]byte, error) <span class="cov8" title="1">{
+    changed := Change2RootDir()
+    fileName := "./local/private_key.pem"
+
+    data, err := os.ReadFile(fileName)
+    if err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+
+    <span class="cov8" title="1">if changed </span><span class="cov8" title="1">{
+        os.Chdir("utils")
+    }</span>
+
+    <span class="cov8" title="1">return data, err</span>
+}</pre>
+		
+		<pre class="file" id="file5" style="display: none">package utils
+
+import (
+        "errors"
+        "strings"
+        "time"
+)
+
+// Convert the time unit string to time.Duration.
+func TimeUnitStrToTimeDuration(unit string) (time.Duration, error) <span class="cov8" title="1">{
+    unit = strings.ToLower(unit)
+    var timeUnit time.Duration
+
+    switch unit </span>{
+        case "day":<span class="cov8" title="1">
+            timeUnit = time.Hour * 24</span>
+        case "hour":<span class="cov8" title="1">
+            timeUnit = time.Hour</span>
+        case "minute":<span class="cov8" title="1">
+            timeUnit = time.Minute</span>
+        case "second":<span class="cov8" title="1">
+            timeUnit = time.Second</span>
+        case "millisecond":<span class="cov8" title="1">
+            timeUnit = time.Millisecond</span>
+        default:<span class="cov8" title="1">
+            return 0, errors.New("time unit is not valid (Require: day, hour, minute, second, millisecond)")</span>
+    }
+
+    <span class="cov8" title="1">return timeUnit, nil</span>
+}</pre>
+		
+		<pre class="file" id="file6" style="display: none">package utils
+
+import (
+        cfg "QuickCertS/configs"
+        "crypto/rand"
+        "math/big"
+        "reflect"
+)
+
+// Check if the given data is all not empty except the excluded fields.
+func IsValidData(iData interface{}, exclude []string) bool <span class="cov8" title="1">{
+    data := reflect.ValueOf(iData)
+
+    for i := 0; i &lt; data.NumField(); i++ </span><span class="cov8" title="1">{
+        fieldName := data.Type().Field(i).Name
+        fieldValue := data.Field(i).Interface()
+
+        if fieldValue == "" &amp;&amp; !isExcludeField(fieldName, exclude) </span><span class="cov8" title="1">{
+            return false
+        }</span>
+    }
+
+    <span class="cov8" title="1">return true</span>
+}
+
+// Generate a random runtime code.
+func GenerateRunTimeCode() (string, error) <span class="cov8" title="1">{
+    length := cfg.SERVER_CONFIG.RUNTIME_CODE_LENGTH
+    code, err := generateRandomString(length)
+
+    if err != nil </span><span class="cov0" title="0">{
+        return "", err
+    }</span>
+
+    <span class="cov8" title="1">return code, nil</span>
+}
+
+// Generate a random string with the given length.
+func generateRandomString(length int) (string, error) <span class="cov8" title="1">{
+    const charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    b := make([]byte, length)
+
+    for i := range b </span><span class="cov8" title="1">{
+        randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+        if err != nil </span><span class="cov0" title="0">{
+            return "", err
+        }</span>
+        <span class="cov8" title="1">b[i] = charset[randomIndex.Int64()]</span>
+    }
+
+    <span class="cov8" title="1">return string(b), nil</span>
+}
+
+// Check if the given field is in the excluded list.
+func isExcludeField(field string, exclude []string) bool <span class="cov8" title="1">{
+    for _, value := range exclude </span><span class="cov8" title="1">{
+        if field == value </span><span class="cov8" title="1">{
+            return true
+        }</span>
+    }
+    <span class="cov8" title="1">return false</span>
+}</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
