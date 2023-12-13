@@ -19,26 +19,26 @@ func TestGetServerLogConfig(t *testing.T) {
 
 func TestGetServerLogConfigWithColor(t *testing.T) {
 	color.NoColor = false
-    tests := []struct {
-        level     logrus.Level
-        colorCode string
-        text      string
-    }{
-        {logrus.InfoLevel, "\x1b[32m", " INFO "}, // ANSI Green
-        {logrus.WarnLevel, "\x1b[33m", " WARN "}, // ANSI Yellow
-        {logrus.ErrorLevel, "\x1b[31m", " ERROR"}, // ANSI Red
-        {logrus.FatalLevel, "\x1b[35m", " FATAL"}, // ANSI Magenta
-        {logrus.PanicLevel, "\x1b[37m", " NONE "}, // ANSI White
-    }
+	tests := []struct {
+		level     logrus.Level
+		colorCode string
+		text      string
+	}{
+		{logrus.InfoLevel, "\x1b[32m", " INFO "},  // ANSI Green
+		{logrus.WarnLevel, "\x1b[33m", " WARN "},  // ANSI Yellow
+		{logrus.ErrorLevel, "\x1b[31m", " ERROR"}, // ANSI Red
+		{logrus.FatalLevel, "\x1b[35m", " FATAL"}, // ANSI Magenta
+		{logrus.PanicLevel, "\x1b[37m", " NONE "}, // ANSI White
+	}
 
-    for _, test := range tests {
-        output := getServerLogConfigWithColor(test.level)
-        expected := test.colorCode + test.text + "\x1b[0m" // ANSI Reset
+	for _, test := range tests {
+		output := getServerLogConfigWithColor(test.level)
+		expected := test.colorCode + test.text + "\x1b[0m" // ANSI Reset
 
-        if output != expected {
-            t.Errorf("For level %v: expected %v, got %v", test.level, expected, output)
-        }
-    }
+		if output != expected {
+			t.Errorf("For level %v: expected %v, got %v", test.level, expected, output)
+		}
+	}
 }
 
 func TestGetAccessLogLevel(t *testing.T) {
@@ -58,5 +58,26 @@ func TestGetAccessLogLevel(t *testing.T) {
 		expected := test.expected
 
 		assert.Equal(t, expected, output)
+	}
+}
+
+func TestGetAccessLogConfig(t *testing.T) {
+	color.NoColor = false
+
+	tests := []struct {
+		statusCode         int
+		expectedLevel      string
+		expectedStatusCode string
+	}{
+		{200, "\x1b[32m INFO \x1b[0m", "\x1b[92m200\x1b[0m"}, // ANSI Green & High Green
+		{400, "\x1b[33m WARN \x1b[0m", "\x1b[93m400\x1b[0m"}, // ANSI Yellow & High Yellow
+		{500, "\x1b[31m ERROR\x1b[0m", "\x1b[91m500\x1b[0m"}, // ANSI Red & High Red
+		{100, "\x1b[37m NONE \x1b[0m", "\x1b[97m100\x1b[0m"}, // ANSI White & High White
+	}
+
+	for _, test := range tests {
+		gotLevel, gotStatusCode := getAccessLogConfig(test.statusCode)
+		assert.Equal(t, test.expectedLevel, gotLevel)
+		assert.Equal(t, test.expectedStatusCode, gotStatusCode)
 	}
 }

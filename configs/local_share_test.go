@@ -13,7 +13,7 @@ func TestRunTimeCodeLength(t *testing.T) {
 			fmt.Println("Recovered in function:", r)
 		}
 	}()
-	
+
 	// Test valid case
 	backup_use_runtime_code := SERVER_CONFIG.USE_RUNTIME_CODE
 	backup_runtime_code_length := SERVER_CONFIG.RUNTIME_CODE_LENGTH
@@ -21,7 +21,7 @@ func TestRunTimeCodeLength(t *testing.T) {
 	SERVER_CONFIG.RUNTIME_CODE_LENGTH = 6
 	checkRunTimeCodeLength()
 	assert.GreaterOrEqual(t, SERVER_CONFIG.RUNTIME_CODE_LENGTH, 6, "RUNTIME_CODE_LENGTH should be bigger or equal to 6")
-	
+
 	// Test invalid case
 	SERVER_CONFIG.RUNTIME_CODE_LENGTH = 5
 	checkRunTimeCodeLength()
@@ -37,11 +37,11 @@ func TestKeepAliveTimeout(t *testing.T) {
 			fmt.Println("Recovered in function:", r)
 		}
 	}()
-	
+
 	// Test valid case
 	checkKeepAliveTimeout()
 	assert.GreaterOrEqual(t, int(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT), 0, "KEEP_ALIVE_TIMEOUT should be bigger or equal to 0")
-	
+
 	// Test invalid case
 	backup_keep_alive_timeout := SERVER_CONFIG.KEEP_ALIVE_TIMEOUT
 	SERVER_CONFIG.KEEP_ALIVE_TIMEOUT = -1
@@ -61,7 +61,7 @@ func TestCheckKeepAliveTimeoutUnit(t *testing.T) {
 	// Test valid case
 	checkKeepAliveTimeoutUnit()
 	timeUnits := []string{"hour", "minute", "second", "millisecond"}
-	assert.Contains(t, timeUnits, SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT, 
+	assert.Contains(t, timeUnits, SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT,
 		"KEEP_ALIVE_TIMEOUT_UNIT should be one of hour, minute, second, millisecond",
 	)
 

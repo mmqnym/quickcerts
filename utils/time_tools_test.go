@@ -10,7 +10,7 @@ import (
 func TestTimeUnitStrToTimeDuration(t *testing.T) {
 	// Test valid case
 	duration, _ := TimeUnitStrToTimeDuration("day")
-	assert.Equal(t, time.Hour * 24, duration)
+	assert.Equal(t, time.Hour*24, duration)
 	duration, _ = TimeUnitStrToTimeDuration("hour")
 	assert.Equal(t, time.Hour, duration)
 	duration, _ = TimeUnitStrToTimeDuration("minute")

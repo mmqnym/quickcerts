@@ -35,7 +35,7 @@ func TestSignMessage(t *testing.T) {
 	signature, _ := SignMessage([]byte(key))
 
 	var publicKeyBytes = []byte(
-`-----BEGIN PUBLIC KEY-----
+		`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzTuY9ePxSX533aa54/aY
 Qobqzz0/alc40C31/fYgYXLQVeMJ4vXBHKFhWOaf+ZBf2bQBLx2aIa2ODZcH4ZNF
 UIbSZu9jmWN6kcSCw5IMPuDW2YF0b0MlxCemPgCPdIioBa/qsgmy4/s6LpZ2JtUG
@@ -64,7 +64,7 @@ OQIDAQAB
 		SaltLength: rsa.PSSSaltLengthEqualsHash,
 		Hash:       crypto.SHA3_512,
 	}
-	
+
 	err = rsa.VerifyPSS(publicKey.(*rsa.PublicKey), crypto.SHA3_512, hash, signature, opts)
 	assert.Nil(t, err)
 }
@@ -78,14 +78,14 @@ func TestGetHash(t *testing.T) {
 	cryptoType, hash = getHash("sha-384", []byte("test"))
 	hexHash = hex.EncodeToString(hash)
 	assert.Equal(t, cryptoType, crypto.SHA384)
-	assert.Equal(t, hexHash, 
+	assert.Equal(t, hexHash,
 		"768412320f7b0aa5812fce428dc4706b3cae50e02a64caa16a782249bfe8efc4b7ef1ccb126255d196047dfedf17a0a9",
 	)
 
 	cryptoType, hash = getHash("sha-512", []byte("test"))
 	hexHash = hex.EncodeToString(hash)
 	assert.Equal(t, cryptoType, crypto.SHA512)
-	assert.Equal(t, hexHash, 
+	assert.Equal(t, hexHash,
 		"ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff",
 	)
 
@@ -97,14 +97,14 @@ func TestGetHash(t *testing.T) {
 	cryptoType, hash = getHash("sha3-384", []byte("test"))
 	hexHash = hex.EncodeToString(hash)
 	assert.Equal(t, cryptoType, crypto.SHA3_384)
-	assert.Equal(t, hexHash, 
+	assert.Equal(t, hexHash,
 		"e516dabb23b6e30026863543282780a3ae0dccf05551cf0295178d7ff0f1b41eecb9db3ff219007c4e097260d58621bd",
 	)
 
 	cryptoType, hash = getHash("sha3-512", []byte("test"))
 	hexHash = hex.EncodeToString(hash)
 	assert.Equal(t, cryptoType, crypto.SHA3_512)
-	assert.Equal(t, hexHash, 
+	assert.Equal(t, hexHash,
 		"9ece086e9bac491fac5c1d1046ca11d737b92a2b2ebd93f005d7b710110c0a678288166e7fbe796883a4f2e9b3ca9f484f521d0ce464345cc1aec96779149c14",
 	)
 

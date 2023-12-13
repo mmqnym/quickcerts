@@ -46,7 +46,7 @@ func SetDeviceKeyCache(key string, value interface{}) error {
 		return errors.New("currently not connecting the redis database")
 	}
 
-	err := rdb.Set(ctx, key, value, time.Hour * 24 * 7).Err()
+	err := rdb.Set(ctx, key, value, time.Hour*24*7).Err()
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func SetDeviceKeyCache(key string, value interface{}) error {
 
 // Get the key cache corresponding to the device. if exists, or return "".
 func GetDeviceKeyCache(deviceInfoBase string) (string, error) {
-    if rdb == nil {
+	if rdb == nil {
 		return "", errors.New("currently not connecting the redis database")
 	}
 

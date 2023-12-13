@@ -61,7 +61,7 @@
 				
 				<option value="file2">QuickCertS/utils/key_tools.go (85.0%)</option>
 				
-				<option value="file3">QuickCertS/utils/logger.go (0.0%)</option>
+				<option value="file3">QuickCertS/utils/logger.go (40.7%)</option>
 				
 				<option value="file4">QuickCertS/utils/reader.go (87.5%)</option>
 				
@@ -492,7 +492,6 @@ func signMessage(methodName string, data []byte, privateKey *rsa.PrivateKey) ([]
 		<pre class="file" id="file3" style="display: none">package utils
 
 import (
-        "bytes"
         "encoding/json"
         "fmt"
         "io"
@@ -509,153 +508,124 @@ import (
 
 var (
     Logger *logrus.Logger // The logger for the server.
-    releaseLogger *logrus.Logger // The logger for release.
-    testLogger *logrus.Logger // The logger for testing.
-    fileWriter *ro<span class="cov0" title="0">tatelogs.RotateLogs // The file writer for the server logger &amp; access logger.
+    fileWriter *rotatelogs.RotateLogs // The file writer for the server logger &amp; access logger.
 )
 
-func InitLogger() {
-    path := "./log</span><span class="cov0" title="0">s/qcs-%Y-%m-%d@%H_%M_%S"
+func InitLogger() <span class="cov0" title="0">{
+    path := "./logs/qcs-%Y-%m-%d@%H_%M_%S"
 
-    t</span>imeUnit, err := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
-    if err != nil {
-    <span class="cov0" title="0">    logrus.Fatalf("Invalid time unit: %v", err)
-    }
+    timeUnit, err := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
+    if err != nil </span><span class="cov0" title="0">{
+        logrus.Fatalf("Invalid time unit: %v", err)
+    }</span>
 
-    fileWriter, err = rotatelogs.New(
+    <span class="cov0" title="0">fileWriter, err = rotatelogs.New(
         path,
         rotatelogs.WithLinkName("./logs/qcs-latest"),
         rotatelogs.WithMaxAge(time.Duration(cfg.SERVER_CONFIG.LOG_MAX_AGE) * timeUnit),
-        rotatelogs</span><span class="cov0" title="0">.WithRotationTime(time.Duration(cfg.SERVER_CONFIG.LOG_ROTATION_TIME) * timeUnit),
+        rotatelogs.WithRotationTime(time.Duration(cfg.SERVER_CONFIG.LOG_ROTATION_TIME) * timeUnit),
     )
 
-</span>    if err != nil {
-    <span class="cov0" title="0">    logrus.Fatalf("Failed to open log file: %v", err)
-    }
+    if err != nil </span><span class="cov0" title="0">{
+        logrus.Fatalf("Failed to open log file: %v", err)
+    }</span>
 
-</span>    var formatter lo<span class="cov0" title="0">grus.Formatter
+    <span class="cov0" title="0">var formatter logrus.Formatter
 
-    switch strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) {
-        case "json":
+    switch strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) </span>{
+        case "json":<span class="cov0" title="0">
             formatter = &amp;QCSJSONFormatter{
                 TextFormatter: &amp;logrus.TextFormatter{
                     DisableColors:   true,
-             </span>       TimestampFormat: "2006/01/02 - 15:04:05",
-                    <span class="cov0" title="0">FullTimestamp:   true,
+                    TimestampFormat: "2006/01/02 - 15:04:05",
+                    FullTimestamp:   true,
                 },
-</span>            }
-        case "text":
-            fallthrough
-        default:
+            }</span>
+        case "text":<span class="cov0" title="0">
+            fallthrough</span>
+        default:<span class="cov0" title="0">
             formatter = &amp;QCSTextFormatter{
                 TextFormatter: &amp;logrus.TextFormatter{
                     DisableColors:   false,
-             </span>       TimestampFormat: "2006/01/02 - 15:04:05",
+                    TimestampFormat: "2006/01/02 - 15:04:05",
                     FullTimestamp:   true,
                 },
-    <span class="cov0" title="0">        }
+            }</span>
     }
 
-    releaseLogger = &amp;logrus.Logger{
-     </span>   Out:       io.MultiWriter(os.Stderr, fileWriter),
+    <span class="cov0" title="0">Logger = &amp;logrus.Logger{
+        Out:       io.MultiWriter(os.Stderr, fileWriter),
         Formatter: formatter,
         Level:     logrus.InfoLevel,
-    }
-
-    testLogger = logrus.New()
-    bufferWriter := &amp;BufferWriter{}
-    testLogger.Out = bufferWriter
-    testLogger.Formatter = &amp;logrus.TextFormatter{DisableColors: true}
-
-    Logger = releaseLogger
-}
-
-// Allow developers to change the logger of the server for testing.
-func SwitchLogger(mode string) {
-    switch strings.ToLower(mode) {
-        case "test":
-            Logger = testLogger
-        case "release":
-            fallthrough
- </span>       default:
-            Logger = releaseLogger
-    }
-}
-
-type BufferWriter struct {
-    Buf bytes.Buffer
-}
-
-func (w *BufferWriter) Write(p []byte) (n int, err error) {
-    return w.Buf.Write(p)
+    }</span>
 }
 
 type QCSJSONFormatter struct {
     *logrus.TextFormatter
 }
 
-func (f *QCSJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) {
- </span>   logType := "SERVER"
+func (f *QCSJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) <span class="cov0" title="0">{
+    logType := "SERVER"
     time := entry.Time.Format(f.TimestampFormat)
     level := getServerLogConfig(entry.Level)
     message := entry.Message
 
-</span>    return []byte(
-        fmt.Sprintf("{\"t</span>ype\":\"%s\",\"time\":\"%s\",\"level\":\"%s\",\"message\":\"%s\"}\n",
+    return []byte(
+        fmt.Sprintf("{\"type\":\"%s\",\"time\":\"%s\",\"level\":\"%s\",\"message\":\"%s\"}\n",
             logType,
             time, 
-</span>            level, 
+            level, 
             message,
-</span>    )), nil
-}
-</span>
-type QCSTextFormatter str</span>uct {
+    )), nil
+}</span>
+
+type QCSTextFormatter struct {
     *logrus.TextFormatter
 }
 
-func (f *QCSTextFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+func (f *QCSTextFormatter) Format(entry *logrus.Entry) ([]byte, error) <span class="cov0" title="0">{
     level := getServerLogConfigWithColor(entry.Level)
 
-</span>    time := entry.Time.Format(<span class="cov0" title="0">f.TimestampFormat)
+    time := entry.Time.Format(f.TimestampFormat)
     message := entry.Message
-</span>
+
     return []byte(
-</span>        fmt.Sprintf("[QCS] %s |<span class="cov0" title="0"> %s |\t%s\n", 
+        fmt.Sprintf("[QCS] %s | %s |\t%s\n", 
             time, 
-</span>            level, 
+            level, 
             message,
-</span>    )), nil
-}
-</span>
+    )), nil
+}</span>
+
 // Get the corresponding log level string from the given log level.
-func getServerLogConfig(level logrus.Level) string {
-    switch level {
-        case logrus.InfoLevel:
-            return "INFO"
-        case logrus.WarnLevel:
-            return "WARN"
-        case logrus.ErrorLevel:
-            return "ERROR"
-        case logrus.FatalLevel:
-            return "FATAL"
-        default:
-            return "NONE"
+func getServerLogConfig(level logrus.Level) string <span class="cov8" title="1">{
+    switch level </span>{
+        case logrus.InfoLevel:<span class="cov8" title="1">
+            return "INFO"</span>
+        case logrus.WarnLevel:<span class="cov8" title="1">
+            return "WARN"</span>
+        case logrus.ErrorLevel:<span class="cov8" title="1">
+            return "ERROR"</span>
+        case logrus.FatalLevel:<span class="cov8" title="1">
+            return "FATAL"</span>
+        default:<span class="cov8" title="1">
+            return "NONE"</span>
     }
 }
 
 // Get the corresponding log level string with color from the given log level.
-func getServerLogConfigWithColor(level logrus.Level) string {
-    switch level {
-        case logrus.InfoLevel:
-            return color.New(color.FgGreen).Sprint(" INFO ")
-        case logrus.WarnLevel:
-            return color.New(color.FgYellow)<span class="cov0" title="0">.Sprint(" WARN ")
-        case logrus.ErrorLevel:
-</span>            return color.New(color.FgRed).Sprint(" ERROR")
-        case logrus.FatalLevel:
-            return color.New(color.FgMagenta).Sprint(" FATAL")
-        default:
-            return color.New(color.FgWhite).Sprint(" NONE ")
+func getServerLogConfigWithColor(level logrus.Level) string <span class="cov8" title="1">{
+    switch level </span>{
+        case logrus.InfoLevel:<span class="cov8" title="1">
+            return color.New(color.FgGreen).Sprint(" INFO ")</span>
+        case logrus.WarnLevel:<span class="cov8" title="1">
+            return color.New(color.FgYellow).Sprint(" WARN ")</span>
+        case logrus.ErrorLevel:<span class="cov8" title="1">
+            return color.New(color.FgRed).Sprint(" ERROR")</span>
+        case logrus.FatalLevel:<span class="cov8" title="1">
+            return color.New(color.FgMagenta).Sprint(" FATAL")</span>
+        default:<span class="cov8" title="1">
+            return color.New(color.FgWhite).Sprint(" NONE ")</span>
     }
 }
 
@@ -666,7 +636,7 @@ type QCSExtractGINCtx struct {
     Method     string
     FullPath   string
 }
-</span>
+
 type AccessLog struct {
     Type     string    `json:"type"`
     Time     string    `json:"time"`
@@ -679,67 +649,67 @@ type AccessLog struct {
 }
 
 // Overwrite the default logger of Gin Framework.
-func OverwriteGinLog(ctx *QCSExtractGINCtx) {
-    if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" {
+func OverwriteGinLog(ctx *QCSExtractGINCtx) <span class="cov0" title="0">{
+    if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" </span><span class="cov0" title="0">{
         level, statusCode := getAccessLogConfig(ctx.StatusCode)
 
-</span>        message := fmt.Sprintf("[QCS] %s | %s |\t%s | %12s | %15s | %6s | %s\n",
+        message := fmt.Sprintf("[QCS] %s | %s |\t%s | %12s | %15s | %6s | %s\n",
             time.Now().Format("2006/01/02 - 15:04:05"),
             level,
             statusCode,
-           </span> ctx.Latency,
+            ctx.Latency,
             ctx.ClientIP,
-            color.New(col</span>or.FgHiCyan).Sprintf(" %-4s", ctx.Method),
+            color.New(color.FgHiCyan).Sprintf(" %-4s", ctx.Method),
             ctx.FullPath,
         )
-</span>
-        logOutput := io.M</span>ultiWriter(fileWriter, os.Stdout)
-        logOutpu<span class="cov0" title="0">t.Write([]byte(message))
-    } else {
-</span>        message := AccessLog{
+
+        logOutput := io.MultiWriter(fileWriter, os.Stdout)
+        logOutput.Write([]byte(message))
+    }</span> else<span class="cov0" title="0"> {
+        message := AccessLog{
             Type: "ACCESS",
             Time: time.Now().Format("2006/01/02 - 15:04:05"),
             Level: getAccessLogLevel(ctx.StatusCode),
             Status: ctx.StatusCode,
-           </span> Latency: fmt.Sprint(ctx.Latency),
+            Latency: fmt.Sprint(ctx.Latency),
             ClientIP: ctx.ClientIP,
             Method: ctx.Method,
-</span>            Path: ctx.FullPath,
+            Path: ctx.FullPath,
         }
-</span>
+
         jsonBytes, _ := json.Marshal(message)
-</span>
+
         logOutput := io.MultiWriter(fileWriter, os.Stderr)
-</span>        logOutput.Write(jsonBytes)
+        logOutput.Write(jsonBytes)
         logOutput.Write([]byte("\n"))
-    }
+    }</span>
 }
 
 // Get the corresponding log level string from the given status code.
-func getAccessLogLevel(statusCode int) string {
-    switch {
-        case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:
-            return "INFO"
-        case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:
-            return "WARN"
-        case statusCode &gt;= 500:
-            return"ERROR"
-        default:
-            return "NONE"
+func getAccessLogLevel(statusCode int) string <span class="cov8" title="1">{
+    switch </span>{
+        case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:<span class="cov8" title="1">
+            return "INFO"</span>
+        case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:<span class="cov8" title="1">
+            return "WARN"</span>
+        case statusCode &gt;= 500:<span class="cov8" title="1">
+            return"ERROR"</span>
+        default:<span class="cov8" title="1">
+            return "NONE"</span>
     }
 }
 
 // Get the corresponding log level string with color and status code with color from the given status code.
-func getAccessLogConfig(statusCode int) (string, string) {
-    switch {
-        case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:
-            return color.New(color.FgGreen).Sprint(" INFO "), color.New(color.FgHiGreen).Sprint(statusCode)
-        case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:
-            return color.New(color.FgYellow).Sprint(" WARN "), color.New(color.FgHiYellow).Sprint(statusCode)
-        case statusCode &gt;= 500:
-            return color.New(color.FgRed).Sprint(" ERROR"), color.New(color.FgHiRed).Sprint(statusCode)
-        default:
-            return color.New(color.FgWhite).Sprint(" NONE "), color.New(color.FgHiWhite).Sprint(statusCode)
+func getAccessLogConfig(statusCode int) (string, string) <span class="cov8" title="1">{
+    switch </span>{
+        case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:<span class="cov8" title="1">
+            return color.New(color.FgGreen).Sprint(" INFO "), color.New(color.FgHiGreen).Sprint(statusCode)</span>
+        case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:<span class="cov8" title="1">
+            return color.New(color.FgYellow).Sprint(" WARN "), color.New(color.FgHiYellow).Sprint(statusCode)</span>
+        case statusCode &gt;= 500:<span class="cov8" title="1">
+            return color.New(color.FgRed).Sprint(" ERROR"), color.New(color.FgHiRed).Sprint(statusCode)</span>
+        default:<span class="cov8" title="1">
+            return color.New(color.FgWhite).Sprint(" NONE "), color.New(color.FgHiWhite).Sprint(statusCode)</span>
     }
 }</pre>
 		

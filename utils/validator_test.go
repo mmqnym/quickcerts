@@ -10,7 +10,7 @@ import (
 
 func TestIsExcludeField(t *testing.T) {
 	// Test valid case
-	testList := []string {
+	testList := []string{
 		"id0",
 		"id1",
 		"id2",
@@ -26,14 +26,14 @@ func TestIsValidData(t *testing.T) {
 	// Test valid case
 	type TestData struct {
 		Name string
-		ID string
-		Age string
+		ID   string
+		Age  string
 	}
 
 	test0 := TestData{
 		Name: "test",
-		ID: "1",
-		Age: "20",
+		ID:   "1",
+		Age:  "20",
 	}
 
 	res := IsValidData(test0, nil)
@@ -41,8 +41,8 @@ func TestIsValidData(t *testing.T) {
 
 	test1 := TestData{
 		Name: "test",
-		ID: "",
-		Age: "",
+		ID:   "",
+		Age:  "",
 	}
 
 	res = IsValidData(test1, []string{"ID", "Age"})
@@ -51,8 +51,8 @@ func TestIsValidData(t *testing.T) {
 	// Test invalid case
 	test2 := TestData{
 		Name: "test",
-		ID: "",
-		Age: "",
+		ID:   "",
+		Age:  "",
 	}
 
 	res = IsValidData(test2, nil)

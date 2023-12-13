@@ -72,7 +72,6 @@ func AddNewSN(sn string) error {
 	return err
 }
 
-
 // Add new S/N(s) into the database.
 func AddNewSNs(snList []string) error {
 	if db == nil {
@@ -117,7 +116,6 @@ func IsSNExist(sn string) (bool, error) {
 	return exists, err
 }
 
-
 // Bind the given serial number to the key. (Update the key field corresponding to the given S/N.)
 func BindSNWithKey(sn string, key string) error {
 	if db == nil {
@@ -156,7 +154,6 @@ func BindSNWithKey(sn string, key string) error {
 	return err
 }
 
-
 // Get the remaining trial period for the given key.
 //
 // If the key is not found, allow for temporary permit application.
@@ -185,7 +182,6 @@ func GetTemporaryPermitExpiredTime(key string) (int64, error) {
 	return durationLeft, nil
 }
 
-
 // Providing temporary usage rights to trial clients.
 func AddTemporaryPermit(key string) (int64, error) {
 	if db == nil {
@@ -204,7 +200,7 @@ func AddTemporaryPermit(key string) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	
+
 	expiration := time.Now().Add(time.Duration(cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME) * timeUnit)
 	_, err = stmt.Exec(key, expiration)
 
@@ -237,23 +233,23 @@ func GetAllCerts() ([]model.Cert, error) {
 	var certs []model.Cert
 
 	for rows.Next() {
-        var cert model.Cert
+		var cert model.Cert
 		var tmpKey sql.NullString
 		var tmpNote sql.NullString
-        if err := rows.Scan(&cert.SerialNumber, &tmpKey, &tmpNote); err != nil {
-            return nil, err
-        }
+		if err := rows.Scan(&cert.SerialNumber, &tmpKey, &tmpNote); err != nil {
+			return nil, err
+		}
 
 		cert.Key = tmpKey.String
 		cert.Note = tmpNote.String
-        certs = append(certs, cert)
-    }
+		certs = append(certs, cert)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return certs, nil
+	return certs, nil
 }
 
 // Get avaliable S/N in the database.
@@ -277,18 +273,18 @@ func GetAvaliableSN() ([]string, error) {
 
 	for rows.Next() {
 		var sn string
-        if err := rows.Scan(&sn); err != nil {
-            return nil, err
-        }
+		if err := rows.Scan(&sn); err != nil {
+			return nil, err
+		}
 
-        res = append(res, sn)
-    }
+		res = append(res, sn)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return res, nil
+	return res, nil
 }
 
 // Update the note field corresponding to the given S/N.
@@ -311,13 +307,13 @@ func UpdateCertNote(sn string, note string) error {
 	}
 
 	rowsAffected, err := res.RowsAffected()
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
-    if rowsAffected == 0 {
-        return errors.New("the s/n does not exist")
-    }
+	if rowsAffected == 0 {
+		return errors.New("the s/n does not exist")
+	}
 
 	return nil
 }
