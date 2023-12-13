@@ -17,40 +17,41 @@ import (
 var db *sql.DB = nil
 
 // Connect to the specified database.
-func ConnectDB() {
+func ConnectDB() error {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		cfg.DB_CONFIG.HOST, cfg.DB_CONFIG.PORT, cfg.DB_CONFIG.USER, cfg.DB_CONFIG.PWD, cfg.DB_CONFIG.DB_NAME)
 	var err error
 	db, err = sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		utils.Logger.Fatal("Failed to connect the database.")
+		db = nil
+		return errors.New("failed to connect the database")
 	}
 
 	err = db.Ping()
 
 	if err != nil {
-		utils.Logger.Fatal("Failed to access the database.")
+		db = nil
+		return errors.New("failed to access the database")
 	}
 
-	utils.Logger.Info("Successfully connected the database.")
+	return nil
 }
 
 // Disconnect from the database.
-func DisconnectDB() {
+func DisconnectDB() error {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
-		return
+		return errors.New("currently not connecting the database")
 	}
 
-	db.Close()
-	utils.Logger.Info("Successfully disconnected the database.")
+	err := db.Close()
+	db = nil
+	return err
 }
 
 // Add a new S/N into the database.
 func AddNewSN(sn string) error {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return errors.New("currently not connecting the database")
 	}
 
@@ -64,7 +65,7 @@ func AddNewSN(sn string) error {
 	_, err = stmt.Exec(sn, sql.NullString{}, sql.NullString{})
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
-			return errors.New("the S/N already exists")
+			return errors.New("the s/n already exists")
 		}
 		return err
 	}
@@ -75,7 +76,6 @@ func AddNewSN(sn string) error {
 // Add new S/N(s) into the database.
 func AddNewSNs(snList []string) error {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return errors.New("currently not connecting the database")
 	}
 
@@ -101,7 +101,6 @@ func AddNewSNs(snList []string) error {
 // Check if the given S/N exists in the database.
 func IsSNExist(sn string) (bool, error) {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return false, errors.New("currently not connecting the database")
 	}
 
@@ -109,17 +108,20 @@ func IsSNExist(sn string) (bool, error) {
 
 	var exists bool
 	err := db.QueryRow(query, sn).Scan(&exists)
+	if !exists {
+		return false, errors.New("the s/n does not exist")
+	}
+
 	if err != nil {
 		return false, err
 	}
 
-	return exists, err
+	return exists, nil
 }
 
 // Bind the given serial number to the key. (Update the key field corresponding to the given S/N.)
 func BindSNWithKey(sn string, key string) error {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return errors.New("currently not connecting the database")
 	}
 
@@ -159,7 +161,6 @@ func BindSNWithKey(sn string, key string) error {
 // If the key is not found, allow for temporary permit application.
 func GetTemporaryPermitExpiredTime(key string) (int64, error) {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return 0, errors.New("currently not connecting the database")
 	}
 
@@ -185,7 +186,6 @@ func GetTemporaryPermitExpiredTime(key string) (int64, error) {
 // Providing temporary usage rights to trial clients.
 func AddTemporaryPermit(key string) (int64, error) {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return 0, errors.New("currently not connecting the database")
 	}
 
@@ -216,8 +216,7 @@ func AddTemporaryPermit(key string) (int64, error) {
 // Get all certificate records in the database.
 func GetAllCerts() ([]model.Cert, error) {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
-		return nil, nil
+		return nil, errors.New("currently not connecting the database")
 	}
 
 	query := "SELECT * FROM certs"
@@ -255,8 +254,7 @@ func GetAllCerts() ([]model.Cert, error) {
 // Get avaliable S/N in the database.
 func GetAvaliableSN() ([]string, error) {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
-		return nil, nil
+		return nil, errors.New("currently not connecting the database")
 	}
 
 	query := "SELECT sn FROM certs where key is NULL"
@@ -290,7 +288,6 @@ func GetAvaliableSN() ([]string, error) {
 // Update the note field corresponding to the given S/N.
 func UpdateCertNote(sn string, note string) error {
 	if db == nil {
-		utils.Logger.Warn("Currently not connecting the database.")
 		return errors.New("currently not connecting the database")
 	}
 

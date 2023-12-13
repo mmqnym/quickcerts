@@ -59,8 +59,25 @@ func init() {
 // @accept json
 // @produce json
 func main() {
-	data.ConnectDB()
-	defer data.DisconnectDB()
+	err := data.ConnectDB()
+    
+    if err != nil {
+        utils.Logger.Fatal(err.Error())
+    }
+    utils.Logger.Info("Successfully connected the database.")
+
+	defer func() {
+        err := data.DisconnectDB()
+        if err != nil {
+            if err.Error() == "currently not connecting the database" {
+                utils.Logger.Warn("Currently not connecting the database.")
+                return
+            }
+            utils.Logger.Fatal(err.Error())
+        }
+        
+        utils.Logger.Info("Successfully disconnected the database.")
+    }()
 
 	data.ConnectRDB()
 	defer data.DisconnectRDB()

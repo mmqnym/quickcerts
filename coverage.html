@@ -57,17 +57,21 @@
 				
 				<option value="file0">QuickCertS/configs/local_share.go (83.6%)</option>
 				
-				<option value="file1">QuickCertS/utils/control.go (75.0%)</option>
+				<option value="file1">QuickCertS/data/cache_layer.go (0.0%)</option>
 				
-				<option value="file2">QuickCertS/utils/key_tools.go (85.0%)</option>
+				<option value="file2">QuickCertS/data/controller.go (81.5%)</option>
 				
-				<option value="file3">QuickCertS/utils/logger.go (40.7%)</option>
+				<option value="file3">QuickCertS/utils/control.go (75.0%)</option>
 				
-				<option value="file4">QuickCertS/utils/reader.go (87.5%)</option>
+				<option value="file4">QuickCertS/utils/key_tools.go (85.0%)</option>
 				
-				<option value="file5">QuickCertS/utils/time_tools.go (100.0%)</option>
+				<option value="file5">QuickCertS/utils/logger.go (40.7%)</option>
 				
-				<option value="file6">QuickCertS/utils/validator.go (91.7%)</option>
+				<option value="file6">QuickCertS/utils/reader.go (87.5%)</option>
+				
+				<option value="file7">QuickCertS/utils/time_tools.go (100.0%)</option>
+				
+				<option value="file8">QuickCertS/utils/validator.go (91.7%)</option>
 				
 				</select>
 			</div>
@@ -94,49 +98,49 @@ import (
 )
 
 type DBConfig struct {
-    HOST    string    `toml:"HOST"`
-    PORT    int       `toml:"PORT"`
-    USER    string    `toml:"USER"`
-    PWD     string    `toml:"PWD"`
-    DB_NAME string    `toml:"DB_NAME"`
+        HOST    string `toml:"HOST"`
+        PORT    int    `toml:"PORT"`
+        USER    string `toml:"USER"`
+        PWD     string `toml:"PWD"`
+        DB_NAME string `toml:"DB_NAME"`
 }
 
 type Permission struct {
-    NAME  string    `toml:"NAME"`
-    TOKEN string    `toml:"TOKEN"`
+        NAME  string `toml:"NAME"`
+        TOKEN string `toml:"TOKEN"`
 }
 
 type Allowedlist struct {
-    PERMISSIONS []Permission    `toml:"PERMISSIONS"`
+        PERMISSIONS []Permission `toml:"PERMISSIONS"`
 }
 
 type ServerConfig struct {
-    ALLOWED_IPs                []string         `toml:"ALLOWED_IPs"`
-    USE_RUNTIME_CODE           bool             `toml:"USE_RUNTIME_CODE"`
-    RUNTIME_CODE_LENGTH        int              `toml:"RUNTIME_CODE_LENGTH"`
-    CLIENT_AUTH_TOKEN          []string         `toml:"CLIENT_AUTH_TOKEN"`
-    PORT                       string           `toml:"PORT"`
-    KEEP_ALIVE_TIMEOUT         time.Duration    `toml:"KEEP_ALIVE_TIMEOUT"`
-    KEEP_ALIVE_TIMEOUT_UNIT    string           `toml:"KEEP_ALIVE_TIMEOUT_UNIT"`
-    USE_TLS                    bool             `toml:"USE_TLS"`
-    TLS_CERT_PATH              string           `toml:"TLS_CERT_PATH"`
-    TLS_KEY_PATH               string           `toml:"TLS_KEY_PATH"`
-    TLS_PORT                   string           `toml:"TLS_PORT"`
-    TEMPORARY_PERMIT_TIME      int              `toml:"TEMPORARY_PERMIT_TIME"`
-    TEMPORARY_PERMIT_TIME_UNIT string           `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
-    HASHING_METHOD             string           `toml:"HASHING_METHOD"`
-    LOG_TIME_UNIT              string           `toml:"LOG_TIME_UNIT"`
-    LOG_MAX_AGE                int              `toml:"LOG_MAX_AGE"`
-    LOG_ROTATION_TIME          int              `toml:"LOG_ROTATION_TIME"`
-    LOG_FORMATTER              string           `toml:"LOG_FORMATTER"`
+        ALLOWED_IPs                []string      `toml:"ALLOWED_IPs"`
+        USE_RUNTIME_CODE           bool          `toml:"USE_RUNTIME_CODE"`
+        RUNTIME_CODE_LENGTH        int           `toml:"RUNTIME_CODE_LENGTH"`
+        CLIENT_AUTH_TOKEN          []string      `toml:"CLIENT_AUTH_TOKEN"`
+        PORT                       string        `toml:"PORT"`
+        KEEP_ALIVE_TIMEOUT         time.Duration `toml:"KEEP_ALIVE_TIMEOUT"`
+        KEEP_ALIVE_TIMEOUT_UNIT    string        `toml:"KEEP_ALIVE_TIMEOUT_UNIT"`
+        USE_TLS                    bool          `toml:"USE_TLS"`
+        TLS_CERT_PATH              string        `toml:"TLS_CERT_PATH"`
+        TLS_KEY_PATH               string        `toml:"TLS_KEY_PATH"`
+        TLS_PORT                   string        `toml:"TLS_PORT"`
+        TEMPORARY_PERMIT_TIME      int           `toml:"TEMPORARY_PERMIT_TIME"`
+        TEMPORARY_PERMIT_TIME_UNIT string        `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
+        HASHING_METHOD             string        `toml:"HASHING_METHOD"`
+        LOG_TIME_UNIT              string        `toml:"LOG_TIME_UNIT"`
+        LOG_MAX_AGE                int           `toml:"LOG_MAX_AGE"`
+        LOG_ROTATION_TIME          int           `toml:"LOG_ROTATION_TIME"`
+        LOG_FORMATTER              string        `toml:"LOG_FORMATTER"`
 }
 
 type CacheConfig struct {
-    HOST            string    `toml:"HOST"`
-    PORT            int       `toml:"PORT"`
-    PASSWORD        string    `toml:"PASSWORD"`
-    EXPIRATION      int       `toml:"EXPIRATION"`
-    EXPIRATION_UNIT string    `toml:"EXPIRATION_UNIT"`
+        HOST            string `toml:"HOST"`
+        PORT            int    `toml:"PORT"`
+        PASSWORD        string `toml:"PASSWORD"`
+        EXPIRATION      int    `toml:"EXPIRATION"`
+        EXPIRATION_UNIT string `toml:"EXPIRATION_UNIT"`
 }
 
 var SERVER_CONFIG ServerConfig
@@ -145,151 +149,541 @@ var ALLOWEDLIST Allowedlist
 var CACHE_CONFIG CacheConfig
 
 func init() <span class="cov8" title="1">{
-    defer func() </span><span class="cov8" title="1">{
-        if err := recover(); err != nil </span><span class="cov0" title="0">{
-            color.Red(err.(error).Error())
-            os.Exit(1)
+        defer func() </span><span class="cov8" title="1">{
+                if err := recover(); err != nil </span><span class="cov0" title="0">{
+                        color.Red(err.(error).Error())
+                        os.Exit(1)
+                }</span>
+        }()
+
+        // For testing, need to change directory to root directory of the project or
+        // golang test module will auto change working directory to the test file directory
+        <span class="cov8" title="1">changed := change2RootDir()
+
+        if _, err := toml.DecodeFile("./configs/server.toml", &amp;SERVER_CONFIG); err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/database.toml", &amp;DB_CONFIG); err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/allowlist.toml", &amp;ALLOWEDLIST); err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/cache.toml", &amp;CACHE_CONFIG); err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov8" title="1">if changed </span><span class="cov8" title="1">{
+                os.Chdir("configs")
         }</span>
-    }()
-
-    // For testing, need to change directory to root directory of the project or 
-    // golang test module will auto change working directory to the test file directory
-    <span class="cov8" title="1">changed := change2RootDir()
-
-    if _, err := toml.DecodeFile("./configs/server.toml", &amp;SERVER_CONFIG); err != nil </span><span class="cov0" title="0">{
-        panic(err)</span>
-    }
-
-    <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/database.toml", &amp;DB_CONFIG); err != nil </span><span class="cov0" title="0">{
-        panic(err)</span>
-    }
-
-    <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/allowlist.toml", &amp;ALLOWEDLIST); err != nil </span><span class="cov0" title="0">{
-        panic(err)</span>
-    }
-
-    <span class="cov8" title="1">if _, err := toml.DecodeFile("./configs/cache.toml", &amp;CACHE_CONFIG); err != nil </span><span class="cov0" title="0">{
-        panic(err)</span>
-    }
-
-    <span class="cov8" title="1">if changed </span><span class="cov8" title="1">{
-        os.Chdir("configs")
-    }</span>
-    <span class="cov8" title="1">checkValid()</span>
+        <span class="cov8" title="1">checkValid()</span>
 }
 
 func checkRunTimeCodeLength() <span class="cov8" title="1">{
-    if SERVER_CONFIG.USE_RUNTIME_CODE &amp;&amp; SERVER_CONFIG.RUNTIME_CODE_LENGTH &lt; 6 </span><span class="cov8" title="1">{
-        panic(errors.New("RUNTIME_CODE_LENGTH should be bigger or equal to 6"))</span>
-    }
+        if SERVER_CONFIG.USE_RUNTIME_CODE &amp;&amp; SERVER_CONFIG.RUNTIME_CODE_LENGTH &lt; 6 </span><span class="cov8" title="1">{
+                panic(errors.New("RUNTIME_CODE_LENGTH should be bigger or equal to 6"))</span>
+        }
 }
 
 func checkKeepAliveTimeout() <span class="cov8" title="1">{
-    if SERVER_CONFIG.KEEP_ALIVE_TIMEOUT &lt; 0 </span><span class="cov8" title="1">{
-        panic(errors.New("KEEP_ALIVE_TIMEOUT should be bigger or equal to 0"))</span>
-    }
+        if SERVER_CONFIG.KEEP_ALIVE_TIMEOUT &lt; 0 </span><span class="cov8" title="1">{
+                panic(errors.New("KEEP_ALIVE_TIMEOUT should be bigger or equal to 0"))</span>
+        }
 }
 
 func checkKeepAliveTimeoutUnit() <span class="cov8" title="1">{
-    switch strings.ToLower(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT) </span>{
+        switch strings.ToLower(SERVER_CONFIG.KEEP_ALIVE_TIMEOUT_UNIT) </span>{
         case "hour", "minute", "second", "millisecond":<span class="cov8" title="1"></span>
         default:<span class="cov8" title="1">
-            panic(errors.New("KEEP_ALIVE_TIMEOUT_UNIT is not valid (Require: hour, minute, second)"))</span>
-    }
+                panic(errors.New("KEEP_ALIVE_TIMEOUT_UNIT is not valid (Require: hour, minute, second)"))</span>
+        }
 }
 
 func checkTemporaryPermitTime() <span class="cov8" title="1">{
-    if SERVER_CONFIG.TEMPORARY_PERMIT_TIME &lt;= 0 </span><span class="cov8" title="1">{
-        panic(errors.New("TEMPORARY_PERMIT_TIME should be bigger than 0"))</span>
-    }
+        if SERVER_CONFIG.TEMPORARY_PERMIT_TIME &lt;= 0 </span><span class="cov8" title="1">{
+                panic(errors.New("TEMPORARY_PERMIT_TIME should be bigger than 0"))</span>
+        }
 }
 
 func checkTemporaryPermitTimeUnit() <span class="cov8" title="1">{
-    switch strings.ToLower(SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT) </span>{
+        switch strings.ToLower(SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT) </span>{
         case "day", "hour", "minute":<span class="cov8" title="1"></span>
         default:<span class="cov8" title="1">
-            panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute)"))</span>
-    }
+                panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute)"))</span>
+        }
 }
 
 func checkLogMaxAge() <span class="cov8" title="1">{
-    if SERVER_CONFIG.LOG_MAX_AGE &lt;= 0 </span><span class="cov8" title="1">{
-        panic(errors.New("LOG_MAX_AGE should be bigger than 0"))</span>
-    }
+        if SERVER_CONFIG.LOG_MAX_AGE &lt;= 0 </span><span class="cov8" title="1">{
+                panic(errors.New("LOG_MAX_AGE should be bigger than 0"))</span>
+        }
 }
 
 func checkLogRotationTime() <span class="cov8" title="1">{
-    if SERVER_CONFIG.LOG_ROTATION_TIME &lt;= 0 </span><span class="cov8" title="1">{
-        panic(errors.New("LOG_ROTATION_TIME should be bigger than 0"))</span>
-    }
+        if SERVER_CONFIG.LOG_ROTATION_TIME &lt;= 0 </span><span class="cov8" title="1">{
+                panic(errors.New("LOG_ROTATION_TIME should be bigger than 0"))</span>
+        }
 }
 
 func checkLogTimeUnit() <span class="cov8" title="1">{
-    switch strings.ToLower(SERVER_CONFIG.LOG_TIME_UNIT) </span>{
+        switch strings.ToLower(SERVER_CONFIG.LOG_TIME_UNIT) </span>{
         case "day", "hour", "minute", "second":<span class="cov8" title="1"></span>
         default:<span class="cov8" title="1">
-            panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute, second)"))</span>
-    }
+                panic(errors.New("TEMPORARY_PERMIT_TIME_UNIT is not valid (Require: day, hour, minute, second)"))</span>
+        }
 }
 
 func checkCacheExpiration() <span class="cov8" title="1">{
-    if CACHE_CONFIG.EXPIRATION &lt;= 0 </span><span class="cov8" title="1">{
-        panic(errors.New("EXPIRATION should be bigger than 0"))</span>
-    }
+        if CACHE_CONFIG.EXPIRATION &lt;= 0 </span><span class="cov8" title="1">{
+                panic(errors.New("EXPIRATION should be bigger than 0"))</span>
+        }
 }
 
 func checkCacheExpirationUnit() <span class="cov8" title="1">{
-    switch strings.ToLower(CACHE_CONFIG.EXPIRATION_UNIT) </span>{
+        switch strings.ToLower(CACHE_CONFIG.EXPIRATION_UNIT) </span>{
         case "day", "hour", "minute", "second":<span class="cov8" title="1"></span>
         default:<span class="cov8" title="1">
-            panic(errors.New("EXPIRATION_UNIT is not valid (Require: day, hour, minute, second)"))</span>
-    }
+                panic(errors.New("EXPIRATION_UNIT is not valid (Require: day, hour, minute, second)"))</span>
+        }
 }
 
 func checkValid() <span class="cov8" title="1">{
-    checkRunTimeCodeLength()
-    checkKeepAliveTimeout()
-    checkKeepAliveTimeoutUnit()
-    checkTemporaryPermitTime()
-    checkTemporaryPermitTimeUnit()
-    checkLogMaxAge()
-    checkLogRotationTime()
-    checkLogTimeUnit()
-    checkCacheExpiration()
-    checkCacheExpirationUnit()
+        checkRunTimeCodeLength()
+        checkKeepAliveTimeout()
+        checkKeepAliveTimeoutUnit()
+        checkTemporaryPermitTime()
+        checkTemporaryPermitTimeUnit()
+        checkLogMaxAge()
+        checkLogRotationTime()
+        checkLogTimeUnit()
+        checkCacheExpiration()
+        checkCacheExpirationUnit()
 }</span>
 
 // Ensure that the current working directory is the root directory of the project.
 func change2RootDir() bool <span class="cov8" title="1">{
-    if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
-        return false
-    }</span>
+        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return false
+        }</span>
 
-    <span class="cov8" title="1">for </span><span class="cov8" title="1">{
-        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov8" title="1">{
-            break</span>
+        <span class="cov8" title="1">for </span><span class="cov8" title="1">{
+                if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov8" title="1">{
+                        break</span>
+                }
+
+                <span class="cov8" title="1">if err := os.Chdir(".."); err != nil </span><span class="cov0" title="0">{
+                        panic("can not find root directory of the project")</span>
+                }
+
+                <span class="cov8" title="1">curr, err := os.Getwd()
+                if err != nil </span><span class="cov0" title="0">{
+                        panic("can not find root directory of the project")</span>
+                }
+
+                <span class="cov8" title="1">if curr == "/" </span><span class="cov0" title="0">{
+                        panic("can not find go.mod file")</span>
+                }
         }
 
-        <span class="cov8" title="1">if err := os.Chdir(".."); err != nil </span><span class="cov0" title="0">{
-            panic("can not find root directory of the project")</span>
-        }
-
-        <span class="cov8" title="1">curr, err := os.Getwd()
-        if err != nil </span><span class="cov0" title="0">{
-            panic("can not find root directory of the project")</span>
-        }
-
-        <span class="cov8" title="1">if curr == "/" </span><span class="cov0" title="0">{
-            panic("can not find go.mod file")</span>
-        }
-    }
-
-    <span class="cov8" title="1">root, _ := os.Getwd()
-    os.Chdir(root)
-    return true</span>
-}</pre>
+        <span class="cov8" title="1">root, _ := os.Getwd()
+        os.Chdir(root)
+        return true</span>
+}
+</pre>
 		
-		<pre class="file" id="file1" style="display: none">package utils
+		<pre class="file" id="file1" style="display: none">package data
+
+import (
+        "QuickCertS/utils"
+        "context"
+        "errors"
+        "time"
+
+        "github.com/redis/go-redis/v9"
+)
+
+var ctx = context.Background()
+var rdb *redis.Client = nil
+
+// Connect to the redis database.
+func ConnectRDB() <span class="cov0" title="0">{
+        rdb = redis.NewClient(&amp;redis.Options{
+                Addr:     "qcs-cache:6379",
+                Password: "",
+                DB:       0,
+        })
+
+        _, err := rdb.Ping(ctx).Result()
+
+        if err != nil </span><span class="cov0" title="0">{
+                utils.Logger.Fatal("Failed to access the redis database.")
+        }</span>
+
+        <span class="cov0" title="0">utils.Logger.Info("Successfully connected the redis database.")</span>
+}
+
+// Disconnect from the redis database.
+func DisconnectRDB() <span class="cov0" title="0">{
+        if rdb == nil </span><span class="cov0" title="0">{
+                utils.Logger.Warn("Currently not connecting the redis database.")
+                return
+        }</span>
+
+        <span class="cov0" title="0">rdb.Close()
+        utils.Logger.Info("Successfully disconnected the redis database.")</span>
+}
+
+// Set the key cache corresponding to the device.
+func SetDeviceKeyCache(key string, value interface{}) error <span class="cov0" title="0">{
+        if rdb == nil </span><span class="cov0" title="0">{
+                return errors.New("currently not connecting the redis database")
+        }</span>
+
+        <span class="cov0" title="0">err := rdb.Set(ctx, key, value, time.Hour*24*7).Err()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// Get the key cache corresponding to the device. if exists, or return "".
+func GetDeviceKeyCache(deviceInfoBase string) (string, error) <span class="cov0" title="0">{
+        if rdb == nil </span><span class="cov0" title="0">{
+                return "", errors.New("currently not connecting the redis database")
+        }</span>
+
+        <span class="cov0" title="0">key, err := rdb.Get(ctx, deviceInfoBase).Result()
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov0" title="0">return key, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package data
+
+import (
+        "database/sql"
+        "errors"
+        "fmt"
+        "strings"
+        "time"
+
+        _ "github.com/lib/pq"
+
+        cfg "QuickCertS/configs"
+        "QuickCertS/model"
+        "QuickCertS/utils"
+)
+
+var db *sql.DB = nil
+
+// Connect to the specified database.
+func ConnectDB() error <span class="cov8" title="1">{
+        psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+                cfg.DB_CONFIG.HOST, cfg.DB_CONFIG.PORT, cfg.DB_CONFIG.USER, cfg.DB_CONFIG.PWD, cfg.DB_CONFIG.DB_NAME)
+        var err error
+        db, err = sql.Open("postgres", psqlInfo)
+
+        if err != nil </span><span class="cov0" title="0">{
+                db = nil
+                return errors.New("failed to connect the database")
+        }</span>
+
+        <span class="cov8" title="1">err = db.Ping()
+
+        if err != nil </span><span class="cov8" title="1">{
+                db = nil
+                return errors.New("failed to access the database")
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// Disconnect from the database.
+func DisconnectDB() error <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">err := db.Close()
+        db = nil
+        return err</span>
+}
+
+// Add a new S/N into the database.
+func AddNewSN(sn string) error <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">stmt, err := db.Prepare("INSERT INTO certs (sn, key, note) VALUES ($1, $2, $3)")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">defer stmt.Close()
+
+        _, err = stmt.Exec(sn, sql.NullString{}, sql.NullString{})
+        if err != nil </span><span class="cov8" title="1">{
+                if strings.Contains(err.Error(), "duplicate key") </span><span class="cov8" title="1">{
+                        return errors.New("the s/n already exists")
+                }</span>
+                <span class="cov0" title="0">return err</span>
+        }
+
+        <span class="cov8" title="1">return err</span>
+}
+
+// Add new S/N(s) into the database.
+func AddNewSNs(snList []string) error <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">var valuesStrings []string
+
+        for _, sn := range snList </span><span class="cov8" title="1">{
+                valuesStrings = append(valuesStrings, fmt.Sprintf("('%s', NULL, NULL)", sn))
+        }</span>
+
+        <span class="cov8" title="1">query := fmt.Sprintf("INSERT INTO certs (sn, key, note) VALUES %s;", strings.Join(valuesStrings, ", "))
+
+        _, err := db.Exec(query)
+        if err != nil </span><span class="cov8" title="1">{
+                if strings.Contains(err.Error(), "duplicate key") </span><span class="cov8" title="1">{
+                        return errors.New("some s/ns already exist")
+                }</span>
+                <span class="cov0" title="0">return err</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// Check if the given S/N exists in the database.
+func IsSNExist(sn string) (bool, error) <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return false, errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">query := "SELECT EXISTS (SELECT 1 FROM certs WHERE sn = $1)"
+
+        var exists bool
+        err := db.QueryRow(query, sn).Scan(&amp;exists)
+        if !exists </span><span class="cov8" title="1">{
+                return false, errors.New("the s/n does not exist")
+        }</span>
+
+        <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
+                return false, err
+        }</span>
+
+        <span class="cov8" title="1">return exists, nil</span>
+}
+
+// Bind the given serial number to the key. (Update the key field corresponding to the given S/N.)
+func BindSNWithKey(sn string, key string) error <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">stmt, err := db.Prepare(`
+                UPDATE certs
+                SET key = $1 
+                WHERE sn = $2 
+                AND (key IS NULL OR key = $1)
+        `)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">defer stmt.Close()
+
+        res, err := stmt.Exec(key, sn)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">count, err := res.RowsAffected()
+
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if count == 0 </span><span class="cov8" title="1">{
+                return errors.New("the s/n does not exist or has already been used")
+        }</span>
+
+        <span class="cov8" title="1">return err</span>
+}
+
+// Get the remaining trial period for the given key.
+//
+// If the key is not found, allow for temporary permit application.
+func GetTemporaryPermitExpiredTime(key string) (int64, error) <span class="cov8" title="1">{
+        if db == nil </span><span class="cov0" title="0">{
+                return 0, errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">var expiration time.Time
+
+        query := "SELECT expiration FROM temporary_permits WHERE key = $1"
+        err := db.QueryRow(query, key).Scan(&amp;expiration)
+
+        if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                return 0, fmt.Errorf("allowed new key: %s", key)
+        }</span> else<span class="cov8" title="1"> if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+
+        <span class="cov8" title="1">durationLeft := (expiration.Unix()) - time.Now().Unix()
+
+        if durationLeft &lt; 0 </span><span class="cov0" title="0">{
+                return 0, nil
+        }</span>
+        <span class="cov8" title="1">return durationLeft, nil</span>
+}
+
+// Providing temporary usage rights to trial clients.
+func AddTemporaryPermit(key string) (int64, error) <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return 0, errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">stmt, err := db.Prepare("INSERT INTO temporary_permits (key, expiration) VALUES ($1, $2)")
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+
+        <span class="cov8" title="1">defer stmt.Close()
+
+        timeUnit, err := utils.TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+
+        <span class="cov8" title="1">expiration := time.Now().Add(time.Duration(cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME) * timeUnit)
+        _, err = stmt.Exec(key, expiration)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+
+        <span class="cov8" title="1">timeLeft := expiration.Unix() - time.Now().Unix()
+
+        return timeLeft, nil</span>
+}
+
+// Get all certificate records in the database.
+func GetAllCerts() ([]model.Cert, error) <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return nil, errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">query := "SELECT * FROM certs"
+
+        rows, err := db.Query(query)
+        if err != nil </span><span class="cov0" title="0">{
+                utils.Logger.Error(err.Error())
+                return nil, nil
+        }</span>
+
+        <span class="cov8" title="1">defer rows.Close()
+
+        var certs []model.Cert
+
+        for rows.Next() </span><span class="cov8" title="1">{
+                var cert model.Cert
+                var tmpKey sql.NullString
+                var tmpNote sql.NullString
+                if err := rows.Scan(&amp;cert.SerialNumber, &amp;tmpKey, &amp;tmpNote); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">cert.Key = tmpKey.String
+                cert.Note = tmpNote.String
+                certs = append(certs, cert)</span>
+        }
+
+        <span class="cov8" title="1">if err := rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return certs, nil</span>
+}
+
+// Get avaliable S/N in the database.
+func GetAvaliableSN() ([]string, error) <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return nil, errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">query := "SELECT sn FROM certs where key is NULL"
+
+        rows, err := db.Query(query)
+        if err != nil </span><span class="cov0" title="0">{
+                utils.Logger.Error(err.Error())
+                return nil, nil
+        }</span>
+
+        <span class="cov8" title="1">defer rows.Close()
+
+        var res []string
+
+        for rows.Next() </span><span class="cov8" title="1">{
+                var sn string
+                if err := rows.Scan(&amp;sn); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">res = append(res, sn)</span>
+        }
+
+        <span class="cov8" title="1">if err := rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return res, nil</span>
+}
+
+// Update the note field corresponding to the given S/N.
+func UpdateCertNote(sn string, note string) error <span class="cov8" title="1">{
+        if db == nil </span><span class="cov8" title="1">{
+                return errors.New("currently not connecting the database")
+        }</span>
+
+        <span class="cov8" title="1">stmt, err := db.Prepare("UPDATE certs SET note = $1 WHERE sn = $2")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">defer stmt.Close()
+
+        res, err := stmt.Exec(note, sn)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">rowsAffected, err := res.RowsAffected()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if rowsAffected == 0 </span><span class="cov8" title="1">{
+                return errors.New("the s/n does not exist")
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package utils
 
 import (
         "context"
@@ -301,51 +695,52 @@ import (
 
 // Gracefully shutdown the server.
 func WaitForShutdown(server *http.Server) <span class="cov8" title="1">{
-    quit := make(chan os.Signal, 1)
-    signal.Notify(quit, os.Interrupt)
-    &lt;-quit
-    Logger.Info("The Server is shutting down ...")
+        quit := make(chan os.Signal, 1)
+        signal.Notify(quit, os.Interrupt)
+        &lt;-quit
+        Logger.Info("The Server is shutting down ...")
 
-    ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
-    defer cancel()
-    if err := server.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
-        Logger.Fatal("Something wrong happened when shutting down the server: " + err.Error())
-    }</span>
+        ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+        defer cancel()
+        if err := server.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
+                Logger.Fatal("Something wrong happened when shutting down the server: " + err.Error())
+        }</span>
 
-    <span class="cov0" title="0">Logger.Info("The Server has exited successfully.")</span>
+        <span class="cov0" title="0">Logger.Info("The Server has exited successfully.")</span>
 }
 
 // Ensure that the current working directory is the root directory of the project.
 func Change2RootDir() bool <span class="cov8" title="1">{
-    if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
-        return false
-    }</span>
+        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return false
+        }</span>
 
-    <span class="cov8" title="1">for </span><span class="cov8" title="1">{
-        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov8" title="1">{
-            break</span>
+        <span class="cov8" title="1">for </span><span class="cov8" title="1">{
+                if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov8" title="1">{
+                        break</span>
+                }
+
+                <span class="cov8" title="1">if err := os.Chdir(".."); err != nil </span><span class="cov0" title="0">{
+                        panic("can not find root directory of the project")</span>
+                }
+
+                <span class="cov8" title="1">curr, err := os.Getwd()
+                if err != nil </span><span class="cov0" title="0">{
+                        panic("can not find root directory of the project")</span>
+                }
+
+                <span class="cov8" title="1">if curr == "/" </span><span class="cov0" title="0">{
+                        panic("can not find go.mod file")</span>
+                }
         }
 
-        <span class="cov8" title="1">if err := os.Chdir(".."); err != nil </span><span class="cov0" title="0">{
-            panic("can not find root directory of the project")</span>
-        }
-
-        <span class="cov8" title="1">curr, err := os.Getwd()
-        if err != nil </span><span class="cov0" title="0">{
-            panic("can not find root directory of the project")</span>
-        }
-
-        <span class="cov8" title="1">if curr == "/" </span><span class="cov0" title="0">{
-            panic("can not find go.mod file")</span>
-        }
-    }
-
-    <span class="cov8" title="1">root, _ := os.Getwd()
-    os.Chdir(root)
-    return true</span>
-}</pre>
+        <span class="cov8" title="1">root, _ := os.Getwd()
+        os.Chdir(root)
+        return true</span>
+}
+</pre>
 		
-		<pre class="file" id="file2" style="display: none">package utils
+		<pre class="file" id="file4" style="display: none">package utils
 
 import (
         "crypto"
@@ -367,129 +762,129 @@ import (
 var privateKeyBytes []byte
 
 func init() <span class="cov8" title="1">{
-    var err error
-    privateKeyBytes, err = GetPrivateKeyBytes()
-    if err != nil </span><span class="cov0" title="0">{
-        panic(errors.New("failed to load the private key"))</span>
-    }
+        var err error
+        privateKeyBytes, err = GetPrivateKeyBytes()
+        if err != nil </span><span class="cov0" title="0">{
+                panic(errors.New("failed to load the private key"))</span>
+        }
 }
 
 // Generate a serial number by uuid v4 and custom rule(24 bits + 5 bits(-)).
 func GenerateSN() (string, error) <span class="cov8" title="1">{
-    uuid := make([]byte, 16)
-    _, err := rand.Read(uuid)
-    if err != nil </span><span class="cov0" title="0">{
-        return "", err
-    }</span>
-    <span class="cov8" title="1">uuid[6] = (uuid[6] &amp; 0x0f) | 0x40
-    uuid[8] = (uuid[8] &amp; 0x3f) | 0x80
-    plainUUID := fmt.Sprintf("%x", uuid)[:24]
-    return fmt.Sprintf("%s-%s-%s-%s-%s-%s",
-        plainUUID[0:4], plainUUID[4:8], plainUUID[8:12], plainUUID[12:16], plainUUID[16:20], plainUUID[20:24]), nil</span>
+        uuid := make([]byte, 16)
+        _, err := rand.Read(uuid)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov8" title="1">uuid[6] = (uuid[6] &amp; 0x0f) | 0x40
+        uuid[8] = (uuid[8] &amp; 0x3f) | 0x80
+        plainUUID := fmt.Sprintf("%x", uuid)[:24]
+        return fmt.Sprintf("%s-%s-%s-%s-%s-%s",
+                plainUUID[0:4], plainUUID[4:8], plainUUID[8:12], plainUUID[12:16], plainUUID[16:20], plainUUID[20:24]), nil</span>
 }
-
 
 // Generate an APP key by SHA3-256 for the device.
 func GenerateKey(base string) (string, error) <span class="cov8" title="1">{
-    hash := sha3.New256()
-    _, err := hash.Write([]byte(base + "SALT"))
+        hash := sha3.New256()
+        _, err := hash.Write([]byte(base + "SALT"))
 
-    if err != nil </span><span class="cov0" title="0">{
-        return "", err
-    }</span>
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
 
-    <span class="cov8" title="1">sum := hash.Sum(nil)
-    key := fmt.Sprintf("%x", sum)
-    return key, nil</span>
+        <span class="cov8" title="1">sum := hash.Sum(nil)
+        key := fmt.Sprintf("%x", sum)
+        return key, nil</span>
 }
 
 // Sign the given message with specified hashing method.
 func SignMessage(message []byte) ([]byte, error) <span class="cov8" title="1">{
-    privateKey, err := keyBytesToPrivateKey(privateKeyBytes)
+        privateKey, err := keyBytesToPrivateKey(privateKeyBytes)
 
-    if err != nil </span><span class="cov0" title="0">{
-        return []byte{}, err
-    }</span>
+        if err != nil </span><span class="cov0" title="0">{
+                return []byte{}, err
+        }</span>
 
-    <span class="cov8" title="1">sinature, err := signMessage(cfg.SERVER_CONFIG.HASHING_METHOD, message, privateKey)
+        <span class="cov8" title="1">sinature, err := signMessage(cfg.SERVER_CONFIG.HASHING_METHOD, message, privateKey)
 
-    if err != nil </span><span class="cov0" title="0">{
-        return []byte{}, err
-    }</span>
+        if err != nil </span><span class="cov0" title="0">{
+                return []byte{}, err
+        }</span>
 
-    <span class="cov8" title="1">return sinature, err</span>
+        <span class="cov8" title="1">return sinature, err</span>
 }
 
 // Convert the private key bytes to a *rsa.PrivateKey.
 func keyBytesToPrivateKey(keyBytes []byte) (*rsa.PrivateKey, error) <span class="cov8" title="1">{
-    block, _ := pem.Decode(keyBytes)
-    if block == nil </span><span class="cov0" title="0">{
-        return nil, errors.New("private key error: unable to decode PEM block")
-    }</span>
+        block, _ := pem.Decode(keyBytes)
+        if block == nil </span><span class="cov0" title="0">{
+                return nil, errors.New("private key error: unable to decode PEM block")
+        }</span>
 
-    <span class="cov8" title="1">key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-    if err != nil </span><span class="cov0" title="0">{
-        return nil, err
-    }</span>
+        <span class="cov8" title="1">key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
 
-    <span class="cov8" title="1">privateKey, ok := key.(*rsa.PrivateKey)
-    if !ok </span><span class="cov0" title="0">{
-        return nil, errors.New("private key error: not an RSA private key")
-    }</span>
+        <span class="cov8" title="1">privateKey, ok := key.(*rsa.PrivateKey)
+        if !ok </span><span class="cov0" title="0">{
+                return nil, errors.New("private key error: not an RSA private key")
+        }</span>
 
-    <span class="cov8" title="1">return privateKey, nil</span>
+        <span class="cov8" title="1">return privateKey, nil</span>
 }
 
 // Get the hash type and hash value by the given method name.
 func getHash(methodName string, message []byte) (cryptoType crypto.Hash, hash []byte) <span class="cov8" title="1">{
-    switch strings.ToLower(methodName) </span>{
+        switch strings.ToLower(methodName) </span>{
         case "sha-256":<span class="cov8" title="1">
-            hash := sha256.Sum256(message)
-            return crypto.SHA256, hash[:]</span>
+                hash := sha256.Sum256(message)
+                return crypto.SHA256, hash[:]</span>
         case "sha-384":<span class="cov8" title="1">
-            hash := sha512.Sum384(message)
-            return crypto.SHA384, hash[:]</span>
+                hash := sha512.Sum384(message)
+                return crypto.SHA384, hash[:]</span>
         case "sha-512":<span class="cov8" title="1">
-            hash := sha512.Sum512(message)
-            return crypto.SHA512, hash[:]</span>
+                hash := sha512.Sum512(message)
+                return crypto.SHA512, hash[:]</span>
         case "sha3-256":<span class="cov8" title="1">
-            hasher := sha3.New256()
-            hasher.Write(message)
-            return crypto.SHA3_256, hasher.Sum(nil)</span>
+                hasher := sha3.New256()
+                hasher.Write(message)
+                return crypto.SHA3_256, hasher.Sum(nil)</span>
         case "sha3-384":<span class="cov8" title="1">
-            hasher := sha3.New384()
-            hasher.Write(message)
-            return crypto.SHA3_384, hasher.Sum(nil)</span>
+                hasher := sha3.New384()
+                hasher.Write(message)
+                return crypto.SHA3_384, hasher.Sum(nil)</span>
         case "sha3-512":<span class="cov8" title="1">
-            hasher := sha3.New512()
-            hasher.Write(message)
-            return crypto.SHA3_512, hasher.Sum(nil)</span>
+                hasher := sha3.New512()
+                hasher.Write(message)
+                return crypto.SHA3_512, hasher.Sum(nil)</span>
         default:<span class="cov8" title="1">
-            // Default to SHA-256
-            hash := sha256.Sum256(message)
-            return crypto.SHA256, hash[:]</span>
-    }
+                // Default to SHA-256
+                hash := sha256.Sum256(message)
+                return crypto.SHA256, hash[:]</span>
+        }
 }
 
 // Sign the given message with PSS &amp; the admin specified hashing method.
 func signMessage(methodName string, data []byte, privateKey *rsa.PrivateKey) ([]byte, error) <span class="cov8" title="1">{
-    cryptoType, hash := getHash(methodName, data)
-    
-    opts := &amp;rsa.PSSOptions{
-        SaltLength: rsa.PSSSaltLengthEqualsHash,
-        Hash:       cryptoType,
-    }
+        cryptoType, hash := getHash(methodName, data)
 
-    signature, err := rsa.SignPSS(rand.Reader, privateKey, cryptoType, hash[:], opts)
+        opts := &amp;rsa.PSSOptions{
+                SaltLength: rsa.PSSSaltLengthEqualsHash,
+                Hash:       cryptoType,
+        }
 
-    if err != nil </span><span class="cov0" title="0">{
-        return []byte{}, err
-    }</span>
+        signature, err := rsa.SignPSS(rand.Reader, privateKey, cryptoType, hash[:], opts)
 
-    <span class="cov8" title="1">return signature, err</span>
-}</pre>
+        if err != nil </span><span class="cov0" title="0">{
+                return []byte{}, err
+        }</span>
+
+        <span class="cov8" title="1">return signature, err</span>
+}
+</pre>
 		
-		<pre class="file" id="file3" style="display: none">package utils
+		<pre class="file" id="file5" style="display: none">package utils
 
 import (
         "encoding/json"
@@ -507,213 +902,214 @@ import (
 )
 
 var (
-    Logger *logrus.Logger // The logger for the server.
-    fileWriter *rotatelogs.RotateLogs // The file writer for the server logger &amp; access logger.
+        Logger     *logrus.Logger         // The logger for the server.
+        fileWriter *rotatelogs.RotateLogs // The file writer for the server logger &amp; access logger.
 )
 
 func InitLogger() <span class="cov0" title="0">{
-    path := "./logs/qcs-%Y-%m-%d@%H_%M_%S"
+        path := "./logs/qcs-%Y-%m-%d@%H_%M_%S"
 
-    timeUnit, err := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
-    if err != nil </span><span class="cov0" title="0">{
-        logrus.Fatalf("Invalid time unit: %v", err)
-    }</span>
+        timeUnit, err := TimeUnitStrToTimeDuration(cfg.SERVER_CONFIG.LOG_TIME_UNIT)
+        if err != nil </span><span class="cov0" title="0">{
+                logrus.Fatalf("Invalid time unit: %v", err)
+        }</span>
 
-    <span class="cov0" title="0">fileWriter, err = rotatelogs.New(
-        path,
-        rotatelogs.WithLinkName("./logs/qcs-latest"),
-        rotatelogs.WithMaxAge(time.Duration(cfg.SERVER_CONFIG.LOG_MAX_AGE) * timeUnit),
-        rotatelogs.WithRotationTime(time.Duration(cfg.SERVER_CONFIG.LOG_ROTATION_TIME) * timeUnit),
-    )
+        <span class="cov0" title="0">fileWriter, err = rotatelogs.New(
+                path,
+                rotatelogs.WithLinkName("./logs/qcs-latest"),
+                rotatelogs.WithMaxAge(time.Duration(cfg.SERVER_CONFIG.LOG_MAX_AGE)*timeUnit),
+                rotatelogs.WithRotationTime(time.Duration(cfg.SERVER_CONFIG.LOG_ROTATION_TIME)*timeUnit),
+        )
 
-    if err != nil </span><span class="cov0" title="0">{
-        logrus.Fatalf("Failed to open log file: %v", err)
-    }</span>
+        if err != nil </span><span class="cov0" title="0">{
+                logrus.Fatalf("Failed to open log file: %v", err)
+        }</span>
 
-    <span class="cov0" title="0">var formatter logrus.Formatter
+        <span class="cov0" title="0">var formatter logrus.Formatter
 
-    switch strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) </span>{
+        switch strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) </span>{
         case "json":<span class="cov0" title="0">
-            formatter = &amp;QCSJSONFormatter{
-                TextFormatter: &amp;logrus.TextFormatter{
-                    DisableColors:   true,
-                    TimestampFormat: "2006/01/02 - 15:04:05",
-                    FullTimestamp:   true,
-                },
-            }</span>
+                formatter = &amp;QCSJSONFormatter{
+                        TextFormatter: &amp;logrus.TextFormatter{
+                                DisableColors:   true,
+                                TimestampFormat: "2006/01/02 - 15:04:05",
+                                FullTimestamp:   true,
+                        },
+                }</span>
         case "text":<span class="cov0" title="0">
-            fallthrough</span>
+                fallthrough</span>
         default:<span class="cov0" title="0">
-            formatter = &amp;QCSTextFormatter{
-                TextFormatter: &amp;logrus.TextFormatter{
-                    DisableColors:   false,
-                    TimestampFormat: "2006/01/02 - 15:04:05",
-                    FullTimestamp:   true,
-                },
-            }</span>
-    }
+                formatter = &amp;QCSTextFormatter{
+                        TextFormatter: &amp;logrus.TextFormatter{
+                                DisableColors:   false,
+                                TimestampFormat: "2006/01/02 - 15:04:05",
+                                FullTimestamp:   true,
+                        },
+                }</span>
+        }
 
-    <span class="cov0" title="0">Logger = &amp;logrus.Logger{
-        Out:       io.MultiWriter(os.Stderr, fileWriter),
-        Formatter: formatter,
-        Level:     logrus.InfoLevel,
-    }</span>
+        <span class="cov0" title="0">Logger = &amp;logrus.Logger{
+                Out:       io.MultiWriter(os.Stderr, fileWriter),
+                Formatter: formatter,
+                Level:     logrus.InfoLevel,
+        }</span>
 }
 
 type QCSJSONFormatter struct {
-    *logrus.TextFormatter
+        *logrus.TextFormatter
 }
 
 func (f *QCSJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) <span class="cov0" title="0">{
-    logType := "SERVER"
-    time := entry.Time.Format(f.TimestampFormat)
-    level := getServerLogConfig(entry.Level)
-    message := entry.Message
+        logType := "SERVER"
+        time := entry.Time.Format(f.TimestampFormat)
+        level := getServerLogConfig(entry.Level)
+        message := entry.Message
 
-    return []byte(
-        fmt.Sprintf("{\"type\":\"%s\",\"time\":\"%s\",\"level\":\"%s\",\"message\":\"%s\"}\n",
-            logType,
-            time, 
-            level, 
-            message,
-    )), nil
+        return []byte(
+                fmt.Sprintf("{\"type\":\"%s\",\"time\":\"%s\",\"level\":\"%s\",\"message\":\"%s\"}\n",
+                        logType,
+                        time,
+                        level,
+                        message,
+                )), nil
 }</span>
 
 type QCSTextFormatter struct {
-    *logrus.TextFormatter
+        *logrus.TextFormatter
 }
 
 func (f *QCSTextFormatter) Format(entry *logrus.Entry) ([]byte, error) <span class="cov0" title="0">{
-    level := getServerLogConfigWithColor(entry.Level)
+        level := getServerLogConfigWithColor(entry.Level)
 
-    time := entry.Time.Format(f.TimestampFormat)
-    message := entry.Message
+        time := entry.Time.Format(f.TimestampFormat)
+        message := entry.Message
 
-    return []byte(
-        fmt.Sprintf("[QCS] %s | %s |\t%s\n", 
-            time, 
-            level, 
-            message,
-    )), nil
+        return []byte(
+                fmt.Sprintf("[QCS] %s | %s |\t%s\n",
+                        time,
+                        level,
+                        message,
+                )), nil
 }</span>
 
 // Get the corresponding log level string from the given log level.
 func getServerLogConfig(level logrus.Level) string <span class="cov8" title="1">{
-    switch level </span>{
+        switch level </span>{
         case logrus.InfoLevel:<span class="cov8" title="1">
-            return "INFO"</span>
+                return "INFO"</span>
         case logrus.WarnLevel:<span class="cov8" title="1">
-            return "WARN"</span>
+                return "WARN"</span>
         case logrus.ErrorLevel:<span class="cov8" title="1">
-            return "ERROR"</span>
+                return "ERROR"</span>
         case logrus.FatalLevel:<span class="cov8" title="1">
-            return "FATAL"</span>
+                return "FATAL"</span>
         default:<span class="cov8" title="1">
-            return "NONE"</span>
-    }
+                return "NONE"</span>
+        }
 }
 
 // Get the corresponding log level string with color from the given log level.
 func getServerLogConfigWithColor(level logrus.Level) string <span class="cov8" title="1">{
-    switch level </span>{
+        switch level </span>{
         case logrus.InfoLevel:<span class="cov8" title="1">
-            return color.New(color.FgGreen).Sprint(" INFO ")</span>
+                return color.New(color.FgGreen).Sprint(" INFO ")</span>
         case logrus.WarnLevel:<span class="cov8" title="1">
-            return color.New(color.FgYellow).Sprint(" WARN ")</span>
+                return color.New(color.FgYellow).Sprint(" WARN ")</span>
         case logrus.ErrorLevel:<span class="cov8" title="1">
-            return color.New(color.FgRed).Sprint(" ERROR")</span>
+                return color.New(color.FgRed).Sprint(" ERROR")</span>
         case logrus.FatalLevel:<span class="cov8" title="1">
-            return color.New(color.FgMagenta).Sprint(" FATAL")</span>
+                return color.New(color.FgMagenta).Sprint(" FATAL")</span>
         default:<span class="cov8" title="1">
-            return color.New(color.FgWhite).Sprint(" NONE ")</span>
-    }
+                return color.New(color.FgWhite).Sprint(" NONE ")</span>
+        }
 }
 
 type QCSExtractGINCtx struct {
-    StatusCode int
-    Latency    time.Duration
-    ClientIP   string
-    Method     string
-    FullPath   string
+        StatusCode int
+        Latency    time.Duration
+        ClientIP   string
+        Method     string
+        FullPath   string
 }
 
 type AccessLog struct {
-    Type     string    `json:"type"`
-    Time     string    `json:"time"`
-    Level    string    `json:"level"`  
-    Status   int       `json:"status"`
-    Latency  string    `json:"latency"`
-    ClientIP string    `json:"client_ip"`
-    Method   string    `json:"method"`
-    Path     string    `json:"path"`
+        Type     string `json:"type"`
+        Time     string `json:"time"`
+        Level    string `json:"level"`
+        Status   int    `json:"status"`
+        Latency  string `json:"latency"`
+        ClientIP string `json:"client_ip"`
+        Method   string `json:"method"`
+        Path     string `json:"path"`
 }
 
 // Overwrite the default logger of Gin Framework.
 func OverwriteGinLog(ctx *QCSExtractGINCtx) <span class="cov0" title="0">{
-    if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" </span><span class="cov0" title="0">{
-        level, statusCode := getAccessLogConfig(ctx.StatusCode)
+        if strings.ToLower(cfg.SERVER_CONFIG.LOG_FORMATTER) == "text" </span><span class="cov0" title="0">{
+                level, statusCode := getAccessLogConfig(ctx.StatusCode)
 
-        message := fmt.Sprintf("[QCS] %s | %s |\t%s | %12s | %15s | %6s | %s\n",
-            time.Now().Format("2006/01/02 - 15:04:05"),
-            level,
-            statusCode,
-            ctx.Latency,
-            ctx.ClientIP,
-            color.New(color.FgHiCyan).Sprintf(" %-4s", ctx.Method),
-            ctx.FullPath,
-        )
+                message := fmt.Sprintf("[QCS] %s | %s |\t%s | %12s | %15s | %6s | %s\n",
+                        time.Now().Format("2006/01/02 - 15:04:05"),
+                        level,
+                        statusCode,
+                        ctx.Latency,
+                        ctx.ClientIP,
+                        color.New(color.FgHiCyan).Sprintf(" %-4s", ctx.Method),
+                        ctx.FullPath,
+                )
 
-        logOutput := io.MultiWriter(fileWriter, os.Stdout)
-        logOutput.Write([]byte(message))
-    }</span> else<span class="cov0" title="0"> {
-        message := AccessLog{
-            Type: "ACCESS",
-            Time: time.Now().Format("2006/01/02 - 15:04:05"),
-            Level: getAccessLogLevel(ctx.StatusCode),
-            Status: ctx.StatusCode,
-            Latency: fmt.Sprint(ctx.Latency),
-            ClientIP: ctx.ClientIP,
-            Method: ctx.Method,
-            Path: ctx.FullPath,
-        }
+                logOutput := io.MultiWriter(fileWriter, os.Stdout)
+                logOutput.Write([]byte(message))
+        }</span> else<span class="cov0" title="0"> { // Json
+                message := AccessLog{
+                        Type:     "ACCESS",
+                        Time:     time.Now().Format("2006/01/02 - 15:04:05"),
+                        Level:    getAccessLogLevel(ctx.StatusCode),
+                        Status:   ctx.StatusCode,
+                        Latency:  fmt.Sprint(ctx.Latency),
+                        ClientIP: ctx.ClientIP,
+                        Method:   ctx.Method,
+                        Path:     ctx.FullPath,
+                }
 
-        jsonBytes, _ := json.Marshal(message)
+                jsonBytes, _ := json.Marshal(message)
 
-        logOutput := io.MultiWriter(fileWriter, os.Stderr)
-        logOutput.Write(jsonBytes)
-        logOutput.Write([]byte("\n"))
-    }</span>
+                logOutput := io.MultiWriter(fileWriter, os.Stderr)
+                logOutput.Write(jsonBytes)
+                logOutput.Write([]byte("\n"))
+        }</span>
 }
 
 // Get the corresponding log level string from the given status code.
 func getAccessLogLevel(statusCode int) string <span class="cov8" title="1">{
-    switch </span>{
+        switch </span>{
         case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:<span class="cov8" title="1">
-            return "INFO"</span>
+                return "INFO"</span>
         case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:<span class="cov8" title="1">
-            return "WARN"</span>
+                return "WARN"</span>
         case statusCode &gt;= 500:<span class="cov8" title="1">
-            return"ERROR"</span>
+                return "ERROR"</span>
         default:<span class="cov8" title="1">
-            return "NONE"</span>
-    }
+                return "NONE"</span>
+        }
 }
 
 // Get the corresponding log level string with color and status code with color from the given status code.
 func getAccessLogConfig(statusCode int) (string, string) <span class="cov8" title="1">{
-    switch </span>{
+        switch </span>{
         case statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300:<span class="cov8" title="1">
-            return color.New(color.FgGreen).Sprint(" INFO "), color.New(color.FgHiGreen).Sprint(statusCode)</span>
+                return color.New(color.FgGreen).Sprint(" INFO "), color.New(color.FgHiGreen).Sprint(statusCode)</span>
         case statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500:<span class="cov8" title="1">
-            return color.New(color.FgYellow).Sprint(" WARN "), color.New(color.FgHiYellow).Sprint(statusCode)</span>
+                return color.New(color.FgYellow).Sprint(" WARN "), color.New(color.FgHiYellow).Sprint(statusCode)</span>
         case statusCode &gt;= 500:<span class="cov8" title="1">
-            return color.New(color.FgRed).Sprint(" ERROR"), color.New(color.FgHiRed).Sprint(statusCode)</span>
+                return color.New(color.FgRed).Sprint(" ERROR"), color.New(color.FgHiRed).Sprint(statusCode)</span>
         default:<span class="cov8" title="1">
-            return color.New(color.FgWhite).Sprint(" NONE "), color.New(color.FgHiWhite).Sprint(statusCode)</span>
-    }
-}</pre>
+                return color.New(color.FgWhite).Sprint(" NONE "), color.New(color.FgHiWhite).Sprint(statusCode)</span>
+        }
+}
+</pre>
 		
-		<pre class="file" id="file4" style="display: none">package utils
+		<pre class="file" id="file6" style="display: none">package utils
 
 import (
         "os"
@@ -721,22 +1117,23 @@ import (
 
 // Get the private key bytes from the local file.
 func GetPrivateKeyBytes() ([]byte, error) <span class="cov8" title="1">{
-    changed := Change2RootDir()
-    fileName := "./local/private_key.pem"
+        changed := Change2RootDir()
+        fileName := "./local/private_key.pem"
 
-    data, err := os.ReadFile(fileName)
-    if err != nil </span><span class="cov0" title="0">{
-        return nil, err
-    }</span>
+        data, err := os.ReadFile(fileName)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
 
-    <span class="cov8" title="1">if changed </span><span class="cov8" title="1">{
-        os.Chdir("utils")
-    }</span>
+        <span class="cov8" title="1">if changed </span><span class="cov8" title="1">{
+                os.Chdir("utils")
+        }</span>
 
-    <span class="cov8" title="1">return data, err</span>
-}</pre>
+        <span class="cov8" title="1">return data, err</span>
+}
+</pre>
 		
-		<pre class="file" id="file5" style="display: none">package utils
+		<pre class="file" id="file7" style="display: none">package utils
 
 import (
         "errors"
@@ -746,28 +1143,29 @@ import (
 
 // Convert the time unit string to time.Duration.
 func TimeUnitStrToTimeDuration(unit string) (time.Duration, error) <span class="cov8" title="1">{
-    unit = strings.ToLower(unit)
-    var timeUnit time.Duration
+        unit = strings.ToLower(unit)
+        var timeUnit time.Duration
 
-    switch unit </span>{
+        switch unit </span>{
         case "day":<span class="cov8" title="1">
-            timeUnit = time.Hour * 24</span>
+                timeUnit = time.Hour * 24</span>
         case "hour":<span class="cov8" title="1">
-            timeUnit = time.Hour</span>
+                timeUnit = time.Hour</span>
         case "minute":<span class="cov8" title="1">
-            timeUnit = time.Minute</span>
+                timeUnit = time.Minute</span>
         case "second":<span class="cov8" title="1">
-            timeUnit = time.Second</span>
+                timeUnit = time.Second</span>
         case "millisecond":<span class="cov8" title="1">
-            timeUnit = time.Millisecond</span>
+                timeUnit = time.Millisecond</span>
         default:<span class="cov8" title="1">
-            return 0, errors.New("time unit is not valid (Require: day, hour, minute, second, millisecond)")</span>
-    }
+                return 0, errors.New("time unit is not valid (Require: day, hour, minute, second, millisecond)")</span>
+        }
 
-    <span class="cov8" title="1">return timeUnit, nil</span>
-}</pre>
+        <span class="cov8" title="1">return timeUnit, nil</span>
+}
+</pre>
 		
-		<pre class="file" id="file6" style="display: none">package utils
+		<pre class="file" id="file8" style="display: none">package utils
 
 import (
         cfg "QuickCertS/configs"
@@ -778,57 +1176,58 @@ import (
 
 // Check if the given data is all not empty except the excluded fields.
 func IsValidData(iData interface{}, exclude []string) bool <span class="cov8" title="1">{
-    data := reflect.ValueOf(iData)
+        data := reflect.ValueOf(iData)
 
-    for i := 0; i &lt; data.NumField(); i++ </span><span class="cov8" title="1">{
-        fieldName := data.Type().Field(i).Name
-        fieldValue := data.Field(i).Interface()
+        for i := 0; i &lt; data.NumField(); i++ </span><span class="cov8" title="1">{
+                fieldName := data.Type().Field(i).Name
+                fieldValue := data.Field(i).Interface()
 
-        if fieldValue == "" &amp;&amp; !isExcludeField(fieldName, exclude) </span><span class="cov8" title="1">{
-            return false
-        }</span>
-    }
+                if fieldValue == "" &amp;&amp; !isExcludeField(fieldName, exclude) </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
 
-    <span class="cov8" title="1">return true</span>
+        <span class="cov8" title="1">return true</span>
 }
 
 // Generate a random runtime code.
 func GenerateRunTimeCode() (string, error) <span class="cov8" title="1">{
-    length := cfg.SERVER_CONFIG.RUNTIME_CODE_LENGTH
-    code, err := generateRandomString(length)
+        length := cfg.SERVER_CONFIG.RUNTIME_CODE_LENGTH
+        code, err := generateRandomString(length)
 
-    if err != nil </span><span class="cov0" title="0">{
-        return "", err
-    }</span>
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
 
-    <span class="cov8" title="1">return code, nil</span>
+        <span class="cov8" title="1">return code, nil</span>
 }
 
 // Generate a random string with the given length.
 func generateRandomString(length int) (string, error) <span class="cov8" title="1">{
-    const charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    b := make([]byte, length)
+        const charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        b := make([]byte, length)
 
-    for i := range b </span><span class="cov8" title="1">{
-        randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-        if err != nil </span><span class="cov0" title="0">{
-            return "", err
-        }</span>
-        <span class="cov8" title="1">b[i] = charset[randomIndex.Int64()]</span>
-    }
+        for i := range b </span><span class="cov8" title="1">{
+                randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+                if err != nil </span><span class="cov0" title="0">{
+                        return "", err
+                }</span>
+                <span class="cov8" title="1">b[i] = charset[randomIndex.Int64()]</span>
+        }
 
-    <span class="cov8" title="1">return string(b), nil</span>
+        <span class="cov8" title="1">return string(b), nil</span>
 }
 
 // Check if the given field is in the excluded list.
 func isExcludeField(field string, exclude []string) bool <span class="cov8" title="1">{
-    for _, value := range exclude </span><span class="cov8" title="1">{
-        if field == value </span><span class="cov8" title="1">{
-            return true
-        }</span>
-    }
-    <span class="cov8" title="1">return false</span>
-}</pre>
+        for _, value := range exclude </span><span class="cov8" title="1">{
+                if field == value </span><span class="cov8" title="1">{
+                        return true
+                }</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+</pre>
 		
 		</div>
 	</body>

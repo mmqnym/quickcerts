@@ -37,7 +37,7 @@ func CreateSN(ctx *gin.Context) {
 	}
 
 	if err := data.AddNewSN(creationInfo.SerialNumber); err != nil {
-		if err.Error() == "the S/N already exists" {
+		if err.Error() == "the s/n already exists" {
 			ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
 			utils.Logger.Warn(
 				fmt.Sprintf("The S/N [%s] already exists.", creationInfo.SerialNumber),
