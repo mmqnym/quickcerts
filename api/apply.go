@@ -53,8 +53,8 @@ func ApplyCertificate(ctx *gin.Context) {
 	// Check if the SN exists in the database(It's a legal S/N).
 	sn_is_exist, err := data.IsSNExist(applyInfo.SerialNumber)
 
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
+	if err != nil && err.Error() != "the s/n does not exist" {
+		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
 		return
 	}
 

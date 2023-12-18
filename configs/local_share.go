@@ -178,6 +178,13 @@ func checkValid() {
 
 // Ensure that the current working directory is the root directory of the project.
 func change2RootDir() bool {
+	// Production mode does not need to change directory.
+	if _, err := os.Stat("server"); !os.IsNotExist(err) {
+		return false
+	} else if _, err := os.Stat("server.exe"); !os.IsNotExist(err) {
+		return false
+	}
+
 	if _, err := os.Stat("go.mod"); !os.IsNotExist(err) {
 		return false
 	}

@@ -55,13 +55,13 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">QuickCertS/configs/local_share.go (83.6%)</option>
+				<option value="file0">QuickCertS/configs/local_share.go (81.5%)</option>
 				
-				<option value="file1">QuickCertS/data/cache_layer.go (0.0%)</option>
+				<option value="file1">QuickCertS/data/cache_layer.go (92.0%)</option>
 				
 				<option value="file2">QuickCertS/data/controller.go (81.5%)</option>
 				
-				<option value="file3">QuickCertS/utils/control.go (75.0%)</option>
+				<option value="file3">QuickCertS/utils/control.go (71.4%)</option>
 				
 				<option value="file4">QuickCertS/utils/key_tools.go (85.0%)</option>
 				
@@ -265,7 +265,14 @@ func checkValid() <span class="cov8" title="1">{
 
 // Ensure that the current working directory is the root directory of the project.
 func change2RootDir() bool <span class="cov8" title="1">{
-        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+        // Production mode does not need to change directory.
+        if _, err := os.Stat("server"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return false
+        }</span> else<span class="cov8" title="1"> if _, err := os.Stat("server.exe"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
                 return false
         }</span>
 
@@ -297,10 +304,12 @@ func change2RootDir() bool <span class="cov8" title="1">{
 		<pre class="file" id="file1" style="display: none">package data
 
 import (
-        "QuickCertS/utils"
         "context"
         "errors"
+        "strconv"
         "time"
+
+        cfg "QuickCertS/configs"
 
         "github.com/redis/go-redis/v9"
 )
@@ -309,59 +318,63 @@ var ctx = context.Background()
 var rdb *redis.Client = nil
 
 // Connect to the redis database.
-func ConnectRDB() <span class="cov0" title="0">{
+func ConnectRDB() error <span class="cov8" title="1">{
         rdb = redis.NewClient(&amp;redis.Options{
-                Addr:     "qcs-cache:6379",
-                Password: "",
+                Addr:     cfg.CACHE_CONFIG.HOST + ":" + strconv.Itoa(cfg.CACHE_CONFIG.PORT),
+                Password: cfg.CACHE_CONFIG.PASSWORD,
                 DB:       0,
         })
 
         _, err := rdb.Ping(ctx).Result()
 
-        if err != nil </span><span class="cov0" title="0">{
-                utils.Logger.Fatal("Failed to access the redis database.")
+        if err != nil </span><span class="cov8" title="1">{
+                rdb = nil
+                return errors.New("failed to access the redis database")
         }</span>
 
-        <span class="cov0" title="0">utils.Logger.Info("Successfully connected the redis database.")</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 // Disconnect from the redis database.
-func DisconnectRDB() <span class="cov0" title="0">{
-        if rdb == nil </span><span class="cov0" title="0">{
-                utils.Logger.Warn("Currently not connecting the redis database.")
-                return
-        }</span>
-
-        <span class="cov0" title="0">rdb.Close()
-        utils.Logger.Info("Successfully disconnected the redis database.")</span>
-}
-
-// Set the key cache corresponding to the device.
-func SetDeviceKeyCache(key string, value interface{}) error <span class="cov0" title="0">{
-        if rdb == nil </span><span class="cov0" title="0">{
+func DisconnectRDB() error <span class="cov8" title="1">{
+        if rdb == nil </span><span class="cov8" title="1">{
                 return errors.New("currently not connecting the redis database")
         }</span>
 
-        <span class="cov0" title="0">err := rdb.Set(ctx, key, value, time.Hour*24*7).Err()
+        <span class="cov8" title="1">err := rdb.Close()
+        rdb = nil
+        return err</span>
+}
+
+// Set the key cache corresponding to the device.
+func SetDeviceKeyCache(key string, value interface{}) error <span class="cov8" title="1">{
+        if rdb == nil </span><span class="cov8" title="1">{
+                return errors.New("currently not connecting the redis database")
+        }</span>
+
+        <span class="cov8" title="1">err := rdb.Set(ctx, key, value, time.Hour*24*7).Err()
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 // Get the key cache corresponding to the device. if exists, or return "".
-func GetDeviceKeyCache(deviceInfoBase string) (string, error) <span class="cov0" title="0">{
-        if rdb == nil </span><span class="cov0" title="0">{
+func GetDeviceKeyCache(deviceInfoBase string) (string, error) <span class="cov8" title="1">{
+        if rdb == nil </span><span class="cov8" title="1">{
                 return "", errors.New("currently not connecting the redis database")
         }</span>
 
-        <span class="cov0" title="0">key, err := rdb.Get(ctx, deviceInfoBase).Result()
-        if err != nil </span><span class="cov0" title="0">{
-                return "", err
-        }</span>
+        <span class="cov8" title="1">key, err := rdb.Get(ctx, deviceInfoBase).Result()
+        if err != nil </span><span class="cov8" title="1">{
+                if err.Error() == "redis: nil" </span><span class="cov8" title="1">{
+                        return "", errors.New("the key not exist in the cache")
+                }</span>
+                <span class="cov0" title="0">return "", err</span>
+        }
 
-        <span class="cov0" title="0">return key, nil</span>
+        <span class="cov8" title="1">return key, nil</span>
 }
 </pre>
 		
@@ -711,7 +724,14 @@ func WaitForShutdown(server *http.Server) <span class="cov8" title="1">{
 
 // Ensure that the current working directory is the root directory of the project.
 func Change2RootDir() bool <span class="cov8" title="1">{
-        if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+        // Production mode does not need to change directory.
+        if _, err := os.Stat("server"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return false
+        }</span> else<span class="cov8" title="1"> if _, err := os.Stat("server.exe"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">if _, err := os.Stat("go.mod"); !os.IsNotExist(err) </span><span class="cov0" title="0">{
                 return false
         }</span>
 

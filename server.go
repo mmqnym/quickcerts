@@ -79,8 +79,24 @@ func main() {
         utils.Logger.Info("Successfully disconnected the database.")
     }()
 
-	data.ConnectRDB()
-	defer data.DisconnectRDB()
+	err = data.ConnectRDB()
+	if err != nil {
+        utils.Logger.Fatal(err.Error())
+    }
+	utils.Logger.Info("Successfully connected the redis database.")
+
+	defer func() {
+        err := data.DisconnectRDB()
+        if err != nil {
+            if err.Error() == "currently not connecting the redis database" {
+                utils.Logger.Warn("Currently not connecting the redis database.")
+                return
+            }
+            utils.Logger.Fatal(err.Error())
+        }
+        
+        utils.Logger.Info("Successfully disconnected the redis database.")
+    }()
 
 	registerRoutes()
 

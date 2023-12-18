@@ -36,6 +36,8 @@ services:
       dockerfile: Dockerfile.redis
     networks:
       - qcs_subnet
+    ports: # You can remove this if you don't need to access redis from outside the container
+      - "33334:6379"
     volumes:
       - qcs-rdb-data:/data
     restart: unless-stopped
@@ -50,6 +52,7 @@ services:
       - "33333:33333"
     depends_on:
       - qcs-db
+      - qcs-cache
     environment:
       DB_HOST: qcs-db
       DB_PORT: 5432
