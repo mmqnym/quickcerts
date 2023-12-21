@@ -15,6 +15,7 @@ volumes:
 
 services:
   qcs-db:
+    container_name: qcs-db
     build:
       context: .
       dockerfile: Dockerfile.database
@@ -31,6 +32,7 @@ services:
     restart: unless-stopped
 
   qcs-cache:
+    container_name: qcs-cache
     build:
       context: .
       dockerfile: Dockerfile.redis
@@ -43,6 +45,7 @@ services:
     restart: unless-stopped
 
   qcs-server:
+    container_name: qcs-server
     build:
       context: .
       dockerfile: Dockerfile.server
