@@ -9,4 +9,5 @@ self_cert
 release
 
 # Testing files
-coverage*
+coverage.html
+coverage.out
