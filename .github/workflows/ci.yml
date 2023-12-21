@@ -19,7 +19,7 @@ jobs:
       - name: Create test private key file
         run: |
           mkdir -p ./local
-          echo "${{ secrets.PRIVATE_KEY }}" > ./local/private_key.pem
+          echo "${{ secrets.TEST_PRIVATE_KEY }}" > ./local/private_key.pem
 
       - name: Build test environment
         run: |
