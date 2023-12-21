@@ -1,6 +1,7 @@
 # QuickCertS
 
 <p align="center">
+    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/QuickCertS">
     <img alt="app version" src="https://img.shields.io/github/v/release/mmq88/QuickCertS"></img>
     <img alt="go version" src="https://img.shields.io/github/go-mod/go-version/mmq88/QuickCertS"></img>
     <img alt="python version" src="https://img.shields.io/badge/Python-v3.9.13-blue"></img>
