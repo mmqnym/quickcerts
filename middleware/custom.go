@@ -13,6 +13,7 @@ import (
 	"QuickCertS/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // Override the default logger of Gin Framework.
@@ -82,27 +83,39 @@ func AdminAccessAuth(runTimeCode string) gin.HandlerFunc {
 
 		if cfg.SERVER_CONFIG.USE_RUNTIME_CODE {
 			if reqRunTimeCode == "" || reqRunTimeCode != runTimeCode {
-				utils.Logger.Info(fmt.Sprintf("Runtime Code error(%s), From [%s]", reqRunTimeCode, ctx.RemoteIP()))
+				utils.Record(
+					logrus.InfoLevel, 
+					fmt.Sprintf("Runtime Code error(%s), From [%s]", reqRunTimeCode, ctx.RemoteIP()),
+				)
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Error: "Unauthorized Request."})
 				return
 			}
 		}
 
 		if reqToken == "" {
-			utils.Logger.Info(fmt.Sprintf("Token error, From [%s]", ctx.RemoteIP()))
+			utils.Record(
+				logrus.InfoLevel,
+				fmt.Sprintf("Token error, From [%s]", ctx.RemoteIP()),
+			)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Error: "Unauthorized Request."})
 			return
 		}
 
 		for _, permission := range cfg.ALLOWEDLIST.PERMISSIONS {
 			if reqToken == permission.TOKEN || permission.TOKEN == "" {
-				utils.Logger.Info(fmt.Sprintf("Admin [%s] login, From [%s]", permission.NAME, ctx.RemoteIP()))
+				utils.Record(
+					logrus.InfoLevel,
+					fmt.Sprintf("Admin [%s] login, From [%s]", permission.NAME, ctx.RemoteIP()),
+				)
 				ctx.Next()
 				return
 			}
 		}
 
-		utils.Logger.Warn(fmt.Sprintf("Illegal access detected, From [%s]", ctx.RemoteIP()))
+		utils.Record(
+			logrus.WarnLevel,
+			fmt.Sprintf("Illegal access detected, From [%s]", ctx.RemoteIP()),
+		)
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Error: "Unauthorized Request."})
 	}
 }

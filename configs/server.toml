@@ -44,6 +44,9 @@ TEMPORARY_PERMIT_TIME_UNIT = "day"
 HASHING_METHOD = "sha3-512"
 
 ##### Log settings #####
+# Do not change this value if you don't know what it means.
+LOG_TEST_MODE = true
+
 # Allowed values: "day", "hour", "minute", "second"
 LOG_MAX_AGE = 240
 LOG_ROTATION_TIME = 12

@@ -71,7 +71,7 @@ func TestAddNewSN(t *testing.T) {
 	assert.Equal(t, err.Error(), "the s/n already exists")
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn = $1", sn)
+	err = DeleteTestingData("DELETE FROM certs WHERE sn = $1", sn)
 	assert.Nil(t, err)
 }
 
@@ -112,7 +112,7 @@ func TestAddNewSNs(t *testing.T) {
 	assert.Equal(t, err.Error(), "some s/ns already exist")
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn IN ($1, $2, $3)", snList[0], snList[1], snList[2])
+	err = DeleteTestingData("DELETE FROM certs WHERE sn IN ($1, $2, $3)", snList[0], snList[1], snList[2])
 	assert.Nil(t, err)
 }
 
@@ -152,7 +152,7 @@ func TestIsSNExist(t *testing.T) {
 	assert.Equal(t, err.Error(), "the s/n does not exist")
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn = $1", sn)
+	err = DeleteTestingData("DELETE FROM certs WHERE sn = $1", sn)
 	assert.Nil(t, err)
 }
 
@@ -200,7 +200,7 @@ func TestBindSNWithKey(t *testing.T) {
 	assert.Equal(t, err.Error(), "the s/n does not exist or has already been used")
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn = $1", sn)
+	err = DeleteTestingData("DELETE FROM certs WHERE sn = $1", sn)
 	assert.Nil(t, err)
 }
 
@@ -236,7 +236,7 @@ func TestAddTemporaryPermit(t *testing.T) {
 	assert.Equal(t, int64(expectedRemainingTime), remainingTime)
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM temporary_permits WHERE key = $1", "key")
+	err = DeleteTestingData("DELETE FROM temporary_permits WHERE key = $1", "key")
 	assert.Nil(t, err)
 }
 
@@ -275,7 +275,7 @@ func TestGetTemporaryPermitExpiredTime(t *testing.T) {
 	assert.LessOrEqual(t, remainingTime, NewRemainingTime)
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM temporary_permits WHERE key = $1", "key")
+	err = DeleteTestingData("DELETE FROM temporary_permits WHERE key = $1", "key")
 	assert.Nil(t, err)
 }
 
@@ -316,7 +316,7 @@ func TestUpdateCertNote(t *testing.T) {
 	assert.Equal(t, err.Error(), "the s/n does not exist")
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn = $1", sn)
+	err = DeleteTestingData("DELETE FROM certs WHERE sn = $1", sn)
 	assert.Nil(t, err)
 }
 
@@ -367,7 +367,8 @@ func TestGetAvaliableSN(t *testing.T) {
 	assert.Contains(t, resList, snList[2])
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn IN ($1, $2, $3)", snList[0], snList[1], snList[2])
+	err = DeleteTestingData("DELETE FROM certs WHERE sn IN ($1, $2, $3)", snList[0], snList[1], snList[2])
+	assert.Nil(t, err)
 }
 
 func TestGetAllCerts(t *testing.T) {
@@ -414,5 +415,11 @@ func TestGetAllCerts(t *testing.T) {
 	}
 
 	// Delete the added test data
-	_, err = db.Exec("DELETE FROM certs WHERE sn = $1", sn)
+	err = DeleteTestingData("DELETE FROM certs WHERE sn = $1", sn)
+	assert.Nil(t, err)
+}
+
+func TestDeleteTestingData(t *testing.T) {
+	err := DeleteTestingData("", "")
+	assert.Equal(t, "currently not connecting the database", err.Error())
 }

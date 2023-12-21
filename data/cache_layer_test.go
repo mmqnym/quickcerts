@@ -55,7 +55,7 @@ func TestSetAndGetKeyCache(t *testing.T) {
 	assert.Nil(t, err)
 
 	base := "testSN&testBP&testBN&testMAC"
-	expectedKey := "6b59d34e37dc60cfa668465a3d5f935e4b7cb789c62d8233b6310a4dc14c09cb"
+	expectedKey := "5578c9d3cd718345af4319f3021157999b993f2e991481524234746f38b84c03"
 
 	err = SetDeviceKeyCache(base, expectedKey)
 	assert.Nil(t, err)
@@ -63,6 +63,9 @@ func TestSetAndGetKeyCache(t *testing.T) {
 	actualKey, err := GetDeviceKeyCache(base)
 	assert.Nil(t, err)
 	assert.Equal(t, actualKey, expectedKey)
+
+	err = DeleteTestingCache(base)
+	assert.Nil(t, err)
 
 	err = DisconnectRDB()
 	assert.Nil(t, err)
@@ -79,4 +82,12 @@ func TestSetAndGetKeyCache(t *testing.T) {
 	actualKey, err = GetDeviceKeyCache("test")
 	assert.Equal(t, "the key not exist in the cache", err.Error())
 	assert.Equal(t, "", actualKey)
+
+	err = DisconnectRDB()
+	assert.Nil(t, err)
+}
+
+func TestDeleteTestingCache(t *testing.T) {
+	err := DeleteTestingCache("test")
+	assert.Equal(t, "currently not connecting the redis database", err.Error())
 }

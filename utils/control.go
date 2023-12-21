@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 // Gracefully shutdown the server.
@@ -13,15 +15,15 @@ func WaitForShutdown(server *http.Server) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
-	Logger.Info("The Server is shutting down ...")
+	Record(logrus.InfoLevel, "The Server is shutting down ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		Logger.Fatal("Something wrong happened when shutting down the server: " + err.Error())
+		Record(logrus.FatalLevel, "Something wrong happened when shutting down the server: " + err.Error())
 	}
 
-	Logger.Info("The Server has exited successfully.")
+	Record(logrus.InfoLevel, "The Server has exited successfully.")
 }
 
 // Ensure that the current working directory is the root directory of the project.

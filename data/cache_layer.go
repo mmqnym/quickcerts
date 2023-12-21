@@ -73,3 +73,17 @@ func GetDeviceKeyCache(deviceInfoBase string) (string, error) {
 
 	return key, nil
 }
+
+// Not a secure way to delete cache, only for testing.
+func DeleteTestingCache(deviceInfoBase string) error {
+	if rdb == nil {
+		return errors.New("currently not connecting the redis database")
+	}
+
+	err := rdb.Del(ctx, deviceInfoBase).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

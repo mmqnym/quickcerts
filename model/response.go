@@ -12,7 +12,7 @@ type ApplyCertResponse struct {
 
 type ApplyTempPermitResponse struct {
 	Status        string `json:"status" example:"activated"`
-	RemainingTime int64  `json:"remainingTime" example:"604800"`
+	RemainingTime int64  `json:"remaining_time" example:"604800"`
 }
 
 type CreateSNResponse struct {

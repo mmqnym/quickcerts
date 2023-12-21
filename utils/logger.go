@@ -16,8 +16,9 @@ import (
 )
 
 var (
-	Logger     *logrus.Logger         // The logger for the server.
+	logger     *logrus.Logger         // The logger for the server.
 	fileWriter *rotatelogs.RotateLogs // The file writer for the server logger & access logger.
+	TestBuffer string      			  // The buffer for testing mode.
 )
 
 func InitLogger() {
@@ -62,10 +63,27 @@ func InitLogger() {
 		}
 	}
 
-	Logger = &logrus.Logger{
+	logger = &logrus.Logger{
 		Out:       io.MultiWriter(os.Stderr, fileWriter),
 		Formatter: formatter,
 		Level:     logrus.InfoLevel,
+	}
+}
+
+func Record(level logrus.Level, msg string) {
+	if cfg.SERVER_CONFIG.LOG_TEST_MODE {
+		TestBuffer = msg
+		return
+	}
+
+	if level == logrus.InfoLevel {
+		logger.Info(msg)
+	} else if level == logrus.WarnLevel {
+		logger.Warn(msg)
+	} else if level == logrus.ErrorLevel {
+		logger.Error(msg)
+	} else if level == logrus.FatalLevel {
+		logger.Fatal(msg)
 	}
 }
 

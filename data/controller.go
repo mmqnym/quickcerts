@@ -223,8 +223,7 @@ func GetAllCerts() ([]model.Cert, error) {
 
 	rows, err := db.Query(query)
 	if err != nil {
-		utils.Logger.Error(err.Error())
-		return nil, nil
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -261,8 +260,7 @@ func GetAvaliableSN() ([]string, error) {
 
 	rows, err := db.Query(query)
 	if err != nil {
-		utils.Logger.Error(err.Error())
-		return nil, nil
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -310,6 +308,20 @@ func UpdateCertNote(sn string, note string) error {
 
 	if rowsAffected == 0 {
 		return errors.New("the s/n does not exist")
+	}
+
+	return nil
+}
+
+// Not a secure way to delete data, only for testing.
+func DeleteTestingData(stmt string, args ...any) error {
+	if db == nil {
+		return errors.New("currently not connecting the database")
+	}
+
+	_, err := db.Exec(stmt, args...)
+	if err != nil {
+		return err
 	}
 
 	return nil

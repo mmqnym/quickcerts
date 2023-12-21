@@ -11,6 +11,7 @@ import (
 	"QuickCertS/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // Provide the client with a certificate(unique key and signature) for app.
@@ -37,16 +38,7 @@ func ApplyCertificate(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data format."})
-		utils.Logger.Error(err.Error())
-		return
-	}
-
-	excludeList := []string{"Note"} // Allowed empty fields.
-
-	// Check the data is all not empty except for the fields in the excludeList.
-	if !utils.IsValidData(applyInfo, excludeList) {
-		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data from client."})
-		utils.Logger.Error("Invalid data from client.")
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
@@ -60,9 +52,7 @@ func ApplyCertificate(ctx *gin.Context) {
 
 	if !sn_is_exist {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "The S/N does not exist."})
-		utils.Logger.Error(
-			fmt.Sprintf("The S/N [%s] does not exist.", applyInfo.SerialNumber),
-		)
+		utils.Record(logrus.ErrorLevel, fmt.Sprintf("The S/N [%s] does not exist.", applyInfo.SerialNumber))
 		return
 	}
 
@@ -74,8 +64,10 @@ func ApplyCertificate(ctx *gin.Context) {
 	// The key not exist in the cache.
 	if err != nil {
 		if err.Error() == "currently not connecting the redis database" {
-			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Error(err.Error())
+			ctx.JSON(
+				http.StatusInternalServerError, 
+				model.ErrorResponse{Error: "Currently not connecting the redis database."})
+			utils.Record(logrus.ErrorLevel, "Currently not connecting the redis database.")
 			return
 		} else {
 			// The key not exist in the cache, generate a new key.
@@ -83,24 +75,18 @@ func ApplyCertificate(ctx *gin.Context) {
 
 			if err != nil {
 				ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
-				utils.Logger.Error(err.Error())
+				utils.Record(logrus.ErrorLevel, err.Error())
 				return
 			}
 			data.SetDeviceKeyCache(base, key)
 		}
 	}
 
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
-		utils.Logger.Error(err.Error())
-		return
-	}
-
 	signature, err := utils.SignMessage([]byte(key))
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
@@ -109,13 +95,17 @@ func ApplyCertificate(ctx *gin.Context) {
 
 	if err := data.BindSNWithKey(applyInfo.SerialNumber, key); err != nil {
 		if err.Error() == "the s/n does not exist or has already been used" {
-			ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Warn(
+			ctx.JSON(
+				http.StatusBadRequest, 
+				model.ErrorResponse{Error: "The S/N does not exist or has already been used."},
+			)
+			utils.Record(
+				logrus.WarnLevel, 
 				fmt.Sprintf("The S/N [%s] does not exist or has already been used.", applyInfo.SerialNumber),
 			)
 		} else {
 			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Error(err.Error())
+			utils.Record(logrus.ErrorLevel, err.Error())
 		}
 		return
 
@@ -131,7 +121,7 @@ func ApplyCertificate(ctx *gin.Context) {
 			Signature: signatureBase64,
 		},
 	)
-	utils.Logger.Info(fmt.Sprintf("Successfully updated and sent the key [%s].", key))
+	utils.Record(logrus.InfoLevel, fmt.Sprintf("Successfully updated and sent the key [%s].", key))
 }
 
 // Allow users to apply for temporary use permits on devices.
@@ -153,17 +143,8 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&applyInfo)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, "Invalid data format.")
-		utils.Logger.Error(err.Error())
-		return
-	}
-
-	excludeList := []string{"Note"} // Allowed empty fields.
-
-	// Check the data is all not empty except for the fields in the excludeList.
-	if !utils.IsValidData(applyInfo, excludeList) {
-		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data from client."})
-		utils.Logger.Error("Invalid data from client.")
+		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data format."})
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
@@ -176,8 +157,10 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 	// The key not exist in the cache.
 	if err != nil {
 		if err.Error() == "currently not connecting the redis database" {
-			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Error(err.Error())
+			ctx.JSON(
+				http.StatusInternalServerError, 
+				model.ErrorResponse{Error: "Currently not connecting the redis database."})
+			utils.Record(logrus.ErrorLevel, "Currently not connecting the redis database.")
 			return
 		} else {
 			// The key not exist in the cache, generate a new key.
@@ -185,7 +168,7 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 
 			if err != nil {
 				ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Internal server error."})
-				utils.Logger.Error(err.Error())
+				utils.Record(logrus.ErrorLevel, err.Error())
 				return
 			}
 			data.SetDeviceKeyCache(base, key)
@@ -198,30 +181,32 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 	if err != nil {
 		if strings.Contains(err.Error(), "allowed new key") {
 			// Add new key to temporary permit table.
-			utils.Logger.Info(err.Error()) // Allowed new key: xxx
+			utils.Record(logrus.InfoLevel, err.Error()) // Allowed new key: xxx
 			remainingTime, err = data.AddTemporaryPermit(key)
 
 			if err != nil {
 				ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-				utils.Logger.Error(err.Error())
+				utils.Record(logrus.ErrorLevel, err.Error())
 			} else {
 				ctx.JSON(http.StatusOK, gin.H{
 					"status":         "activated",
 					"remaining_time": remainingTime,
 				})
 
-				utils.Logger.Info(
+				utils.Record(
+					logrus.InfoLevel, 
 					fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", key, remainingTime),
 				)
 			}
 
 		} else {
 			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Error(err.Error())
+			utils.Record(logrus.ErrorLevel, err.Error())
 		}
 		return
 	}
 
+	// The given key has been used by same device. 
 	// Return the remaining valid time.
 	if remainingTime > 0 {
 		ctx.JSON(
@@ -231,12 +216,14 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 				"remaining_time": remainingTime,
 			},
 		)
-		utils.Logger.Info(
+		utils.Record(
+			logrus.InfoLevel, 
 			fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", key, remainingTime),
 		)
 	} else {
 		ctx.JSON(http.StatusOK, model.ErrorResponse{Error: "The authorization has expired."})
-		utils.Logger.Info(
+		utils.Record(
+			logrus.InfoLevel,
 			fmt.Sprintf("The authorization for [%s] to use the product has expired.", key),
 		)
 	}

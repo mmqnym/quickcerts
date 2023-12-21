@@ -9,6 +9,7 @@ import (
 	"QuickCertS/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // Add serial number to the database, only requests with valid tokens are allowed.
@@ -32,26 +33,25 @@ func CreateSN(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data format."})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
 	if err := data.AddNewSN(creationInfo.SerialNumber); err != nil {
 		if err.Error() == "the s/n already exists" {
-			ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Warn(
-				fmt.Sprintf("The S/N [%s] already exists.", creationInfo.SerialNumber),
-			)
+			ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "The S/N already exists."})
+			utils.Record(logrus.WarnLevel, fmt.Sprintf("The S/N [%s] already exists.", creationInfo.SerialNumber))
 		} else {
 			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Error(err.Error())
+			utils.Record(logrus.ErrorLevel, err.Error())
 		}
 	} else {
 		ctx.JSON(
 			http.StatusOK,
 			model.CreateSNResponse{Msg: "Successfully uploaded a new S/N.", SerialNumber: creationInfo.SerialNumber},
 		)
-		utils.Logger.Info(
+
+		utils.Record(logrus.InfoLevel, 
 			fmt.Sprintf("Successfully uploaded a new S/N [%s] with reason (%s).",
 				creationInfo.SerialNumber, creationInfo.Reason),
 		)
@@ -79,7 +79,7 @@ func GenerateSN(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data format."})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
@@ -87,7 +87,7 @@ func GenerateSN(ctx *gin.Context) {
 
 	if generateSNInfo.Count <= 0 {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "The count must be greater than 0."})
-		utils.Logger.Warn(fmt.Sprintf("Invalid count(<=0) [%d].", generateSNInfo.Count))
+		utils.Record(logrus.WarnLevel, fmt.Sprintf("Invalid count(<=0) [%d].", generateSNInfo.Count))
 		return
 	}
 
@@ -101,13 +101,13 @@ func GenerateSN(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 	} else {
 		msg := fmt.Sprintf("Successfully uploaded new S/N (%d) with reason (%s).",
 			generateSNInfo.Count, generateSNInfo.Reason)
-		utils.Logger.Info(msg)
+		utils.Record(logrus.InfoLevel, msg)
 		for _, sn := range snList {
-			utils.Logger.Info(fmt.Sprintf("[%s]", sn))
+			utils.Record(logrus.InfoLevel, fmt.Sprintf("[%s]", sn))
 		}
 
 		ctx.JSON(http.StatusOK, model.GenerateSNResponse{Msg: msg, SerialNumbers: snList})
@@ -135,7 +135,7 @@ func UpdateCertNote(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "Invalid data format."})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
@@ -143,10 +143,10 @@ func UpdateCertNote(ctx *gin.Context) {
 		if err.Error() == "the s/n does not exist" {
 			errMsg := fmt.Sprintf("The S/N [%s] does not exist.", updateInfo.SerialNumber)
 			ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Error: errMsg})
-			utils.Logger.Warn(errMsg)
+			utils.Record(logrus.WarnLevel, errMsg)
 		} else {
 			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-			utils.Logger.Error(err.Error())
+			utils.Record(logrus.ErrorLevel, err.Error())
 		}
 
 	} else {
@@ -157,7 +157,10 @@ func UpdateCertNote(ctx *gin.Context) {
 				Note: updateInfo.Note,
 			},
 		)
-		utils.Logger.Info("Successfully updated the note of specified S/N.")
+		utils.Record(
+			logrus.InfoLevel, 
+			"Successfully updated the note of specified S/N.",
+		)
 	}
 }
 
@@ -180,7 +183,7 @@ func GetAllRecords(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
@@ -206,7 +209,7 @@ func GetAvaliableSN(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
-		utils.Logger.Error(err.Error())
+		utils.Record(logrus.ErrorLevel, err.Error())
 		return
 	}
 
