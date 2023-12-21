@@ -330,7 +330,7 @@ export class QCSClient {
       };
 
       const result = {
-        remainingTime: data["remaining_time"],
+        remaining_time: data["remaining_time"],
         status: data["status"],
       } as QCSType.QCSApplyTempPermitResponse;
 

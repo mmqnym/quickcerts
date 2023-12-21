@@ -73,7 +73,7 @@ class QCSAdmin:
             data = res.json()
             records = []
             for record in data["data"]:
-                records.append(pyqcs_type.QCSRecord(record["sn"], record["key"], record["note"]))
+                records.append(pyqcs_type.QCSRecord(record["serial_number"], record["key"], record["note"]))
             return pyqcs_type.QCSAllRecordsResponse(records)
         
     def get_available_sn(self) -> pyqcs_type.QCSAvailableSNResponse:
@@ -98,7 +98,7 @@ class QCSAdmin:
         note: new note.
         '''
 
-        url = self.access_prefix + "/sn/update-note"
+        url = self.access_prefix + "/sn/update"
         headers = {"X-Access-Token": self.access_token, "X-Runtime-Code": self.runtime_code}
         body = {"serial_number": target_sn, "note": note}
         res = requests.post(url, headers=headers, json=body)

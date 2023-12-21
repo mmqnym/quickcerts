@@ -1,0 +1,59 @@
+name: Coverage-test
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "^1.21.1"
+
+      - name: Create test private key file
+        run: |
+          mkdir -p ./local
+          echo "${{ secrets.TEST_PRIVATE_KEY }}" > ./local/private_key.pem
+
+      - name: Build test environment
+        run: |
+          docker compose up --build -d
+          docker ps -a
+
+      - name: Wait for PSQL to be ready
+        run: |
+          until docker exec qcs-db pg_isready -U quickcerts -d quickcerts; do
+            echo "Waiting for database..."
+            sleep 1
+          done
+
+      - name: Wait for Redis to be ready
+        run: |
+          until docker exec qcs-cache redis-cli ping; do
+            echo "Waiting for Redis..."
+            sleep 1
+          done
+
+      - name: Run tests
+        run: go test ./... -coverprofile=coverage.out
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.out
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+
+      - name: Remove test private key file
+        run: rm -f ./local/private_key.pem
+
+      - name: Shut down and clean up test environment
+        run: docker compose down --rmi all -v

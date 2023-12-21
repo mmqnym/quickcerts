@@ -1,11 +1,20 @@
 # QuickCertS
 
+<p align="center">
+    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/QuickCertS">
+    <img alt="app version" src="https://img.shields.io/github/v/release/mmq88/QuickCertS"></img>
+    <img alt="go version" src="https://img.shields.io/github/go-mod/go-version/mmq88/QuickCertS"></img>
+    <img alt="python version" src="https://img.shields.io/badge/Python-v3.9.13-blue"></img>
+    <img alt="node version" src="https://img.shields.io/badge/Node-v18.16.0-blue"></img>
+    <img alt="license" src="https://img.shields.io/github/license/mmq88/QuickCertS"></img>
+</p>
+
 ## Language
 
 <p>
-    <a href="./README.md"><img alt="English" src="https://img.shields.io/badge/English-000000?style=for-the-badge"></img></a>
-    <a href="./README-zhHant.md"><img alt="繁體中文" src="https://img.shields.io/badge/繁體中文-000000?style=for-the-badge"></img></a>
-    <a href="./README-zhHans.md"><img alt="简体中文" src="https://img.shields.io/badge/简体中文-000000?style=for-the-badge"></img></a>
+    <a href="./README.md"><img alt="English" src="https://img.shields.io/badge/English-6498cc?style=for-the-badge"></img></a>
+    <a href="./README-zhHant.md"><img alt="繁體中文" src="https://img.shields.io/badge/繁體中文-6498cc?style=for-the-badge"></img></a>
+    <a href="./README-zhHans.md"><img alt="简体中文" src="https://img.shields.io/badge/简体中文-6498cc?style=for-the-badge"></img></a>
 </p>
 
 ## Introduction

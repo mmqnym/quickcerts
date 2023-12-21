@@ -1,4 +1,4 @@
-# qcs v1.0.3
+# qcs v1.0.4
 version: "3.7"
 
 networks:
@@ -15,6 +15,7 @@ volumes:
 
 services:
   qcs-db:
+    container_name: qcs-db
     build:
       context: .
       dockerfile: Dockerfile.database
@@ -31,16 +32,20 @@ services:
     restart: unless-stopped
 
   qcs-cache:
+    container_name: qcs-cache
     build:
       context: .
       dockerfile: Dockerfile.redis
     networks:
       - qcs_subnet
+    ports: # You can remove this if you don't need to access redis from outside the container
+      - "33334:6379"
     volumes:
       - qcs-rdb-data:/data
     restart: unless-stopped
 
   qcs-server:
+    container_name: qcs-server
     build:
       context: .
       dockerfile: Dockerfile.server
@@ -50,6 +55,7 @@ services:
       - "33333:33333"
     depends_on:
       - qcs-db
+      - qcs-cache
     environment:
       DB_HOST: qcs-db
       DB_PORT: 5432

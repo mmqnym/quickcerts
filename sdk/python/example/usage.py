@@ -22,8 +22,9 @@ except Exception as e:
 
 # Get all records.
 try:
-    res = qcs_admin.get_all_record()
-    print(res.data[0].sn, res.data[0].key, res.data[0].note)
+    res = qcs_admin.get_all_records()
+    for record in res.data:
+        print(record.serial_number, record.key, record.note)
 except Exception as e:
     print(e.args[0])
 

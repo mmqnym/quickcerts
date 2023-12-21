@@ -6,12 +6,17 @@ import (
 
 // Get the private key bytes from the local file.
 func GetPrivateKeyBytes() ([]byte, error) {
-    fileName := "./local/private_key.pem"
+	changed := Change2RootDir()
+	fileName := "./local/private_key.pem"
 
-    data, err := os.ReadFile(fileName)
-    if err != nil {
-        return nil, err
-    }
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, err
+	}
 
-    return data, err
+	if changed {
+		os.Chdir("utils")
+	}
+
+	return data, err
 }

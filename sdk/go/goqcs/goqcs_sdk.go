@@ -173,7 +173,7 @@ func (qcsA *QCSAdmin) GetAllRecords() (*QCSAllRecordsResponse, error) {
 	
 	for _, irecord := range data["data"].([]interface{}) {
 		var record QCSRecord
-		record.SerialNumber = irecord.(map[string]interface{})["sn"].(string)
+		record.SerialNumber = irecord.(map[string]interface{})["serial_number"].(string)
 		record.Key = irecord.(map[string]interface{})["key"].(string)
 		record.Note = irecord.(map[string]interface{})["note"].(string)
 		records = append(records, record)
@@ -185,7 +185,7 @@ func (qcsA *QCSAdmin) GetAllRecords() (*QCSAllRecordsResponse, error) {
 }
 
 // Get all available serial numbers in QCS.
-func (qcsA *QCSAdmin) GetAvaliableSN() (*QCSAvaliableSNResponse, error) {
+func (qcsA *QCSAdmin) GetAvailableSN() (*QCSAvailableSNResponse, error) {
 	url := qcsA.accessPrefix + "/sn/get-available"
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -217,7 +217,7 @@ func (qcsA *QCSAdmin) GetAvaliableSN() (*QCSAvaliableSNResponse, error) {
 		return nil, fmt.Errorf("QCS::Error:%s", errorMsg)
 	}
 
-	var response QCSAvaliableSNResponse
+	var response QCSAvailableSNResponse
 	
 	for _, sn := range data["data"].([]interface{}) {
 		response.Data = append(response.Data, sn.(string))
