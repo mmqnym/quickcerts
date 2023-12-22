@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"QuickCertS/data"
-	"QuickCertS/model"
-	"QuickCertS/utils"
+	"github.com/mmq88/quickcerts/data"
+	"github.com/mmq88/quickcerts/model"
+	"github.com/mmq88/quickcerts/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -51,7 +51,7 @@ func CreateSN(ctx *gin.Context) {
 			model.CreateSNResponse{Msg: "Successfully uploaded a new S/N.", SerialNumber: creationInfo.SerialNumber},
 		)
 
-		utils.Record(logrus.InfoLevel, 
+		utils.Record(logrus.InfoLevel,
 			fmt.Sprintf("Successfully uploaded a new S/N [%s] with reason (%s).",
 				creationInfo.SerialNumber, creationInfo.Reason),
 		)
@@ -158,7 +158,7 @@ func UpdateCertNote(ctx *gin.Context) {
 			},
 		)
 		utils.Record(
-			logrus.InfoLevel, 
+			logrus.InfoLevel,
 			"Successfully updated the note of specified S/N.",
 		)
 	}

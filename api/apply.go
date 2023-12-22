@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"QuickCertS/data"
-	"QuickCertS/model"
-	"QuickCertS/utils"
+	"github.com/mmq88/quickcerts/data"
+	"github.com/mmq88/quickcerts/model"
+	"github.com/mmq88/quickcerts/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -65,7 +65,7 @@ func ApplyCertificate(ctx *gin.Context) {
 	if err != nil {
 		if err.Error() == "currently not connecting the redis database" {
 			ctx.JSON(
-				http.StatusInternalServerError, 
+				http.StatusInternalServerError,
 				model.ErrorResponse{Error: "Currently not connecting the redis database."})
 			utils.Record(logrus.ErrorLevel, "Currently not connecting the redis database.")
 			return
@@ -96,11 +96,11 @@ func ApplyCertificate(ctx *gin.Context) {
 	if err := data.BindSNWithKey(applyInfo.SerialNumber, key); err != nil {
 		if err.Error() == "the s/n does not exist or has already been used" {
 			ctx.JSON(
-				http.StatusBadRequest, 
+				http.StatusBadRequest,
 				model.ErrorResponse{Error: "The S/N does not exist or has already been used."},
 			)
 			utils.Record(
-				logrus.WarnLevel, 
+				logrus.WarnLevel,
 				fmt.Sprintf("The S/N [%s] does not exist or has already been used.", applyInfo.SerialNumber),
 			)
 		} else {
@@ -158,7 +158,7 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 	if err != nil {
 		if err.Error() == "currently not connecting the redis database" {
 			ctx.JSON(
-				http.StatusInternalServerError, 
+				http.StatusInternalServerError,
 				model.ErrorResponse{Error: "Currently not connecting the redis database."})
 			utils.Record(logrus.ErrorLevel, "Currently not connecting the redis database.")
 			return
@@ -194,7 +194,7 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 				})
 
 				utils.Record(
-					logrus.InfoLevel, 
+					logrus.InfoLevel,
 					fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", key, remainingTime),
 				)
 			}
@@ -206,7 +206,7 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 		return
 	}
 
-	// The given key has been used by same device. 
+	// The given key has been used by same device.
 	// Return the remaining valid time.
 	if remainingTime > 0 {
 		ctx.JSON(
@@ -217,7 +217,7 @@ func ApplyTemporaryPermit(ctx *gin.Context) {
 			},
 		)
 		utils.Record(
-			logrus.InfoLevel, 
+			logrus.InfoLevel,
 			fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", key, remainingTime),
 		)
 	} else {

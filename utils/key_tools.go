@@ -14,7 +14,7 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
-	cfg "QuickCertS/configs"
+	cfg "github.com/mmq88/quickcerts/configs"
 )
 
 var privateKeyBytes []byte

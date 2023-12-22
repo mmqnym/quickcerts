@@ -8,10 +8,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	cfg "QuickCertS/configs"
-	"QuickCertS/data"
-	"QuickCertS/model"
-	"QuickCertS/utils"
+	"github.com/mmq88/quickcerts/data"
+	"github.com/mmq88/quickcerts/model"
+	"github.com/mmq88/quickcerts/utils"
+
+	cfg "github.com/mmq88/quickcerts/configs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -63,14 +64,14 @@ func TestCreateSN(t *testing.T) {
 	res := w.Body.String()
 	var createSNResponse model.CreateSNResponse
 	err = json.Unmarshal([]byte(res), &createSNResponse)
-	
+
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, createSNResponse.Msg, "Successfully uploaded a new S/N.")
 	assert.Equal(t, createSNResponse.SerialNumber, creationInfo.SerialNumber)
-	assert.Equal(t, 
+	assert.Equal(t,
 		fmt.Sprintf("Successfully uploaded a new S/N [%s] with reason (%s).",
-				creationInfo.SerialNumber, creationInfo.Reason), 
+			creationInfo.SerialNumber, creationInfo.Reason),
 		utils.TestBuffer,
 	)
 
@@ -91,8 +92,8 @@ func TestCreateSN(t *testing.T) {
 	err = json.Unmarshal([]byte(res), &errorResponse)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "Invalid data format.", errorResponse.Error)
-	assert.Equal(t, 
-		"Key: 'SNInfo.SerialNumber' Error:Field validation for 'SerialNumber' failed on the 'required' tag", 
+	assert.Equal(t,
+		"Key: 'SNInfo.SerialNumber' Error:Field validation for 'SerialNumber' failed on the 'required' tag",
 		utils.TestBuffer,
 	)
 
@@ -112,12 +113,12 @@ func TestCreateSN(t *testing.T) {
 
 	res = w.Body.String()
 	err = json.Unmarshal([]byte(res), &errorResponse)
-	
+
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "The S/N already exists.", errorResponse.Error)
-	assert.Equal(t, 
-		fmt.Sprintf("The S/N [%s] already exists.", creationInfo.SerialNumber), 
+	assert.Equal(t,
+		fmt.Sprintf("The S/N [%s] already exists.", creationInfo.SerialNumber),
 		utils.TestBuffer,
 	)
 
@@ -157,7 +158,7 @@ func TestCreateSNs(t *testing.T) {
 	targetGenerationCount := 2
 
 	creationInfo := model.SNsInfo{
-		Count: 	targetGenerationCount,
+		Count:  targetGenerationCount,
 		Reason: "testReason",
 	}
 
@@ -172,10 +173,10 @@ func TestCreateSNs(t *testing.T) {
 	res := w.Body.String()
 	var generateSNResponse model.GenerateSNResponse
 	err = json.Unmarshal([]byte(res), &generateSNResponse)
-	
+
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, generateSNResponse.Msg, 
+	assert.Equal(t, generateSNResponse.Msg,
 		fmt.Sprintf("Successfully uploaded new S/N (%d) with reason (%s).", creationInfo.Count, creationInfo.Reason),
 	)
 	assert.Equal(t, len(generateSNResponse.SerialNumbers), targetGenerationCount)
@@ -197,8 +198,8 @@ func TestCreateSNs(t *testing.T) {
 	err = json.Unmarshal([]byte(res), &errorResponse)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "Invalid data format.", errorResponse.Error)
-	assert.Equal(t, 
-		"Key: 'SNsInfo.Count' Error:Field validation for 'Count' failed on the 'required' tag", 
+	assert.Equal(t,
+		"Key: 'SNsInfo.Count' Error:Field validation for 'Count' failed on the 'required' tag",
 		utils.TestBuffer,
 	)
 
@@ -218,18 +219,18 @@ func TestCreateSNs(t *testing.T) {
 
 	res = w.Body.String()
 	err = json.Unmarshal([]byte(res), &errorResponse)
-	
+
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "The count must be greater than 0.", errorResponse.Error)
-	assert.Equal(t, 
-		fmt.Sprintf("Invalid count(<=0) [%d].", -2), 
+	assert.Equal(t,
+		fmt.Sprintf("Invalid count(<=0) [%d].", -2),
 		utils.TestBuffer,
 	)
 
 	// Delete test data
 	err = data.DeleteTestingData(
-		"DELETE FROM certs WHERE sn IN ($1, $2)", 
+		"DELETE FROM certs WHERE sn IN ($1, $2)",
 		generateSNResponse.SerialNumbers[0], generateSNResponse.SerialNumbers[1],
 	)
 	assert.Nil(t, err)
@@ -281,14 +282,14 @@ func TestUpdateCertNote(t *testing.T) {
 
 	res := w.Body.String()
 	var updateCertNoteResponse model.UpdateCertNoteResponse
-	
+
 	err = json.Unmarshal([]byte(res), &updateCertNoteResponse)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
-	
+
 	assert.Equal(t, "Successfully updated the note of specified S/N.", updateCertNoteResponse.Msg)
 	assert.Equal(t, "testNote", updateCertNoteResponse.Note)
-	assert.Equal(t,"Successfully updated the note of specified S/N.", utils.TestBuffer,)
+	assert.Equal(t, "Successfully updated the note of specified S/N.", utils.TestBuffer)
 
 	// Test invalid case (Required fields are empty or not exist)
 	w = httptest.NewRecorder()
@@ -331,8 +332,8 @@ func TestUpdateCertNote(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
-	assert.Equal(t, 
-		fmt.Sprintf("The S/N [%s] does not exist.", updateInfo.SerialNumber), 
+	assert.Equal(t,
+		fmt.Sprintf("The S/N [%s] does not exist.", updateInfo.SerialNumber),
 		errorResponse.Error,
 	)
 	assert.Equal(t,
@@ -386,11 +387,11 @@ func TestGetAllRecords(t *testing.T) {
 
 	res := w.Body.String()
 	var getAllRecordResponse model.GetAllRecordsResponse
-	
+
 	err = json.Unmarshal([]byte(res), &getAllRecordResponse)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
-	
+
 	for i, rec := range getAllRecordResponse.Data {
 		assert.Equal(t, testSNList[i], rec.SerialNumber)
 		assert.Equal(t, "", rec.Key)
@@ -443,11 +444,11 @@ func TestGetAvaliableSN(t *testing.T) {
 
 	res := w.Body.String()
 	var getAvailableSNResponse model.GetAvaliableSNResponse
-	
+
 	err = json.Unmarshal([]byte(res), &getAvailableSNResponse)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
-	
+
 	for _, sn := range getAvailableSNResponse.Data {
 		assert.Contains(t, testSNList, sn)
 	}
