@@ -250,7 +250,7 @@ func GetAllCerts() ([]model.Cert, error) {
 	return certs, nil
 }
 
-// Get avaliable S/N in the database.
+// Get available S/N in the database.
 func GetAvaliableSN() ([]string, error) {
 	if db == nil {
 		return nil, errors.New("currently not connecting the database")

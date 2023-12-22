@@ -4,6 +4,7 @@
     <img alt="app version" src="https://img.shields.io/github/v/release/mmq88/quickcerts"></img>
     <a href="https://app.codecov.io/gh/mmq88/quickcerts"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/quickcerts?logo=codecov&logoColor=%23F01F7A&label=codecov"></a>
     <a href="https://github.com/mmq88/quickcerts/actions/workflows/codeql.yml"><img src="https://github.com/mmq88/quickcerts/workflows/CodeQL/badge.svg" alt="CodeQL status"></a>
+    <a href="https://goreportcard.com/report/github.com/mmq88/quickcerts"><img src="https://goreportcard.com/badge/github.com/mmq88/quickcerts"></a>
     <img alt="license" src="https://img.shields.io/github/license/mmq88/quickcerts"></img>
 </p>
 
