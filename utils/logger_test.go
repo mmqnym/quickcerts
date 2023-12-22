@@ -1,12 +1,48 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestQCSJSONFormatter(t *testing.T) {
+	entry := &logrus.Entry{
+		Logger:  logrus.New(),
+		Time:    time.Now(),
+		Level:   logrus.InfoLevel,
+		Message: "test message",
+	}
+
+	formatter := QCSJSONFormatter{&logrus.TextFormatter{
+		TimestampFormat: "2006-01-02T15:04:05",
+	}}
+
+	logBytes, err := formatter.Format(entry)
+	assert.NoError(t, err)
+	fmt.Println(string(logBytes))
+}
+
+func TestQCSTextFormatter(t *testing.T) {
+	entry := &logrus.Entry{
+		Logger:  logrus.New(),
+		Time:    time.Now(),
+		Level:   logrus.WarnLevel,
+		Message: "test warning",
+	}
+
+	formatter := QCSTextFormatter{&logrus.TextFormatter{
+		TimestampFormat: "2006-01-02T15:04:05",
+	}}
+
+	logBytes, err := formatter.Format(entry)
+	assert.NoError(t, err)
+	fmt.Println(string(logBytes))
+}
 
 func TestGetServerLogConfig(t *testing.T) {
 	// Test valid case

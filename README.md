@@ -1,7 +1,7 @@
 # QuickCertS
 
 <p align="center">
-    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/QuickCertS">
+    <a href="https://app.codecov.io/gh/mmq88/QuickCertS"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/QuickCertS"></a>
     <img alt="app version" src="https://img.shields.io/github/v/release/mmq88/QuickCertS"></img>
     <img alt="go version" src="https://img.shields.io/github/go-mod/go-version/mmq88/QuickCertS"></img>
     <img alt="python version" src="https://img.shields.io/badge/Python-v3.9.13-blue"></img>
@@ -69,6 +69,11 @@ Automatic length calculation with RSA-PSS padding
 
 - The `path_to_qcs/configs/server.toml` file contains all the relevant settings  
   for the server. It is recommended to configure it before running the server officially.
+  ※Please change the following setting to `false`.
+
+  ```toml
+  LOG_TEST_MODE = false
+  ```
 
 - In the `path_to_qcs/init.sql` file, you can set the time zone for the database.
   It is recommended to use the same time zone as your local or cloud environment to avoid confusion.
