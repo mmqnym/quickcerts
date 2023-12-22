@@ -9,9 +9,9 @@ import (
 
 	_ "github.com/lib/pq"
 
-	cfg "QuickCertS/configs"
-	"QuickCertS/model"
-	"QuickCertS/utils"
+	cfg "github.com/mmq88/quickcerts/configs"
+	"github.com/mmq88/quickcerts/model"
+	"github.com/mmq88/quickcerts/utils"
 )
 
 var db *sql.DB = nil

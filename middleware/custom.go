@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	cfg "QuickCertS/configs"
-	"QuickCertS/model"
-	"QuickCertS/utils"
+	cfg "github.com/mmq88/quickcerts/configs"
+	"github.com/mmq88/quickcerts/model"
+	"github.com/mmq88/quickcerts/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -84,7 +84,7 @@ func AdminAccessAuth(runTimeCode string) gin.HandlerFunc {
 		if cfg.SERVER_CONFIG.USE_RUNTIME_CODE {
 			if reqRunTimeCode == "" || reqRunTimeCode != runTimeCode {
 				utils.Record(
-					logrus.InfoLevel, 
+					logrus.InfoLevel,
 					fmt.Sprintf("Runtime Code error(%s), From [%s]", reqRunTimeCode, ctx.RemoteIP()),
 				)
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Error: "Unauthorized Request."})

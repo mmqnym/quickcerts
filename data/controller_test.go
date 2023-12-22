@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	cfg "QuickCertS/configs"
-	"QuickCertS/utils"
+	cfg "github.com/mmq88/quickcerts/configs"
+
+	"github.com/mmq88/quickcerts/utils"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +18,7 @@ func TestConnectAndDisconnect(t *testing.T) {
 		cfg.DB_CONFIG.HOST = backupHost
 		cfg.DB_CONFIG.PORT = backupPort
 	}()
-	
+
 	// Test valid case
 	// Uses docker-compose config
 	cfg.DB_CONFIG.HOST = "localhost"
@@ -143,7 +144,7 @@ func TestIsSNExist(t *testing.T) {
 	sn := "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
 	err = AddNewSN(sn)
 	assert.Nil(t, err)
-	
+
 	_, err = IsSNExist(sn)
 	assert.Nil(t, err)
 
@@ -404,7 +405,7 @@ func TestGetAllCerts(t *testing.T) {
 
 	resList, err = GetAllCerts()
 	assert.Nil(t, err)
-	assert.Equal(t, allCertsLength + 1, len(resList))
+	assert.Equal(t, allCertsLength+1, len(resList))
 
 	for _, cert := range resList {
 		if cert.SerialNumber == sn {

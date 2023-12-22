@@ -3,7 +3,7 @@ package data
 import (
 	"testing"
 
-	cfg "QuickCertS/configs"
+	cfg "github.com/mmq88/quickcerts/configs"
 
 	"github.com/stretchr/testify/assert"
 )

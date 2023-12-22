@@ -1,10 +1,11 @@
 package utils
 
 import (
-	cfg "QuickCertS/configs"
 	"crypto/rand"
 	"math/big"
 	"reflect"
+
+	cfg "github.com/mmq88/quickcerts/configs"
 )
 
 // Check if the given data is all not empty except the excluded fields.

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	cfg "QuickCertS/configs"
+	cfg "github.com/mmq88/quickcerts/configs"
 
 	"github.com/fatih/color"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
@@ -18,7 +18,7 @@ import (
 var (
 	logger     *logrus.Logger         // The logger for the server.
 	fileWriter *rotatelogs.RotateLogs // The file writer for the server logger & access logger.
-	TestBuffer string      			  // The buffer for testing mode.
+	TestBuffer string                 // The buffer for testing mode.
 )
 
 func InitLogger() {

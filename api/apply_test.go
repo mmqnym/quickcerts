@@ -1,8 +1,6 @@
 package api
 
 import (
-	"QuickCertS/model"
-	"QuickCertS/utils"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -11,8 +9,12 @@ import (
 	"testing"
 	"time"
 
-	cfg "QuickCertS/configs"
-	"QuickCertS/data"
+	"github.com/mmq88/quickcerts/model"
+	"github.com/mmq88/quickcerts/utils"
+
+	"github.com/mmq88/quickcerts/data"
+
+	cfg "github.com/mmq88/quickcerts/configs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -59,10 +61,10 @@ func TestApplyCertificate(t *testing.T) {
 	assert.Nil(t, err)
 
 	applyInfo := model.ApplyCertInfo{
-		SerialNumber:   testSN,
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		SerialNumber:  testSN,
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 	jsonValue, _ := json.Marshal(applyInfo)
 
@@ -75,7 +77,7 @@ func TestApplyCertificate(t *testing.T) {
 	res := w.Body.String()
 	var applyCertResponse model.ApplyCertResponse
 	err = json.Unmarshal([]byte(res), &applyCertResponse)
-	
+
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
 	expectedKey := "5578c9d3cd718345af4319f3021157999b993f2e991481524234746f38b84c03"
@@ -85,10 +87,10 @@ func TestApplyCertificate(t *testing.T) {
 	// Test invalid case (Required fields are empty or not exist)
 	w = httptest.NewRecorder()
 	applyInfo = model.ApplyCertInfo{
-		SerialNumber:   "",
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		SerialNumber:  "",
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 	jsonValue, _ = json.Marshal(applyInfo)
 	req, _ = http.NewRequest("POST", "/api/v1/apply/cert", bytes.NewBuffer(jsonValue))
@@ -100,18 +102,18 @@ func TestApplyCertificate(t *testing.T) {
 	err = json.Unmarshal([]byte(res), &errorResponse)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "Invalid data format.", errorResponse.Error)
-	assert.Equal(t, 
-		"Key: 'ApplyCertInfo.SerialNumber' Error:Field validation for 'SerialNumber' failed on the 'required' tag", 
+	assert.Equal(t,
+		"Key: 'ApplyCertInfo.SerialNumber' Error:Field validation for 'SerialNumber' failed on the 'required' tag",
 		utils.TestBuffer,
 	)
 
 	// Test invalid case (The S/N does not exist)
 	w = httptest.NewRecorder()
 	applyInfo = model.ApplyCertInfo{
-		SerialNumber:   "none",
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		SerialNumber:  "none",
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 	jsonValue, _ = json.Marshal(applyInfo)
 	req, _ = http.NewRequest("POST", "/api/v1/apply/cert", bytes.NewBuffer(jsonValue))
@@ -127,10 +129,10 @@ func TestApplyCertificate(t *testing.T) {
 	// Test invalid case (Use the same S/N with different device)
 	w = httptest.NewRecorder()
 	applyInfo = model.ApplyCertInfo{
-		SerialNumber:   testSN,
-		BoardProducer:  "testInvalidBP",
-		BoardName:      "testInvalidBN",
-		MACAddress:     "testInvalidMAC",
+		SerialNumber:  testSN,
+		BoardProducer: "testInvalidBP",
+		BoardName:     "testInvalidBN",
+		MACAddress:    "testInvalidMAC",
 	}
 	jsonValue, _ = json.Marshal(applyInfo)
 	req, _ = http.NewRequest("POST", "/api/v1/apply/cert", bytes.NewBuffer(jsonValue))
@@ -149,10 +151,10 @@ func TestApplyCertificate(t *testing.T) {
 	assert.Nil(t, err)
 
 	applyInfo = model.ApplyCertInfo{
-		SerialNumber:   testSN,
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		SerialNumber:  testSN,
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 	jsonValue, _ = json.Marshal(applyInfo)
 	req, _ = http.NewRequest("POST", "/api/v1/apply/cert", bytes.NewBuffer(jsonValue))
@@ -173,10 +175,10 @@ func TestApplyCertificate(t *testing.T) {
 	assert.Nil(t, err)
 
 	applyInfo = model.ApplyCertInfo{
-		SerialNumber:   testSN,
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		SerialNumber:  testSN,
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 	jsonValue, _ = json.Marshal(applyInfo)
 	req, _ = http.NewRequest("POST", "/api/v1/apply/cert", bytes.NewBuffer(jsonValue))
@@ -243,9 +245,9 @@ func TestApplyTemporaryPermit(t *testing.T) {
 	cfg.SERVER_CONFIG.TEMPORARY_PERMIT_TIME_UNIT = "second"
 
 	applyInfo := model.ApplyTempPermitInfo{
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 
 	jsonValue, _ := json.Marshal(applyInfo)
@@ -259,14 +261,14 @@ func TestApplyTemporaryPermit(t *testing.T) {
 	res := w.Body.String()
 	var applyTempPermitResponse model.ApplyTempPermitResponse
 	err = json.Unmarshal([]byte(res), &applyTempPermitResponse)
-	
+
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
 	expectedKey := "94acb9791b49e5e9d92673fa4c909377973dc65f172463fd1750107450615530"
 	assert.Equal(t, int64(1), applyTempPermitResponse.RemainingTime)
 	assert.Equal(t, "activated", applyTempPermitResponse.Status)
-	assert.Equal(t, 
-		fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", expectedKey, 1), 
+	assert.Equal(t,
+		fmt.Sprintf("Authorized [%s] temporary use of the product remaining [%d s].", expectedKey, 1),
 		utils.TestBuffer,
 	)
 
@@ -300,8 +302,8 @@ func TestApplyTemporaryPermit(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, 
-		fmt.Sprintf("The authorization for [%s] to use the product has expired.", expectedKey), 
+	assert.Equal(t,
+		fmt.Sprintf("The authorization for [%s] to use the product has expired.", expectedKey),
 		utils.TestBuffer,
 	)
 	assert.Equal(t, "The authorization has expired.", errorResponse.Error)
@@ -309,9 +311,9 @@ func TestApplyTemporaryPermit(t *testing.T) {
 	// Test invalid case (Required fields are empty or not exist)
 	w = httptest.NewRecorder()
 	applyInfo = model.ApplyTempPermitInfo{
-		BoardProducer:  "",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		BoardProducer: "",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 
 	jsonValue, _ = json.Marshal(applyInfo)
@@ -330,16 +332,16 @@ func TestApplyTemporaryPermit(t *testing.T) {
 		"Key: 'ApplyTempPermitInfo.BoardProducer' Error:Field validation for 'BoardProducer' failed on the 'required' tag",
 		utils.TestBuffer,
 	)
-	
+
 	// Test invalid case (Disconnect the redis database)
 	w = httptest.NewRecorder()
 	err = data.DisconnectRDB()
 	assert.Nil(t, err)
 
 	applyInfo = model.ApplyTempPermitInfo{
-		BoardProducer:  "testBP",
-		BoardName:      "testBN",
-		MACAddress:     "testMAC",
+		BoardProducer: "testBP",
+		BoardName:     "testBN",
+		MACAddress:    "testMAC",
 	}
 
 	jsonValue, _ = json.Marshal(applyInfo)

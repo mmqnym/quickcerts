@@ -20,7 +20,7 @@ func WaitForShutdown(server *http.Server) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		Record(logrus.FatalLevel, "Something wrong happened when shutting down the server: " + err.Error())
+		Record(logrus.FatalLevel, "Something wrong happened when shutting down the server: "+err.Error())
 	}
 
 	Record(logrus.InfoLevel, "The Server has exited successfully.")

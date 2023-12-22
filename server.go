@@ -1,15 +1,16 @@
 package main
 
 import (
-	"QuickCertS/api"
-	cfg "QuickCertS/configs"
-	"QuickCertS/data"
-	"QuickCertS/middleware"
-	"QuickCertS/utils"
 	"fmt"
 	"net/http"
 
-	_ "QuickCertS/docs"
+	"github.com/mmq88/quickcerts/api"
+	cfg "github.com/mmq88/quickcerts/configs"
+	"github.com/mmq88/quickcerts/data"
+	"github.com/mmq88/quickcerts/middleware"
+	"github.com/mmq88/quickcerts/utils"
+
+	_ "github.com/mmq88/quickcerts/docs"
 
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
@@ -60,43 +61,43 @@ func init() {
 // @produce json
 func main() {
 	err := data.ConnectDB()
-    
-    if err != nil {
+
+	if err != nil {
 		utils.Record(logrus.FatalLevel, err.Error())
-    }
+	}
 	utils.Record(logrus.InfoLevel, "Successfully connected the database.")
 
 	defer func() {
-        err := data.DisconnectDB()
-        if err != nil {
-            if err.Error() == "currently not connecting the database" {
+		err := data.DisconnectDB()
+		if err != nil {
+			if err.Error() == "currently not connecting the database" {
 				utils.Record(logrus.WarnLevel, "Currently not connecting the database.")
-                return
-            }
+				return
+			}
 			utils.Record(logrus.FatalLevel, err.Error())
-        }
-        
+		}
+
 		utils.Record(logrus.InfoLevel, "Successfully disconnected the database.")
-    }()
+	}()
 
 	err = data.ConnectRDB()
 	if err != nil {
 		utils.Record(logrus.FatalLevel, err.Error())
-    }
+	}
 	utils.Record(logrus.InfoLevel, "Successfully connected the redis database.")
 
 	defer func() {
-        err := data.DisconnectRDB()
-        if err != nil {
-            if err.Error() == "currently not connecting the redis database" {
+		err := data.DisconnectRDB()
+		if err != nil {
+			if err.Error() == "currently not connecting the redis database" {
 				utils.Record(logrus.WarnLevel, "Currently not connecting the redis database.")
-                return
-            }
+				return
+			}
 			utils.Record(logrus.FatalLevel, err.Error())
-        }
-        
+		}
+
 		utils.Record(logrus.InfoLevel, "Successfully disconnected the redis database.")
-    }()
+	}()
 
 	registerRoutes()
 

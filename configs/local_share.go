@@ -42,7 +42,7 @@ type ServerConfig struct {
 	TEMPORARY_PERMIT_TIME      int           `toml:"TEMPORARY_PERMIT_TIME"`
 	TEMPORARY_PERMIT_TIME_UNIT string        `toml:"TEMPORARY_PERMIT_TIME_UNIT"`
 	HASHING_METHOD             string        `toml:"HASHING_METHOD"`
-	LOG_TEST_MODE			   bool          `toml:"LOG_TEST_MODE"`
+	LOG_TEST_MODE              bool          `toml:"LOG_TEST_MODE"`
 	LOG_TIME_UNIT              string        `toml:"LOG_TIME_UNIT"`
 	LOG_MAX_AGE                int           `toml:"LOG_MAX_AGE"`
 	LOG_ROTATION_TIME          int           `toml:"LOG_ROTATION_TIME"`

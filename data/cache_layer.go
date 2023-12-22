@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	cfg "QuickCertS/configs"
+	cfg "github.com/mmq88/quickcerts/configs"
 
 	"github.com/redis/go-redis/v9"
 )
