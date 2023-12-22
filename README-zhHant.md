@@ -1,7 +1,7 @@
 # QuickCertS
 
 <p align="center">
-    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/QuickCertS">
+    <a href="https://app.codecov.io/gh/mmq88/QuickCertS"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/mmq88/QuickCertS"></a>
     <img alt="app version" src="https://img.shields.io/github/v/release/mmq88/QuickCertS"></img>
     <img alt="go version" src="https://img.shields.io/github/go-mod/go-version/mmq88/QuickCertS"></img>
     <img alt="python version" src="https://img.shields.io/badge/Python-v3.9.13-blue"></img>
@@ -68,6 +68,11 @@
   ```
 
 - `path_to_qcs/configs/server.toml` 包含全部伺服器的相關設定，建議正式執行前完成配置。
+  ※請將以下的設定改為 `false`。
+
+  ```toml
+  LOG_TEST_MODE = false
+  ```
 
 - `path_to_qcs/init.sql` 中可以替資料庫設定時區，建議使用與本地或雲端相同的時區，避免混亂。
 
