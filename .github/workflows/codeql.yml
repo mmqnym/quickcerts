@@ -30,8 +30,9 @@ jobs:
         with:
           languages: ${{ matrix.language }}
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      - name: Build Project
+        run: |
+          go build -o server server.go
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
