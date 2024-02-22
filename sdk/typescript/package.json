@@ -1,15 +1,15 @@
 {
-  "name": "qcs-example",
+  "name": "qcsjs",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is the JS version SDK provided to quickcerts.",
   "scripts": {
     "verify": "nodemon --exec ts-node ./example/verify.ts",
     "start": "nodemon --exec ts-node ./example/usage.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "author": "mmq88 <mail@mmq.dev>",
+  "license": "APACHE-2.0",
   "devDependencies": {
     "@types/node": "^20.10.0",
     "nodemon": "^3.0.1",
